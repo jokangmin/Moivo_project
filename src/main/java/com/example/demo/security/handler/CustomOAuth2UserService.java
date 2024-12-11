@@ -1,16 +1,15 @@
-package com.example.demo.configuration;
+package com.example.demo.security.handler;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.Map;
 
 @Primary
@@ -39,10 +38,20 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         // OAuth2 사용자 객체 반환
         // Spring Secrurity 사용시 ROLE_ 들어가야함
-        return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
-                attributes,
-                userNameAttributeName);
+//        return new DefaultOAuth2User(
+//                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
+//                attributes,
+//                userNameAttributeName);
+
+        OAuth2AuthenticationToken authenticationToken = new OAuth2AuthenticationToken(
+                oAuth2User,
+                oAuth2User.getAuthorities(),
+                userRequest.getClientRegistration().getRegistrationId()
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        System.out.println("CustomOAuth2 authenticationToken = " + authenticationToken);
+        return oAuth2User;
     }
 
     private void saveOrUpdate(Map<String, Object> attributes, String registrationId) {

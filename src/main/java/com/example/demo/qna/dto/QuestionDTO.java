@@ -2,9 +2,11 @@ package com.example.demo.qna.dto;
 
 import java.time.LocalDateTime;
 
+import com.example.demo.qna.entity.QuestionEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.aspectj.weaver.patterns.TypePatternQuestions;
 
 @Data
 @AllArgsConstructor
@@ -20,4 +22,20 @@ public class QuestionDTO {
     private LocalDateTime responseDate; // 응답 일시 (NULL이면 미응답)
     private String secret; // 비밀글 (추가)
     private Boolean fixQuestion; // 수정 문의 (추가)
+
+    // entity => dto 변환
+    public static QuestionDTO toGetQuestionDTO(QuestionEntity entity) {
+        QuestionDTO dto = new QuestionDTO();
+        dto.setId(entity.getId());
+        dto.setContent(entity.getContent());
+        dto.setResponse(entity.getResponse());
+        dto.setResponseDate(entity.getResponseDate());
+        dto.setQuestionDate(entity.getQuestionDate());
+        dto.setTitle(entity.getTitle());
+        dto.setUserId(entity.getUserEntity().getId());
+        dto.setCategoryId(entity.getCategoryEntity().getId());
+
+        return dto;
+    }
+
 }

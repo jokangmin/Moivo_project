@@ -9,6 +9,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+//Controller에서 형 변환용 클래스
+// userEntity는 OAuth2User로 형변환 안돼서 CustomOAuth2User 클래스 생성
+//OAuth2User oAuth2User = new CustomOAuth2User(userEntity);
 public class CustomOAuth2User implements OAuth2User {
     private UserEntity userEntity;
 

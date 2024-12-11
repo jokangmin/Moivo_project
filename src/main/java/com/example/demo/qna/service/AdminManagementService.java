@@ -12,5 +12,3 @@ public interface AdminManagementService {
     public void updateQuestion(Integer id, QuestionDTO questionDTO); // 문의 수정 메서드
     public void deleteQuestion(Integer id); // 문의 삭제 메서드
 }
-
-

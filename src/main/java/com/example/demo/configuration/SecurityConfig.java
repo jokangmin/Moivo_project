@@ -5,6 +5,7 @@ import com.example.demo.security.handler.CustomAuthenticationSuccessHandler;
 
 import java.util.Arrays;
 
+import com.example.demo.security.handler.CustomOAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -51,35 +52,36 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, ClientRegistrationRepository clientRegistrationRepository) throws Exception {
         http
-            //OAuth2 소셜로그인 설정
-            .oauth2Login(oauth2 -> oauth2
-            .clientRegistrationRepository(clientRegistrationRepository)
-            .authorizedClientRepository(authorizedClientRepository())
-            .userInfoEndpoint(endpoint -> endpoint.userService(oAuth2UserService))
-            .successHandler(successHandler()))
-            .csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .authorizeHttpRequests(auth -> auth
-            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            // 카카오 로그인 관련 엔드포인트 추가
-            .requestMatchers(
-                "/api/user/login", 
-                "/api/user/join", 
-                "/api/auth/token/refresh",
-                "/login/oauth2/code/**",
-                "/oauth2/authorization/**",
-                "/oauth/callback/**",
-                "/api/oauth/kakao/**",
-                "/api/user/kakao-login",
-                "/api/store/**"
-            ).permitAll()
-            .anyRequest().authenticated()
-            )
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JWT 필터 추가
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            );
-            
+                //OAuth2 소셜로그인 설정
+                .oauth2Login(oauth2 -> oauth2
+                        .clientRegistrationRepository(clientRegistrationRepository)
+                        .authorizedClientRepository(authorizedClientRepository())
+                        .userInfoEndpoint(endpoint -> endpoint.userService(oAuth2UserService))
+                        .successHandler(successHandler()))
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // 카카오 로그인 관련 엔드포인트 추가
+                        .requestMatchers(
+                                "/api/user/login",
+                                "/api/user/join",
+                                "/api/auth/token/refresh",
+                                "/login/oauth2/code/**",
+                                "/oauth2/authorization/**",
+                                "/oauth/callback/**",
+                                "/api/oauth/kakao/**",
+                                "/api/user/kakao-login",
+                                "/api/store/**",
+                                "/api/user/**"
+                        ).permitAll()
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JWT 필터 추가
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                );
+
 
         return http.build();
     }
@@ -88,21 +90,21 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(
-            "http://localhost:5173",
-            "https://kauth.kakao.com",
-            "https://kapi.kakao.com",
-            "http://localhost:8080"
+                "http://localhost:5173",
+                "https://kauth.kakao.com",
+                "https://kapi.kakao.com",
+                "http://localhost:8080"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));  // 모든 헤더 허용
         configuration.setAllowCredentials(true);
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
-       //Kakao 로그인 설정(자동설정이 안되서 임시로 수동 삽입, 스프링부트 2.0이상에선 자동생성이 안될수도 있다고함)
+    //Kakao 로그인 설정(자동설정이 안되서 임시로 수동 삽입, 스프링부트 2.0이상에선 자동생성이 안될수도 있다고함)
     //import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
     //현재 위 import로 생성가능 yml설정과 동일.
 //    @Bean
@@ -158,4 +160,3 @@ public class SecurityConfig {
         return new RestTemplate();
     }
 }
-

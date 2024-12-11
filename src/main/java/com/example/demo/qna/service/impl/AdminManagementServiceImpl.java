@@ -25,7 +25,7 @@ public class AdminManagementServiceImpl implements AdminManagementService {
     @Override
     public void respondToQuestion(QuestionDTO questionDTO) {
         QuestionEntity questionEntity = questionRepository.findById(questionDTO.getId())
-            .orElseThrow(() -> new RuntimeException("문의가 존재하지 않습니다."));
+                .orElseThrow(() -> new RuntimeException("문의가 존재하지 않습니다."));
         questionEntity.setResponse(questionDTO.getResponse());
         questionEntity.setResponseDate(LocalDateTime.now());
         questionRepository.save(questionEntity);
@@ -37,45 +37,45 @@ public class AdminManagementServiceImpl implements AdminManagementService {
         questionEntity.setTitle(questionDTO.getTitle());
         questionEntity.setContent(questionDTO.getContent());
         questionEntity.setCategoryEntity(questionCategoryRepository.findById(questionDTO.getCategoryId())
-            .orElseThrow(() -> new RuntimeException("카테고리가 존재하지 않습니다.")));
+                .orElseThrow(() -> new RuntimeException("카테고리가 존재하지 않습니다.")));
         questionRepository.save(questionEntity);
     }
 
     @Override
     public List<QuestionDTO> getAllQuestions() {
         return questionRepository.findAll().stream()
-            .filter(question -> question.getSecret() == null || !question.getSecret().equals("true"))
-            .map(question -> new QuestionDTO(
-                question.getId(),
-                question.getCategoryEntity().getId(),
-                question.getUserEntity().getId(),
-                question.getTitle(),
-                question.getContent(),
-                question.getQuestionDate(),
-                question.getResponse(),
-                question.getResponseDate(),
-                question.getSecret(),
-                question.getFixQuestion()
-            ))
-            .collect(Collectors.toList());
+                .filter(question -> question.getSecret() == null || !question.getSecret().equals("true"))
+                .map(question -> new QuestionDTO(
+                        question.getId(),
+                        question.getCategoryEntity().getId(),
+                        question.getUserEntity().getId(),
+                        question.getTitle(),
+                        question.getContent(),
+                        question.getQuestionDate(),
+                        question.getResponse(),
+                        question.getResponseDate(),
+                        question.getSecret(),
+                        question.getFixQuestion()
+                ))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<QuestionDTO> getAllQuestionsIncludingSecret() {
         return questionRepository.findAll().stream()
-            .map(question -> new QuestionDTO(
-                question.getId(),
-                question.getCategoryEntity().getId(),
-                question.getUserEntity().getId(),
-                question.getTitle(),
-                question.getContent(),
-                question.getQuestionDate(),
-                question.getResponse(),
-                question.getResponseDate(),
-                question.getSecret(),
-                question.getFixQuestion()
-            ))
-            .collect(Collectors.toList());
+                .map(question -> new QuestionDTO(
+                        question.getId(),
+                        question.getCategoryEntity().getId(),
+                        question.getUserEntity().getId(),
+                        question.getTitle(),
+                        question.getContent(),
+                        question.getQuestionDate(),
+                        question.getResponse(),
+                        question.getResponseDate(),
+                        question.getSecret(),
+                        question.getFixQuestion()
+                ))
+                .collect(Collectors.toList());
     }
 
     @Override
