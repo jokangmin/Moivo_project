@@ -223,11 +223,27 @@ const MypageProfile = () => {
     };
 
     useEffect(() => {
+        const token = localStorage.getItem("accessToken");
+        console.log("Access Token:", token);
+        
+        if (!token) {
+            alert("로그인이 필요합니다.");
+            navigate("/user");
+            return;
+        }
+
+         // 토큰 디코딩 (jwt-decode 없이)
+        const payload = token.split('.')[1];
+        const decodedPayload = JSON.parse(atob(payload));
+        const id = decodedPayload.id;  //토큰에 있는 id 추출
+        console.log("User ID:", id);
+
+
         const fetchUserInfo = async () => {
             try {
-                const response = await axiosInstance.get('/api/user/mypage/info');
+                const response = await axiosInstance.get(`/api/user/mypage/info/${id}`);
                 const data = response.data;
-                
+
                 const { phone1, phone2, phone3 } = splitPhoneNumber(data.tel);
         
                 setUserInfo(data);
@@ -295,14 +311,15 @@ const MypageProfile = () => {
                         {userInfo ? (
                             <>
                                 <p>{userInfo.name}님의 멤버십 등급은 <strong>[ {userInfo.grade} ]</strong>입니다.</p>
-                                {userInfo.nextLevelTarget === 0 ? (
-                                <strong><p></p></strong>
+                                {userInfo && userInfo.nextLevelTarget !== undefined ? (
+                                    <p>
+                                        다음 등급까지 남은 구매금액은 
+                                        <strong>KRW {userInfo.nextLevelTarget.toLocaleString()}원</strong>입니다.
+                                    </p>
                                 ) : (
-                                <p>
-                                    다음 등급까지 남은 구매금액은 
-                                    <strong> KRW {userInfo.nextLevelTarget.toLocaleString()}원</strong>입니다.
-                                </p>
+                                    <strong><p>다음 등급 정보가 없습니다.</p></strong>
                                 )}
+
                                 <p>
                                 키: <strong>{userInfo.height}cm</strong> &nbsp;
                                 몸무게: <strong>{userInfo.weight}kg</strong>
@@ -317,7 +334,7 @@ const MypageProfile = () => {
                                 COUPON: &nbsp;
                                 {userInfo && userInfo.coupons ? (
                                 userInfo.coupons.map((coupon, index) => (
-                                    <strong key={index}>{coupon.name}</strong>
+                                    <strong key={index}>{coupon.couponName}</strong>
                                 ))
                                 ) : (
                                 "쿠폰 정보를 불러오는 중입니다..."

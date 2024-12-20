@@ -11,4 +11,7 @@ public interface UserCartRepository extends JpaRepository<UserCartEntity, Intege
     List<UserCartEntity> findByCartEntity_Id(Integer cartId);
 
     Optional<UserCartEntity> findByCartEntity_Id(int cartId);
+
+    // 특정 Cart와 연관된 데이터 삭제
+    void deleteByCartEntity_Id(Integer cartId);
 }
