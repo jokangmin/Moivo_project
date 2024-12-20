@@ -1,0 +1,315 @@
+/* 전체 컨테이너 */
+.memberFrame {
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+    background: #F6F2EE;
+    padding: 30px 0;
+    box-sizing: border-box;
+}
+
+/* 타이틀 */
+.title {
+    font-family: 'Italiana', serif;
+    font-size: 36px;
+    text-align: center;
+    color: #2f2e2c;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+}
+
+/* 멤버십 박스 */
+.membershipBox {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #F6F2EE;
+    border: 1px solid #988C73;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.membershipImage {
+    width: 50px;
+    height: 50px;
+    background: #F6F2EE;
+    margin-right: 50px;
+    margin-left: 20px;
+}
+
+.membershipImage img{
+    width: 50px;
+    height: 40px;
+    background: #F6F2EE;
+    margin-right: 50px;
+}
+
+.membershipInfo {
+    font-family: 'Italiana', serif;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: left;
+    color: #2f2e2c;
+    margin-bottom: 5px;
+}
+
+.pointCoupon {
+    font-family: 'Italiana', serif;
+    font-size: 16px;
+    text-align: left;
+    color: #2f2e2c;
+}
+
+/* 좌우 배치 영역 */
+.contentWrapper {
+    display: flex; /* 가로 배치 */
+    justify-content: space-between; /* 좌우 배치 */
+    align-items: stretch; /* 자식 요소 높이 동일 */
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+    gap: 20px; /* 두 박스 간 간격 */
+    box-sizing: border-box;
+}
+
+/* ONLY FOR YOU */
+.onlyForYouBox {
+    position: relative;
+    padding: 20px;
+    border: 1px solid #988C73;
+    background: #F6F2EE;
+    width: 90%;
+    max-width: 800px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex; /* 높이 늘리기 */
+    flex-direction: column; /* 내부 콘텐츠 세로 정렬 */
+    flex-grow: 1; /* 높이를 부모 기준으로 확장 */
+}
+
+
+.onlyForYou {
+    font-family: 'Italiana', serif;
+    font-size: 18px;
+    text-align: center;
+    color: #2f2e2c;
+    margin-bottom: 10px;
+}
+
+.productList {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.product {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 150px;
+}
+
+.productImage {
+    width: 150px;
+    height: 200px;
+    background: #F6F2EE;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+.productImage img{
+    width: 150px;
+    height: 200px;
+    background: #F6F2EE;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+.productText {
+    font-family: 'Italiana', serif;
+    font-size: 14px;
+    color: #2f2e2c;
+}
+
+/* 통합 메뉴 */
+.menuWrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 두 개씩 배치 */
+    gap: 20px; /* 메뉴 간격 */
+    position: relative;
+    width: 90%;
+    max-width: 800px;
+    padding: 20px;
+    border: 1px solid #988C73;
+    background: #F6F2EE;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    justify-items: center; /* 수평 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    flex-grow: 1; /* 높이를 부모 기준으로 확장 */
+}
+
+
+/* 정사각형 메뉴 아이템 */
+.menuItem {
+    font-family: 'Italiana', serif;
+    font-size: 16px;
+    text-align: center;
+    color: #2f2e2c;
+    padding: 15px;
+    background: #F6F2EE;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 메뉴 아이템 이미지 */
+.menuItem img {
+    width: 65px;
+    height: 50px;
+    margin-bottom: 10px;
+}
+
+/* 십자가 점선 */
+.crossLine {
+    position: absolute;
+    top: 50%; /* 컨테이너의 중앙 */
+    left: 50%; /* 컨테이너의 중앙 */
+    transform: translate(-50%, -50%); /* 정확히 중앙으로 이동 */
+    width: 100%; /* 부모 컨테이너 너비 기준 */
+    height: 100%; /* 부모 컨테이너 높이 기준 */
+    pointer-events: none; /* 클릭 방지 */
+}
+
+.crossLine .horizontal {
+    position: absolute;
+    top: 50%; /* 세로 중앙 */
+    left: 5%; /* 좌우 여백 조정 */
+    width: 90%; /* 점선 길이를 90%로 확대 */
+    border-top: 1px dashed #988C73; /* 가로 점선 */
+}
+
+.crossLine .vertical {
+    position: absolute;
+    left: 50%; /* 가로 중앙 */
+    top: 5%; /* 상하 여백 조정 */
+    height: 90%; /* 점선 길이를 90%로 확대 */
+    border-left: 1px dashed #988C73; /* 세로 점선 */
+}
+/* 화살표 버튼 위치 조정 및 반전 스타일 추가 */
+.arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px; /* 이미지 크기 조정 */
+    height: 30px;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    padding: 0;
+}
+
+.arrowLeft {
+    left: 10px; /* 좌측 위치 조정 */
+}
+
+.arrowRight {
+    right: 10px; /* 우측 위치 조정 */
+}
+
+.arrow img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 왼쪽 화살표 이미지 뒤집기 */
+.arrowLeft img {
+    transform: scaleX(-1); /* 이미지 좌우 반전 */
+}
+
+.bottomBar {
+    width: 100%;
+    height: 0.9px;
+    background-color: #988C73;
+    margin-top: 20px;
+    cursor: pointer; /* 클릭 가능하도록 포인터 추가 */
+    transition: background-color 0.3s ease;
+  }
+  
+.bottomBar:hover {
+background-color: #2f2e2c; /* 마우스 오버 시 색상 변경 */
+}
+ 
+/* Footer */
+.mainFooter {
+    background: #2F2E2C;
+    font-family: 'Italiana', sans-serif;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    padding: 2rem 0;
+    margin-top: 50px;
+}
+
+.footerGridContainer {
+    color: #F6F2EE;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 1.5rem;
+}
+
+.footerGridContainer div {
+    padding: 1rem;
+}
+
+.mainFooter .nav-logo {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.mainFooter ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.mainFooter ul li {
+    padding: 0.3rem 0;
+}
+
+.mainFooter ul li a {
+    text-decoration: none;
+    color: #F6F2EE;
+}
+
+.mainFooter input[type="email"] {
+    width: 90%;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.mainFooter .btn {
+    background-color: #333;
+    color: #F6F2EE;
+    padding: 0.5rem 1rem;
+    border: none;
+    cursor: pointer;
+}
+
+/* 반응형 레이아웃 */
+@media screen and (max-width: 768px) {
+    .contentWrapper {
+        flex-direction: column; /* 세로 배치 */
+        align-items: stretch; /* 높이를 동일하게 */
+    }
+
+    .onlyForYouBox, .menuWrapper {
+        width: 100%; /* 박스를 가득 채움 */
+        max-width: 800px;
+    }
+}
