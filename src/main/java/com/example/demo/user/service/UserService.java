@@ -51,4 +51,5 @@ public interface UserService {
     public Map<String, Object> loginResponseData(UserEntity user);
 
 
+    int idCheck(String userid);
 }

@@ -22,6 +22,7 @@ public class QuestionDTO {
     private LocalDateTime responseDate; // 응답 일시 (NULL이면 미응답)
     private String privatePwd; // 비밀글 비밀번호 (추가)
     private Boolean fixQuestion; // 수정 문의 (추가)
+    private String name;
 //    private Boolean isQuestionView; //Access 토큰에서 자기 id값만 확인해서
 
     // entity => dto 변환
@@ -35,6 +36,7 @@ public class QuestionDTO {
         dto.setTitle(entity.getTitle());
         dto.setUserId(entity.getUserEntity().getId());
         dto.setCategoryId(entity.getCategoryEntity().getId());
+        dto.setName(entity.getUserEntity().getName());
 //        dto.setPrivatePwd(entity.getPrivatePwd()); //프론트에 보내주지 않기 위함
         dto.setFixQuestion(entity.getFixQuestion());
         return dto;

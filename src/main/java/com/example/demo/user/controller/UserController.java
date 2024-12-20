@@ -24,6 +24,22 @@ public class UserController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    // 회원가입시 ID 중복 체크
+    @GetMapping("/idCheck")
+    public ResponseEntity<String> idCheck(@RequestParam(name = "userId") String userId){
+        System.out.println("userId" + userId);
+        int idCheck = userService.idCheck(userId);
+
+        if(idCheck == 1){
+            System.out.println("회원가입 불가 " + HttpStatus.CONFLICT);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        else {
+            System.out.println("회원가입 가능 " + HttpStatus.CREATED);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+    }
+
     // 회원가입
     @PostMapping("/join")
     public ResponseEntity<String> signup(@RequestBody UserDTO userDTO) {

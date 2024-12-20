@@ -94,6 +94,7 @@ public class QuestionController {
         }
 
         // 값 존재 O
+        System.out.println("map =" +map);
         return ResponseEntity.ok(map);
     }
 
