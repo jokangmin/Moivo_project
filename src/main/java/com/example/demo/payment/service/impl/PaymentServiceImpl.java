@@ -167,11 +167,11 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         // 6. 결제 후 등급 업데이트 - sumin (2024.12.16)
-        updateUserGradeBasedOnPurchase(paymentDTO.getUserId());
+        //updateUserGradeBasedOnPurchase(paymentDTO.getUserId());
 
         // 7. 결제 후 등급에 맞는 쿠폰 발급 - sumin (2024.12.16)
-        String grade = userEntity.getGrade().name(); // 현재 사용자의 등급을 가져오기기
-        userCouponService.updateCouponByUserAndGrade(paymentDTO.getUserId(), grade);
+        //String grade = userEntity.getGrade().name(); // 현재 사용자의 등급을 가져오기기
+        //userCouponService.updateCouponByUserAndGrade(paymentDTO.getUserId(), grade);
     }
 
     // 결제에 따른 등급 업데이트 - sumin (2024.12.16)
@@ -188,11 +188,12 @@ public class PaymentServiceImpl implements PaymentService {
         LocalDateTime endDate = yearMonth.atEndOfMonth().atTime(23, 59, 59); // 해당 월의 마지막날 23:59
 
         // 해당 월에 해당하는 결제 금액 계산
-        List<PaymentEntity> payments = paymentRepository.findByUserEntity_IdAndPaymentDateBetween(userId, startDate,
-                endDate);
+        List<PaymentEntity> payments = paymentRepository.findByUserEntity_IdAndPaymentDateBetween(userId, startDate, endDate);
         int totalSpent = payments.stream()
                 .mapToInt(payment -> (int) payment.getTotalPrice())
                 .sum();
+
+        System.out.println(totalSpent);
 
         // 결제 금액에 따른 등급 변경
         UserEntity.Grade newGrade = determineGradeBasedOnAmount(totalSpent);
