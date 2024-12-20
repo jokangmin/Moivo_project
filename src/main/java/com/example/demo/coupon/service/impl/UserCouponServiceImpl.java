@@ -79,10 +79,14 @@ public class UserCouponServiceImpl implements UserCouponService {
         // 5. 기존 쿠폰이 다른 등급이라면 쿠폰 변경
         for (UserCouponEntity userCoupon : userCoupons) {
             if (!userCoupon.getCouponEntity().getGrade().equals(grade)) {
-                userCoupon.setEndDate(LocalDateTime.now().withDayOfMonth(1).plusMonths(1).minusDays(1)); // 현재 달의 끝
-                userCoupon.setStartDate(LocalDateTime.now().withDayOfMonth(1)); // 현재 달의 시작
+                // 발급 받은 날짜를 기준으로 한 달 설정
+                LocalDateTime startDate = LocalDateTime.now(); // 현재 날짜
+                LocalDateTime endDate = startDate.plusMonths(1); // 한 달 뒤
+
+                userCoupon.setStartDate(startDate); // 시작일은 오늘
+                userCoupon.setEndDate(endDate); // 종료일은 한 달 뒤
                 userCoupon.setUsed(false); // 기본값: 미사용
-                userCoupon.setCouponEntity(coupon); // 등급에 따른 쿠폰 변경경
+                userCoupon.setCouponEntity(coupon); // 쿠폰 등급 변경
                 userCouponRepository.save(userCoupon);
                 System.out.println("새 쿠폰(" + coupon.getGrade() + ")이 발급되었습니다.");
             }

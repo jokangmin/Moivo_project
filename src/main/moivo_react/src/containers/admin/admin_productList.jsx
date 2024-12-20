@@ -38,7 +38,7 @@ const ProductList = () => {
       console.log("status 확인:", statusFilter);
   
       const response = await axiosInstance.get(
-        "http://localhost:8080/api/admin/store/list",
+        `${PATH.SERVER}/api/admin/store/list`,
         {
           params: {
             page: page, // 현재 페이지 (0부터 시작)
@@ -108,7 +108,7 @@ const ProductList = () => {
     console.log(productId);
     try {
       await axiosInstance.delete(
-        `http://localhost:8080/api/admin/store/delete/${productId}`
+        `${PATH.SERVER}/api/admin/store/delete/${productId}`
       );
       fetchProducts(currentPage - 1); // 삭제 후 데이터 갱신
     } catch (error) {
@@ -123,7 +123,7 @@ const ProductList = () => {
   const handleRestore = async (productId) => {
     try {
       await axiosInstance.post(
-        `http://localhost:8080/api/admin/store/restore/${productId}`
+        `${PATH.SERVER}/api/admin/store/restore/${productId}`
       );
       fetchProducts(pagination.currentPage - 1); // 복구 후 데이터 갱신
     } catch (error) {
