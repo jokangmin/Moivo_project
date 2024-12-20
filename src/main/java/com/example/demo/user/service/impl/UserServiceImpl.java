@@ -191,6 +191,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public int idCheck(String userid) {
+        if (userRepository.existsByUserId(userid)) {
+            System.out.println("중복된 ID 있음. 가입불가");
+            return 1;
+        }
+        return 0;
+    }
+
+    @Override
     public Map<String, Object> login(String userId, String pwd) {
         // 사용자 인증 로직
         UserEntity user = authenticate(userId, pwd);
