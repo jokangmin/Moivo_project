@@ -4,14 +4,14 @@ services:
   backend:
     build:
       context: .
-      dockerfile: ./src/main/java/Dockerfile
+      dockerfile: ./src/main/java/Dockerfile.backend
     ports:
       - "8080:8080"
     restart: always
   frontend:
     build:
       context: ./src/main/moivo_react
-      dockerfile: Dockerfile
+      dockerfile: ./src/main/moivo_react/Dockerfile.frontend
     ports:
       - "3000:3000"
     restart: always
