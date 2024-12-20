@@ -384,7 +384,7 @@ const Qna_boardlist = () => {
                                 {activeIndex === index && (
                                     <div className={QnA_b.qnalistDetails}>
                                         <div className={QnA_b.qnalistUserInfo}>
-                                            <span> <i className="fas fa-user"></i> ID : {item.userId}</span> | <i className="far fa-clock"></i> <span>{formatDate(item.questionDate)}</span>
+                                            <span> <i className="fas fa-user"></i> 작성자 : {item.name}</span> | <i className="far fa-clock"></i> <span>{formatDate(item.questionDate)}</span>
                                                 {/* 수정, 삭제 버튼 추가 */}
                                                 {currentUserId === item.userId && (
                                                 <div className={QnA_b.actionButtons}>
