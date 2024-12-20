@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
@@ -15,5 +16,8 @@ export default defineConfig({
   },
   build: {
     outDir: 'build', // 빌드 결과물이 'build' 디렉터리에 생성됨
+  },
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV), // 환경 변수 설정
   },
 });
