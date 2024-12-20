@@ -125,7 +125,6 @@ function UserSignup() {
                 }));
                 return;
             }
-
             try {
                 // 서버로 GET 요청 전송
                 const response = await axios.get(`${PATH.SERVER}/api/user/idCheck`, {
