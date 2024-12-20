@@ -5,6 +5,7 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { PATH } from "../../../scripts/path";
 import signin from '../../assets/css/user_login.module.css';
 import kakaoLoginImage from '../../assets/image/kakao_login.png';
+import axiosInstance from '../../utils/axiosConfig';
 
 const user_login = () => {
 
@@ -17,7 +18,7 @@ const user_login = () => {
     const fetchUserData = async () => {
         try {
             const token = localStorage.getItem('accessToken');
-            const response = await apiClient.get('/api/user/info', {
+            const response = await axiosInstance.get('/api/user/info', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
