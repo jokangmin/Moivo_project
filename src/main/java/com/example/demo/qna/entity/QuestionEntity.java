@@ -25,7 +25,7 @@ public class QuestionEntity {
 
     // 문의 n개 : 사용자 1개
     @ManyToOne
-    @JoinColumn(name = "userid", nullable = false)
+    @JoinColumn(name = "userid")
     private UserEntity userEntity; // 문의 작성
 
     @Column(name = "title", nullable = false)

@@ -165,6 +165,14 @@ const MypageProfile = () => {
     const handleDeletePasswordChange = (e) => setDeletePassword(e.target.value);
 
     const handleDeleteAccount = async () => {
+        const token = localStorage.getItem("accessToken");
+        
+         // 토큰 디코딩 (jwt-decode 없이)
+         const payload = token.split('.')[1];
+         const decodedPayload = JSON.parse(atob(payload));
+         const id = decodedPayload.id;  //토큰에 있는 id 추출
+         console.log("User ID:", id);
+
         if (!deletePassword) {
             alert("비밀번호를 입력해주세요.");
             return;
@@ -172,7 +180,8 @@ const MypageProfile = () => {
     
         try {
             await axiosInstance.post('/api/user/mypage/delete', {
-                pwd: deletePassword
+                pwd: deletePassword,
+                userId: id
             });
     
             alert("회원 탈퇴가 완료되었습니다.");
