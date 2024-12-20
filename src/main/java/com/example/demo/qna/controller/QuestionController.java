@@ -1,8 +1,7 @@
 package com.example.demo.qna.controller;
 
+import com.example.demo.jwt.util.JwtUtil;
 import com.example.demo.qna.dto.QuestionDTO;
-import com.example.demo.user.repository.UserRepository;
-import io.jsonwebtoken.Jwts;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.qna.service.QuestionService;
 
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,22 +22,22 @@ import java.util.Map;
 public class QuestionController {
     @Autowired
     private QuestionService questionsService;
+    @Autowired
+    private JwtUtil jwtUtil;
 
     //문의 작성
     @PostMapping("/add")
-    public ResponseEntity<Map<String, String>> addQuestion(@RequestBody QuestionDTO questionDTO) {
-        // JWT 파싱
-//        Long userId = Jwts.parser()
-//                .setSigningKey("your-secret-key") // 비밀키로 서명 검증
-//                .parseClaimsJws(token)
-//                .getBody()
-//                .get("userId", Long.class); // userId 추출
-//        System.out.println("로그인한 userId" + userId);
+    public ResponseEntity<Map<String, String>> addQuestion(@RequestBody QuestionDTO questionDTO, @RequestHeader("Authorization") String token) {
+        // Bearer 토큰에서 실제 토큰 값만 추출
+        String actualToken = token.substring(7); // "Bearer " 부분을 제거
+        int userId = jwtUtil.getIdFromToken(actualToken);
+        
+        questionDTO.setUserId(userId);
         questionsService.addQuestion(questionDTO);
+        
         Map<String, String> response = new HashMap<>();
         response.put("message", "200ok");
         return ResponseEntity.ok(response);
-//        return ResponseEntity.ok("200 Ok");
     }
 
     //문의 수정
@@ -94,6 +94,7 @@ public class QuestionController {
         }
 
         // 값 존재 O
+        System.out.println("map =" +map);
         return ResponseEntity.ok(map);
     }
 

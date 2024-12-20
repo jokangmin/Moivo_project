@@ -18,13 +18,7 @@ const Cart = () => {
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
-        const storedUserid = localStorage.getItem("id");
-        
-        console.log("요청 전 확인 - userId:", storedUserid);
-        
-        const response = await axiosInstance.get(`${PATH.SERVER}/api/user/cart/list`, {
-          params: { userid: storedUserid }
-        });
+        const response = await axiosInstance.get(`/api/user/cart/list`);
         
         console.log("전체 응답:", response);
         console.log("응답 데이터:", response.data);
@@ -51,7 +45,6 @@ const Cart = () => {
         
         console.log("매핑된 아이템:", mappedItems);
         setCartItems(mappedItems);
-        setUserid(storedUserid);
       } catch (error) {
         console.error("장바구니 조회 에러:", error);
         console.error("에러 상세:", error.response || error);

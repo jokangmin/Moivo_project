@@ -75,7 +75,6 @@ const Qna_board = () => {
     if (!validateForm()) return;
   
     const token = localStorage.getItem("accessToken");
-    const userId = parseInt(localStorage.getItem("id"));
   
     if (!token) {
       alert("로그인이 필요합니다.");
@@ -91,7 +90,6 @@ const Qna_board = () => {
       title: formData.title,
       content: formData.question,
       secret: formData.isSecret,
-      userId: userId,
       privatePwd: formData.isSecret ? formData.privatePwd : "",
     };
     

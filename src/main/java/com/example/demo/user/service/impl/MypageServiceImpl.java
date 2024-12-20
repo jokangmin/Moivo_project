@@ -88,35 +88,25 @@ public class MypageServiceImpl implements MypageService {
                 .sum();
         System.out.println(totalSpent);
 
-        // 등급 계산 로직
-        UserEntity.Grade grade;
+        // 다음 등급까지 남은 금액 계산
         int nextLevelTarget;
         if (totalSpent >= 700000) {
-            grade = UserEntity.Grade.LV5;
             nextLevelTarget = 0; // 최고 등급
         } else if (totalSpent >= 500000) {
-            grade = UserEntity.Grade.LV4;
             nextLevelTarget = 700000 - totalSpent;
         } else if (totalSpent >= 300000) {
-            grade = UserEntity.Grade.LV3;
             nextLevelTarget = 500000 - totalSpent;
         } else if (totalSpent >= 100000) {
-            grade = UserEntity.Grade.LV2;
             nextLevelTarget = 300000 - totalSpent;
         } else {
-            grade = UserEntity.Grade.LV1;
             nextLevelTarget = 100000 - totalSpent;
         }
 
         // UserDTO 변환
         UserDTO userDTO = UserDTO.toGetUserDTO(userEntity);
         userDTO.setTotalSpent(totalSpent);
-        userDTO.setGrade(grade);
         userDTO.setNextLevelTarget(nextLevelTarget);
-
-        System.out.println(userDTO.getTotalSpent());
-        System.out.println(userDTO.getGrade());
-        System.out.println(userDTO.getNextLevelTarget());
+        userDTO.setGrade(userEntity.getGrade());
 
         // 쿠폰 정보 가져오기
         List<UserCouponDTO> userCoupons = userCouponRepository.findByUserEntity_Id(userId)
@@ -137,9 +127,9 @@ public class MypageServiceImpl implements MypageService {
 
         userDTO.setCoupons(userCoupons); // 쿠폰 정보 설정
 
-        System.out.println("쿠폰 : " + userDTO.getCoupons());
+        System.out.println("쿠폰 : " + userCoupons);
         System.out.println("누적 구매 금액: " + totalSpent);
-        System.out.println("등급: " + grade);
+        System.out.println("등급: " + userEntity.getGrade());
         System.out.println("다음 등급까지 남은 금액: " + nextLevelTarget);
         return userDTO;
     }

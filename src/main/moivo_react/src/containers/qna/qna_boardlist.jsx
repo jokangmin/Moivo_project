@@ -368,84 +368,84 @@ const Qna_boardlist = () => {
                         </div>
                         
 
-                        {qnaData.length === 0 ? (
-                            <div>등록된 문의가 없습니다.</div>
-                        ) : (
-                            qnaData.map((item, index) => (
-                                <div key={index} className={QnA_b.qnalistItem}>
-                                    <div className={QnA_b.qnalistHeader} onClick={() => handleToggle(index, item)}>
-                                        <span className={QnA_b.qnalistQuestionType}>
-                                            {getIconForType(item)}
-                                        </span>
-                                        <span className={QnA_b.qnalistQuestionTitle}>
-                                            {item.categoryId === 4 ? '비밀글입니다.' : item.title}
-                                        </span>
-                                    </div>
-                                    {activeIndex === index && (
-                                        <div className={QnA_b.qnalistDetails}>
-                                            <div className={QnA_b.qnalistUserInfo}>
-                                                <span> <i className="fas fa-user"></i> ID : {item.userId}</span> | <i className="far fa-clock"></i> <span>{formatDate(item.questionDate)}</span>
-                                                    {/* 수정, 삭제 버튼 추가 */}
-                                                    {currentUserId === item.userId && (
-                                                    <div className={QnA_b.actionButtons}>
-                                                        <button onClick={() => handleEditPost(item)}>수정</button>
-                                                        <button onClick={() => handleDeletePost(item)}>삭제</button>
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <div className={QnA_b.qnalistUserQuestion}>{convertNewlinesToBreaks(item.content)}
-                                            </div>
-                                            <div className={QnA_b.qnalistDivider}></div>
-                                            <div className={QnA_b.qnalistUserAnswer}>
-                                                {item.response || '답변 대기 중'}
-                                            </div>
-                                        </div>
-                                    )}
+                    {qnaData.length === 0 ? (
+                        <div>등록된 문의가 없습니다.</div>
+                    ) : (
+                        qnaData.map((item, index) => (
+                            <div key={index} className={QnA_b.qnalistItem}>
+                                <div className={QnA_b.qnalistHeader} onClick={() => handleToggle(index, item)}>
+                                    <span className={QnA_b.qnalistQuestionType}>
+                                        {getIconForType(item)}
+                                    </span>
+                                    <span className={QnA_b.qnalistQuestionTitle}>
+                                        {item.categoryId === 4 ? '비밀글입니다.' : item.title}
+                                    </span>
                                 </div>
-                            ))
-                        )}
-                        {/* 게시글 수정 모달 */}
-                        {editModalVisible && (
-                            <div className={QnA_b.modalOverlay}>
-                                <div className={QnA_b.modalContent}>
-                                    <h3>문의 수정</h3>
-                                    
-                                    {/* 문의 유형 선택 */}
-                                    <span className={QnA_b.modalQuestionTitle}>문의 유형</span>
-                                    <select value={editedPost.categoryId} onChange={(e) => setEditedPost({
-                                                ...editedPost, 
-                                                categoryId: parseInt(e.target.value)
-                                            })}
-                                    className={QnA_b.modalSelect}
-                                    disabled={editedPost.categoryId === 4}
-                                    >
-                                        <option value={1}>일반 문의</option>
-                                        <option value={2}>기타 문의</option>
-                                        <option value={3}>사이즈 문의</option>
-                                        {editedPost.categoryId == 4 && ( <option value={4}>비밀 문의</option>)}
-                                    </select>
-                                    
-                                    {/* 제목 입력 */}
-                                    <span className={QnA_b.modalQuestionTitle}>제목</span>
-                                    <input type="text"  value={editedPost.title} onChange={(e) => setEditedPost({
-                                            ...editedPost, 
-                                            title: e.target.value
-                                        })}
-                                        placeholder="제목을 입력하세요"
-                                        className={QnA_b.modalInput}/>
-                                        
-                                    {/* 비밀글 여부 체크박스 */}
-                                    {editedPost.categoryId == 4 && (
-                                    <div className={QnA_b.secretCheckbox}>
-                                        <label>비밀글</label>
-                                        <input type="checkbox" checked={editedPost.categoryId === 4 || editedPost.secret === true} onChange={(e) => setEditedPost({
-                                                ...editedPost, 
-                                                categoryId: e.target.checked ? 4 : 1,
-                                                secret: e.target.checked
-                                            })}
-                                            disabled={editedPost.categoryId === 4} />
+                                {activeIndex === index && (
+                                    <div className={QnA_b.qnalistDetails}>
+                                        <div className={QnA_b.qnalistUserInfo}>
+                                            <span> <i className="fas fa-user"></i> 작성자 : {item.name}</span> | <i className="far fa-clock"></i> <span>{formatDate(item.questionDate)}</span>
+                                                {/* 수정, 삭제 버튼 추가 */}
+                                                {currentUserId === item.userId && (
+                                                <div className={QnA_b.actionButtons}>
+                                                    <button onClick={() => handleEditPost(item)}>수정</button>
+                                                    <button onClick={() => handleDeletePost(item)}>삭제</button>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className={QnA_b.qnalistUserQuestion}>{convertNewlinesToBreaks(item.content)}
+                                        </div>
+                                        <div className={QnA_b.qnalistDivider}></div>
+                                        <div className={QnA_b.qnalistUserAnswer}>
+                                            {item.response || '답변 대기 중'}
+                                        </div>
                                     </div>
-                                    )}
+                                )}
+                            </div>
+                        ))
+                    )}
+                    {/* 게시글 수정 모달 */}
+                    {editModalVisible && (
+                        <div className={QnA_b.modalOverlay}>
+                            <div className={QnA_b.modalContent}>
+                                <h3>문의 수정</h3>
+                                
+                                {/* 문의 유형 선택 */}
+                                <span className={QnA_b.modalQuestionTitle}>문의 유형</span>
+                                <select value={editedPost.categoryId} onChange={(e) => setEditedPost({
+                                            ...editedPost, 
+                                            categoryId: parseInt(e.target.value)
+                                        })}
+                                className={QnA_b.modalSelect}
+                                disabled={editedPost.categoryId === 4}
+                                >
+                                    <option value={1}>일반 문의</option>
+                                    <option value={2}>기타 문의</option>
+                                    <option value={3}>사이즈 문의</option>
+                                    {editedPost.categoryId == 4 && ( <option value={4}>비밀 문의</option>)}
+                                </select>
+                                
+                                {/* 제목 입력 */}
+                                <span className={QnA_b.modalQuestionTitle}>제목</span>
+                                <input type="text"  value={editedPost.title} onChange={(e) => setEditedPost({
+                                        ...editedPost, 
+                                        title: e.target.value
+                                    })}
+                                    placeholder="제목을 입력하세요"
+                                    className={QnA_b.modalInput}/>
+                                    
+                                {/* 비밀글 여부 체크박스 */}
+                                {editedPost.categoryId == 4 && (
+                                <div className={QnA_b.secretCheckbox}>
+                                    <label>비밀글</label>
+                                    <input type="checkbox" checked={editedPost.categoryId === 4 || editedPost.secret === true} onChange={(e) => setEditedPost({
+                                            ...editedPost, 
+                                            categoryId: e.target.checked ? 4 : 1,
+                                            secret: e.target.checked
+                                        })}
+                                        disabled={editedPost.categoryId === 4} />
+                                </div>
+                                )}
 
                                     {/* 내용 입력 */}
                                     <span className={QnA_b.modalQuestionTitle}>내용</span>
@@ -465,7 +465,7 @@ const Qna_boardlist = () => {
                         )}
                     </div>
                                     
-                    {/* 페이징 버튼 */}
+                    {/* 페이징 버튼! */}
                     <div className={QnA_b.pagination}>
                         {renderPagination()}
                     </div>

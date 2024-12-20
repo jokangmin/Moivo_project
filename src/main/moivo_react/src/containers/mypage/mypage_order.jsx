@@ -10,7 +10,32 @@ const Mypage_order = () => {
     const [OrdersList, setOrdersList] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
+    const [emailSent, setEmailSent] = useState(false);
+    const [myEmail, setMyEmail] = useState(null);
     const navigate = useNavigate();
+
+    //나의 이메일 얻어오는 부분 추가 - 12/20 11:22 강민
+    useEffect(()=>{
+        const id = localStorage.getItem("id");
+        
+        if (!id) {
+            alert("로그인이 필요합니다.");
+            navigate("/user");
+            return;
+        }
+
+        const fetchGetEmail = async () => {
+            try{
+                const getEmailResponse = await axiosInstance.get(`/api/user/mypage/info/${id}`)
+                const data = getEmailResponse.data
+                setMyEmail(data.email);
+            }catch (error){
+                console.error("get email Error fetching data:", error);
+            }
+        }
+
+        fetchGetEmail();
+    },[]);
 
     //fetchordercancel 부분 추가 - 12/20 강민
     const handleOrderCancel = (order) => {
@@ -30,6 +55,42 @@ const Mypage_order = () => {
                 });
                 console.log("Order cancel response:", ordersCancelResponse.data);
                 alert("주문이 성공적으로 취소되었습니다.");
+
+                //주문 취소 성공 시 보내는 이메일 12/20 추가 - 강민
+                if (!emailSent) {
+                    if (!myEmail) {
+                        console.error("이메일 정보가 없습니다");
+                    }
+                    const sendEmail = async () => {
+                      try {
+                        const response = await fetch(`${PATH.SERVER}/api/mail/cancel`, {
+                          method: "POST",
+                          headers: {
+                            "Content-Type": "application/json",
+                          },
+                          body: JSON.stringify({
+                            toAddress: myEmail, // 받는 사람 이메일
+                            orderId: order.tosscode, // 주문번호
+                            customerName: order.name, // 결제자
+                            orderName: order?.productName, // 상품 이름
+                            amount: order.totalPrice, // 결제 금액
+                          }),
+                        });
+              
+                        if (response.ok) {
+                          console.log("이메일 발송 성공");
+                          setEmailSent(true); // 이메일 전송 성공 시 상태 업데이트
+                        } else {
+                          console.error("이메일 발송 실패");
+                        }
+                      } catch (error) {
+                        console.error("이메일 발송 중 오류 발생", error);
+                      }
+                    };
+              
+                    sendEmail();
+                }
+
             } catch (error) {
                 console.error("OrderCancel Error fetching data:", error);
                 alert("주문 취소 중 문제가 발생했습니다. 다시 시도해주세요.");
@@ -93,6 +154,13 @@ const Mypage_order = () => {
     useEffect(() => {
         fetchOrders();
     }, [navigate]);
+
+    //확인용
+    useEffect(() => {
+        if (myEmail !== null) {
+            console.log("email : " + myEmail); 
+        }
+    }, [myEmail]);
 
     return (
         <div>
