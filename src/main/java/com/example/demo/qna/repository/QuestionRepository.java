@@ -112,4 +112,10 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Intege
 
     // 특정 User의 모든 문의 조회
     List<QuestionEntity> findByUserEntity_Id(Integer userId);
+
+    // 회원 탈퇴 시 문의글 상태 변경
+    @Modifying
+    @Query("UPDATE QuestionEntity q SET q.userEntity = NULL WHERE q.userEntity.id = :userId")
+    @Transactional
+    void updateUserStatusToDeleted(@Param("userId") Integer userId);
 }
