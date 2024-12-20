@@ -75,7 +75,7 @@ dependencies {
    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 
    // 스케줄러
-   implementation 'org.springframework.retry:spring-retry:1.3.1'
+   implementation 'org.springframework.retry:spring-retry:1.3.4'
 }
 
 dependencyManagement {
