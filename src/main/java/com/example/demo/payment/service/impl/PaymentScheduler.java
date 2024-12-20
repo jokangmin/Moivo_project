@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,11 +15,6 @@ import com.example.demo.payment.repository.PaymentRepository;
 import com.example.demo.user.entity.UserEntity;
 import com.example.demo.user.repository.UserRepository;
 
-import org.springframework.retry.annotation.Retryable;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.EnableRetry;
-
-@EnableRetry
 @Service
 public class PaymentScheduler {
 
@@ -36,12 +30,7 @@ public class PaymentScheduler {
     @Autowired
     private UserCouponService userCouponService;
 
-    @Retryable(
-    value = {ObjectOptimisticLockingFailureException.class},
-    maxAttempts = 3,
-    backoff = @Backoff(delay = 1000)
-
-    )
+    
     /**
      * 스케줄러는 5분마다 실행된다. DeliveryStatus가 CONFIRMED가 아닌 데이터 중
      * 결제 후 30분이 지난 데이터를 업데이트하기
@@ -50,7 +39,7 @@ public class PaymentScheduler {
     @Scheduled(fixedRate = 300000) // 5분마다 실행
     public void updateDeliveryStatus() {
         // 현재 시간 기준으로 30분 이상 경과한 데이터만 조회
-        LocalDateTime cutoffTime = LocalDateTime.now().minusMinutes(5);
+        LocalDateTime cutoffTime = LocalDateTime.now().minusMinutes(30);
 
         List<PaymentEntity> payments = paymentRepository.findByDeliveryStatusNotAndPaymentDateBefore(
             DeliveryStatus.CONFIRMED, cutoffTime
