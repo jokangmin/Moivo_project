@@ -51,4 +51,6 @@ public interface PaymentRepository extends JpaRepository<PaymentEntity, Integer>
         boolean existsByTossCode(String tossCode);
 
         public PaymentEntity findByIdAndTossCode(int id, String tossCode);
+
+        
 }
