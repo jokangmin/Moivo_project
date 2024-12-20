@@ -30,6 +30,4 @@ public interface ReviewService {
     // 결제상세ID로 리뷰 조회
     public ReviewDTO getReviewByPaymentDetailId(int paymentDetailId);
 
-
-
 }

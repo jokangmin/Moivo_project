@@ -52,11 +52,15 @@ public class CartController {
 
     // 장바구니 출력 11.26 - yjy (포스트맨 성공)
     @GetMapping("/list")
-    public ResponseEntity<?> printCart(@RequestHeader ("Authorization") String token) {
-        String actualToken = token.substring(7);
-        int userId = jwtUtil.getIdFromToken(actualToken);
-        Map<String, Object> cartInfo = cartService.printCart(userId);
-        return ResponseEntity.ok(cartInfo);
+    public ResponseEntity<?> printCart(@RequestHeader("Authorization") String token) {
+        try {
+            String actualToken = token.substring(7);
+            int userId = jwtUtil.getIdFromToken(actualToken);
+            Map<String, Object> cartInfo = cartService.printCart(userId);
+            return ResponseEntity.ok(cartInfo);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     // 장바구니에서 상품 삭제 11.26 - yjy (포스트맨 성공)

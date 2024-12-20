@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.jwt.util.JwtUtil;
 import com.example.demo.user.service.WishService;
 
 import java.util.Map;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @RestController
 @RequestMapping("/api/user/wish")
@@ -22,11 +24,15 @@ public class WishController {
     @Autowired
     private WishService wishService;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     // wish에 상품 추가
-    @GetMapping("/{productId}/{userid}")
-    public ResponseEntity<?> addProduct(@PathVariable(name = "productId") String productId, @PathVariable(name = "userid") int userId) {
+    @GetMapping("/{productId}")
+    public ResponseEntity<?> addProduct(@PathVariable(name = "productId") String productId, @RequestHeader("Authorization") String token) {
         System.out.println("productId = " + productId);
-        System.out.println("userId = " + userId);
+        String actualToken = token.substring(7);
+        int userId = jwtUtil.getIdFromToken(actualToken);
         try {
             wishService.addProduct(Integer.parseInt(productId), userId);
             return ResponseEntity.status(HttpStatus.CREATED).build(); // 201 Created

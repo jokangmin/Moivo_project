@@ -94,17 +94,19 @@
 
 
 .couponSection {
-    display: flex; /* 가로로 배치 */
+    display: flex;
     align-items: center; /* 수직 정렬 */
-    gap: 20px; /* POINT와 COUPON 간 간격 */
+    gap: 10px; /* POINT와 COUPON 간 간격 */
     font-family: 'Italiana', serif;
     font-size: 14px;
+    white-space: nowrap; /* 줄바꿈 방지 */
 }
+
   
   .pointCouponSection {
     display: flex;
     align-items: center; /* 수직 가운데 정렬 */
-    gap: 20px; /* POINT와 COUPON 간 간격 */
+    gap: 10px; /* POINT와 COUPON 간 간격 */
   }
   
   .point {
@@ -116,12 +118,18 @@
     font-family: 'GmarketSans', sans-serif;
     font-size: 14px;
     position: relative; /* 툴팁 위치를 조정하기 위한 기준 */
+    display: flex; /* 쿠폰과 이름을 가로로 배치 */
+    align-items: center;
 }
   
-  .couponTooltip {
+.couponItem {
+    margin-bottom: 0; /* 여백 제거 */
+}
+
+.couponTooltip {
     position: absolute;
     top: 100%; /* COUPON 아래에 표시 */
-    left: 0;
+    left: 30%;
     background-color: #fff;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -130,11 +138,9 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     font-size: 13px;
     width: 300px;
-  }
-  
-  .couponItem {
-    margin-bottom: 5px;
-  }
+    white-space: normal; /* 툴팁 내용은 줄바꿈 허용 */
+}
+
   
   .couponItem:last-child {
     margin-bottom: 0; /* 마지막 항목 간격 제거 */
@@ -367,7 +373,15 @@
 }
  
 
-
+.couponTooltip {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
 
 
 /* 반응형 레이아웃 */

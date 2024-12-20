@@ -316,6 +316,18 @@
   text-align: center;
 }
 
+.modalContent input{
+  background-color: white;
+}
+
+.modalContent select {
+  background-color: white;
+}
+
+.modalContent textarea{
+  background-color: white;
+}
+
 /* 문의 유형 선택 */
 .modalSelect {
   width: 100%;

@@ -34,6 +34,13 @@ const MypageProfile = () => {
 
     const { refreshAccessToken } = useAuth();  // useAuth에서 refreshAccessToken 가져오기
 
+    //2024-12-19 비밀번호 정규화 추가 장훈
+    const validatePassword = (password) => {
+        // 비밀번호 정규식: 영문, 숫자, 특수문자 조합 8~15자
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,15}$/;
+        return passwordRegex.test(password);
+    };
+
     const validateForm = () => {
         const newErrors = {};
         if (!formData.name) newErrors.name = "이름을 입력해 주세요.";
@@ -42,6 +49,12 @@ const MypageProfile = () => {
             newErrors.phone = "전화번호를 입력해 주세요.";
         }
         if (!formData.pwd) newErrors.pwd = "비밀번호를 입력해 주세요.";
+        //2024-12-19 비밀번호 정규화 추가 장훈
+        if (formData.pwd) {
+            if (!validatePassword(formData.pwd)) {
+                newErrors.pwd = "비밀번호는 영문, 숫자, 특수문자 조합으로 8~15자여야 합니다.";
+            }
+        }
         if (formData.pwd !== formData.confirmPwd) {
             newErrors.confirmPwd = "비밀번호가 일치하지 않습니다.";
         }

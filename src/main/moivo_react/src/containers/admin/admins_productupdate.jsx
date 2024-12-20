@@ -3,10 +3,12 @@ import admin_productupdate from "../../assets/css/admins_productupdate.module.cs
 import Admins_side from '../../components/admin_sidebar/admins_side';
 import { Link, useParams } from 'react-router-dom';
 import axiosInstance from '../../utils/axiosConfig';
+import { useNavigate } from "react-router-dom";
 
 const Admins_productupdate = () => {
   const{ productId } = useParams();// 수정 상품 Id
 
+  const navigate = useNavigate();
   const [product, setProduct] = useState({
     id: 0,
     name: "",
@@ -240,6 +242,7 @@ const Admins_productupdate = () => {
       );
 
       alert("상품 업로드가 완료되었습니다.");
+      navigate(`/admin/admin_productList`)
       resetForm();
     } catch (error) {
       console.error("업로드 실패:", error.response.data);

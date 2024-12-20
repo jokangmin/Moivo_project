@@ -24,14 +24,33 @@ public class UserController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    // 회원가입시 ID 중복 체크
+    @GetMapping("/idCheck")
+    public ResponseEntity<String> idCheck(@RequestParam(name = "userId") String userId){
+        System.out.println("userId" + userId);
+        int idCheck = userService.idCheck(userId);
+
+        if(idCheck == 1){
+            System.out.println("회원가입 불가 " + HttpStatus.CONFLICT);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        else {
+            System.out.println("회원가입 가능 " + HttpStatus.CREATED);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+    }
+
     // 회원가입
     @PostMapping("/join")
     public ResponseEntity<String> signup(@RequestBody UserDTO userDTO) {
         System.out.println("signup: " + userDTO);
+        int userId = userService.insert(userDTO);
         try {
-            int userId = userService.insert(userDTO);
-
-            return new ResponseEntity<>("회원가입 성공: " + userId, HttpStatus.CREATED);
+            if (userId == 1) {
+                return new ResponseEntity<>("회원가입 실패, 중복된 아이디입니다.", HttpStatus.CONFLICT);
+            } else {
+                return new ResponseEntity<>("회원가입 성공: " + userId, HttpStatus.CREATED);
+            }
         } catch (Exception e) {
             return new ResponseEntity<>("회원가입 후 쿠폰 발급 실패: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -51,7 +70,7 @@ public class UserController {
     // 로그인
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> loginRequest,
-            HttpServletResponse response) {
+                                                     HttpServletResponse response) {
         String userId = loginRequest.get("userId");
         String pwd = loginRequest.get("pwd");
         try {
@@ -85,7 +104,7 @@ public class UserController {
     // 로그아웃
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String accesstoken,
-            @CookieValue("refreshToken") String refreshToken) {
+                                         @CookieValue("refreshToken") String refreshToken) {
         userService.logout(accesstoken, refreshToken);
         return ResponseEntity.ok("로그아웃 성공");
     }
@@ -119,7 +138,7 @@ public class UserController {
     // 회원정보 수정 - sumin (2024.12.12)
     @PostMapping("/mypage/update")
     public ResponseEntity<Void> updateUserInfo(@RequestBody UserDTO userDTO,
-            @RequestHeader("Authorization") String token) {
+                                               @RequestHeader("Authorization") String token) {
         try {
             System.out.println("생일출력 = " + userDTO.getBirth());
             // 토큰에서 사용자 ID 추출
@@ -145,7 +164,7 @@ public class UserController {
     // 회원정보 삭제 - sumin (2024.12.12)
     @PostMapping("/mypage/delete")
     public ResponseEntity<Void> deleteUser(@RequestHeader("Authorization") String token,
-            @RequestBody Map<String, Object> requestData) {
+                                           @RequestBody Map<String, Object> requestData) {
         Integer userIdFromRequest = (Integer) requestData.get("userId");
         String passwordFromRequest = (String) requestData.get("pwd");
 

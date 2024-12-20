@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../../utils/axiosConfig";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styles from "../../assets/css/admin_productList.module.css";
 import Admins_side from "../../components/admin_sidebar/admins_side";
 
@@ -19,24 +19,32 @@ const ProductList = () => {
   });
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const queryParams = new URLSearchParams(location.search);
+  const statusFilter = queryParams.get("status");
 
   useEffect(() => {
-    fetchProducts(0); // 첫 페이지를 로드
-  }, [sortBy]);
+    console.log("statusFilter:", statusFilter);
+    fetchProducts(0); // 페이지 0부터 시작하여 로드
+  }, [sortBy, statusFilter]);
 
   useEffect(() => {
     console.log("Pagination State:", pagination);
   }, [pagination]);
 
-  const fetchProducts = async (page) => {
+  const fetchProducts = async (page = 0) => {
     try {
+      console.log("status 확인:", statusFilter);
+  
       const response = await axiosInstance.get(
-        "http://localhost:8080/api/admin/store/list",
+        `${PATH.SERVER}/api/admin/store/list`,
         {
           params: {
             page: page, // 현재 페이지 (0부터 시작)
             size: 10, // 페이지 크기
             sortby: sortBy, // 정렬 방식
+            status: statusFilter,  // 필터링 상태
           },
         }
       );
@@ -92,6 +100,7 @@ const ProductList = () => {
     }
   };
 
+  
   const handleSortChange = (newSort) => setSortBy(newSort);
 
   // 상품 삭제 처리 함수
@@ -99,7 +108,7 @@ const ProductList = () => {
     console.log(productId);
     try {
       await axiosInstance.delete(
-        `http://localhost:8080/api/admin/store/delete/${productId}`
+        `${PATH.SERVER}/api/admin/store/delete/${productId}`
       );
       fetchProducts(currentPage - 1); // 삭제 후 데이터 갱신
     } catch (error) {
@@ -114,7 +123,7 @@ const ProductList = () => {
   const handleRestore = async (productId) => {
     try {
       await axiosInstance.post(
-        `http://localhost:8080/api/admin/store/restore/${productId}`
+        `${PATH.SERVER}/api/admin/store/restore/${productId}`
       );
       fetchProducts(pagination.currentPage - 1); // 복구 후 데이터 갱신
     } catch (error) {
@@ -140,30 +149,10 @@ const ProductList = () => {
           </button>
         </div>
         <div className={styles.sortButtons}>
-          <button
-            onClick={() => handleSortChange(1)}
-            className={sortBy === 1 ? styles.active : ""}
-          >
-            전체
-          </button>
-          <button
-            onClick={() => handleSortChange(2)}
-            className={sortBy === 2 ? styles.active : ""}
-          >
-            품절
-          </button>
-          <button
-            onClick={() => handleSortChange(3)}
-            className={sortBy === 3 ? styles.active : ""}
-          >
-            정상
-          </button>
-          <button
-            onClick={() => handleSortChange(4)}
-            className={sortBy === 4 ? styles.active : ""}
-          >
-            삭제된 상품
-          </button>
+          <button onClick={() => handleSortChange(1)} className={sortBy === 1 ? styles.active : ""}>전체</button>
+          <button onClick={() => handleSortChange(2)} className={sortBy === 2 ? styles.active : ""}>품절</button>
+          <button onClick={() => handleSortChange(3)} className={sortBy === 3 ? styles.active : ""}>정상</button>
+          <button onClick={() => handleSortChange(4)} className={sortBy === 4 ? styles.active : ""}>삭제된 상품</button>
         </div>
         <div className={styles.productTable}>
           <div className={styles.tableHeader}>
@@ -182,18 +171,9 @@ const ProductList = () => {
               <div>{product.count}</div>
               <div>{product.status}</div>
               <div className={styles.actionButtons}>
-                <button
-                  onClick={() => handleUpdate(product.id)}
-                >
-                  수정
-                </button>
+                <button onClick={() => handleUpdate(product.id)}>수정</button>
                 {product.status === "삭제된 상품" ? (
-                  <button
-                    className={styles.restore}
-                    onClick={() => handleRestore(product.id)}
-                  >
-                    복구
-                  </button>
+                  <button className={styles.restore} onClick={() => handleRestore(product.id)}>복구</button>
                 ) : (
                   <button onClick={() => handleDelete(product.id)}>삭제</button>
                 )}
@@ -203,25 +183,20 @@ const ProductList = () => {
         </div>
         <div className={styles.pagination}>
           {pagination.hasPrevious && (
-            <button onClick={() => handlePageChange(currentPage - 1)}>
-              이전
-            </button>
+            <button onClick={() => handlePageChange(currentPage - 1)}>이전</button>
           )}
-          {Array.from({ length: pagination.totalPages }, (_, index) => index + 1).map(
-            (page) => (
-              <button
-                key={page}
-                className={currentPage === page ? styles.activePage : ""}
-                onClick={() => handlePageChange(page)}  // page - 1로 전달
-              >
-                {page}
-              </button>
+          {Array.from({ length: pagination.totalPages }, (_, index) => index + 1).map((page) => (
+            <button
+              key={page}
+              className={currentPage === page ? styles.activePage : ""}
+              onClick={() => handlePageChange(page)}  
+            >
+              {page}
+            </button>
             )
           )}
           {pagination.hasNext && (
-            <button onClick={() => handlePageChange(currentPage + 1)}>
-              다음
-            </button>
+            <button onClick={() => handlePageChange(currentPage + 1)}>다음</button>
           )}
         </div>
       </main>

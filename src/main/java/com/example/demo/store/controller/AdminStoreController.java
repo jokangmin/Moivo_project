@@ -43,8 +43,6 @@ public class AdminStoreController {
     // 상품 등록 - uj
     @PostMapping("/product")
     public ResponseEntity<String> saveProduct(
-            // 1. 카테고리 관련 매개변수 필요 >> int형
-            // 2. 재고 관련 매개 변수 필요 >>
             @ModelAttribute ProductDTO productDTO,
             @RequestPart(name = "layer1") List<MultipartFile> layer1Files,
             @RequestPart(name = "layer2") List<MultipartFile> layer2Files,
@@ -72,7 +70,7 @@ public class AdminStoreController {
         map.put("L", LCount);
         map.put("categoryId", categoryId);
 
-        productService.saveProduct(map);
+        adminStoreService.saveProduct(map);
         return ResponseEntity.ok(null);
     }
 
@@ -111,7 +109,7 @@ public class AdminStoreController {
         map.put("categoryId", categoryId);
 
         try {
-            productService.putProduct(map);
+            adminStoreService.putProduct(map);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.SC_NOT_FOUND).body(e.getMessage());
@@ -133,7 +131,7 @@ public class AdminStoreController {
     public ResponseEntity<String> deleteProduct(@PathVariable(name = "productId") int productId) {
         System.out.println(productId);
         try {
-            productService.deleteProduct(productId);
+            adminStoreService.deleteProduct(productId);
             return ResponseEntity.ok("상품 삭제가 완료되었습니다.");
         } catch (Exception e) {
             e.printStackTrace();
@@ -141,20 +139,12 @@ public class AdminStoreController {
         }
     }
 
-    // 삭제된 상품 리스트 가져오기 - 12.11 sumin
-    @GetMapping("/trash")
-    public ResponseEntity<List<ProductDTO>> getDeletedProducts() {
-        List<ProductDTO> deletedProducts = productService.getDeletedProducts();
-        System.out.println("deletedProducts = " + deletedProducts);
-        return ResponseEntity.ok(deletedProducts);
-    }
-
     // 삭제된 상품 복구 - 12.11 sumin
     @PostMapping("/restore/{productId}")
     public ResponseEntity<Void> restoreProduct(@PathVariable(name = "productId") int productId) {
         System.out.println("productId = " + productId);
 
-        boolean result = productService.restoreProduct(productId);
+        boolean result = adminStoreService.restoreProduct(productId);
         System.out.println("result = " + result);
 
         if (result) {

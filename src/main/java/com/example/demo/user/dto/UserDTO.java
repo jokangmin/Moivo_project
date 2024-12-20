@@ -3,7 +3,7 @@ package com.example.demo.user.dto;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.example.demo.coupon.dto.CouponDTO;
+import com.example.demo.coupon.dto.UserCouponDTO;
 import com.example.demo.user.entity.UserEntity;
 import com.example.demo.user.entity.UserEntity.Grade;
 import com.example.demo.user.entity.UserEntity.LoginType;
@@ -32,9 +32,9 @@ public class UserDTO { // 사용자 & 관리자
     private Grade grade = Grade.LV1;
     private double height;
     private double weight;
-    private List<CouponDTO> coupons;
-    private int totalSpent;         // 누적 구매 금액
-    private int nextLevelTarget;    // 다음 등급까지 남은 금액
+    private List<UserCouponDTO> coupons;
+    private int totalSpent; // 누적 구매 금액
+    private int nextLevelTarget; // 다음 등급까지 남은 금액
 
     // Entity -> DTO 변환
     public static UserDTO toGetUserDTO(UserEntity entity) {

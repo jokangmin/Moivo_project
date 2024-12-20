@@ -23,21 +23,21 @@ const admins_side = () => {
                 </Link>
               </li>
     
-              {/* Customers */}
+              {/* Customers
               <li className={admin_sidebar.hasSubnav}>
                 <a href="#">
                   <i className="fa fa-users fa-2x"></i>
                   <span className={admin_sidebar.navText}>Customers</span>
                 </a>
-              </li>
+              </li> */}
     
-              {/* User Roles */}
+              {/* User Roles
               <li className={admin_sidebar.hasSubnav}>
                 <a href="#">
                   <i className="fa fa-user fa-2x"></i>
                   <span className={admin_sidebar.navText}>User Roles</span>
                 </a>
-              </li>
+              </li> */}
     
               {/* FAQ */}
               <li>

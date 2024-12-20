@@ -74,19 +74,27 @@ public class UserServiceImpl implements UserService {
     // 24-12-16 - uj - 중복 부분 함수 처리 (수정)
     @Override
     public int insert(UserDTO userDTO) {
-        // DTO -> Entity 변환
-        UserEntity userEntity = null;
-        userDTO.setLoginType(LoginType.MOIVO);
-        userEntity = UserEntity.toSaveUserEntity(userDTO);
-        userEntity.setPwd(passwordEncoder.encode(userDTO.getPwd()));
+        //회원가입시 중복 ID 확인
+        if (userRepository.existsByUserId(userDTO.getUserId())) {
+            System.out.println("중복된 ID 있음. 가입불가");
+            return 1;
+        } else {
+            //중복 ID 없음. 가입 로직 실행
 
-        // 회원 가입 시, 초기화
-        // 1. Wish & Cart 엔티티 생성 사용자 저장
-        // 2. 사용자 정보 DB 저장
-        // 3. 쿠폰 발급
-        userEntity = insertInit(userEntity);
+            // DTO -> Entity 변환
+            UserEntity userEntity = null;
+            userDTO.setLoginType(LoginType.MOIVO);
+            userEntity = UserEntity.toSaveUserEntity(userDTO);
+            userEntity.setPwd(passwordEncoder.encode(userDTO.getPwd()));
 
-        return userEntity.getId();
+            // 회원 가입 시, 초기화
+            // 1. Wish & Cart 엔티티 생성 사용자 저장
+            // 2. 사용자 정보 DB 저장
+            // 3. 쿠폰 발급
+            userEntity = insertInit(userEntity);
+
+            return userEntity.getId();
+        }
     }
 
     // 24.12.16 - uj (소셜 & Moivo 로그인 공통 사용, 함수처리)
@@ -119,7 +127,7 @@ public class UserServiceImpl implements UserService {
      * public Map<String, Object> login(String userId, String pwd) {
      * // 사용자 인증
      * UserEntity userEntity = authenticate(userId, pwd);
-     * 
+     *
      * // Wish와 Cart 정보 조회
      * WishEntity wishEntity =
      * wishRepository.findByUserEntity_Id(userEntity.getId())
@@ -130,7 +138,7 @@ public class UserServiceImpl implements UserService {
      * newWish.setUserEntity(userEntity);
      * return wishRepository.save(newWish);
      * });
-     * 
+     *
      * CartEntity cartEntity =
      * cartRepository.findByUserEntity_Id(userEntity.getId())
      * .orElseGet(() -> {
@@ -138,7 +146,7 @@ public class UserServiceImpl implements UserService {
      * newCart.setUserEntity(userEntity);
      * return cartRepository.save(newCart);
      * });
-     * 
+     *
      * // JWT 토큰 생성 (JwtUtil 사용)
      * String accessToken = jwtUtil.generateAccessToken(
      * userEntity.getUserId(),
@@ -146,12 +154,12 @@ public class UserServiceImpl implements UserService {
      * wishEntity.getId(),
      * cartEntity.getId()
      * );
-     * 
+     *
      * String refreshToken = jwtUtil.generateRefreshToken(
      * userEntity.getUserId(),
      * userEntity.getId()
      * );
-     * 
+     *
      * // 결과 맵 생성
      * Map<String, Object> result = new HashMap<>();
      * result.put("accessToken", accessToken);
@@ -159,7 +167,7 @@ public class UserServiceImpl implements UserService {
      * result.put("id", userEntity.getId());
      * result.put("wishId", wishEntity.getId());
      * result.put("cartId", cartEntity.getId());
-     * 
+     *
      * return result;
      * }
      */
@@ -180,6 +188,15 @@ public class UserServiceImpl implements UserService {
         result.put("isAdmin", user.isAdmin());
 
         return result;
+    }
+
+    @Override
+    public int idCheck(String userid) {
+        if (userRepository.existsByUserId(userid)) {
+            System.out.println("중복된 ID 있음. 가입불가");
+            return 1;
+        }
+        return 0;
     }
 
     @Override

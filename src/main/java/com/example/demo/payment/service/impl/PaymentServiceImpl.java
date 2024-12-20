@@ -2,7 +2,6 @@ package com.example.demo.payment.service.impl;
 
 import java.time.LocalDateTime;
 import java.time.YearMonth;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.example.demo.coupon.entity.UserCouponEntity;
 import com.example.demo.coupon.repository.UserCouponRepository;
 import com.example.demo.coupon.service.UserCouponService;
@@ -60,6 +60,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     private UserCouponService userCouponService;
 
+    // 24.12.19 - 상품 테이블에 재고 상태 변경 - uj (수정)
     // 24.12.12 - uj
     // 결제 정보 저장
     @Override
@@ -109,13 +110,26 @@ public class PaymentServiceImpl implements PaymentService {
             detailRepository.save(detailEntity);
 
             // 3-2. 재고 수정
+            int soldoutCount = 0;
             List<ProductStockEntity> stockEntiyList = productEntity.getStockList();
             for (ProductStockEntity stockEntity : stockEntiyList) {
                 if (stockEntity.getSize() == detailDTO.getSize()) {
-                    stockEntity.setCount(stockEntity.getCount() - detailDTO.getCount()); // 재고 수정
+                    int stockCount = stockEntity.getCount() - detailDTO.getCount();
+                    stockEntity.setCount(stockCount < 0 ? 0 : stockCount); // 재고 수정
+                    soldoutCount += stockEntity.getCount() == 0 ? 1 : 0; // 사이즈 별 재고 0인것 개수 구하기
                 }
             }
-            // 3-3. 재고 DB 반영
+
+            // 3-3. 재고 상태 설정
+            if (soldoutCount == 0) { // 모든 사이즈 재고: 0 이상
+                productEntity.setStatus(ProductEntity.ProductStatus.EXIST);
+            } else if (soldoutCount < stockEntiyList.size()) { // 일부 사이즈 재고 : 0
+                productEntity.setStatus(ProductEntity.ProductStatus.SOMESOLDOUT);
+            } else if (soldoutCount == stockEntiyList.size()) { // 모든 사이즈 재고 : 0
+                productEntity.setStatus(ProductEntity.ProductStatus.SOLDOUT);
+            }
+
+            // 3-4. 재고 DB 반영
             productRepository.save(productEntity);
         }
 
@@ -134,17 +148,30 @@ public class PaymentServiceImpl implements PaymentService {
 
         // 5. 쿠폰 사용 여부 저장
         if (paymentDTO.getDiscount() > 0) {
+            // 사용자에 해당하는 쿠폰 목록을 가져옵니다.
             List<UserCouponEntity> couponEntityList = userCouponRepository.findByUserEntity_Id(paymentDTO.getUserId());
-            couponEntityList.get(0).setUsed(true);
-            userCouponRepository.save(couponEntityList.get(0));
+
+            if (!couponEntityList.isEmpty()) {
+                // 첫 번째 쿠폰을 가져와서 사용된 것으로 표시
+                UserCouponEntity userCoupon = couponEntityList.get(0); // 쿠폰 하나만 사용되므로 첫 번째 쿠폰을 사용
+
+                // 쿠폰이 아직 사용되지 않았고 유효하다면
+                if (!userCoupon.getUsed()) {
+                    userCoupon.setUsed(true); // 사용된 것으로 표시
+
+                    // 영속성 컨텍스트에 저장
+                    userCouponRepository.save(userCoupon); // 변경 사항 저장
+                    System.out.println("Coupon used status updated to: " + userCoupon.getUsed());
+                }
+            }
         }
 
         // 6. 결제 후 등급 업데이트 - sumin (2024.12.16)
-        updateUserGradeBasedOnPurchase(paymentDTO.getUserId());
+        //updateUserGradeBasedOnPurchase(paymentDTO.getUserId());
 
         // 7. 결제 후 등급에 맞는 쿠폰 발급 - sumin (2024.12.16)
-        String grade = userEntity.getGrade().name(); // 현재 사용자의 등급을 가져오기기
-        userCouponService.updateCouponByUserAndGrade(paymentDTO.getUserId(), grade);
+        //String grade = userEntity.getGrade().name(); // 현재 사용자의 등급을 가져오기기
+        //userCouponService.updateCouponByUserAndGrade(paymentDTO.getUserId(), grade);
     }
 
     // 결제에 따른 등급 업데이트 - sumin (2024.12.16)
@@ -161,11 +188,12 @@ public class PaymentServiceImpl implements PaymentService {
         LocalDateTime endDate = yearMonth.atEndOfMonth().atTime(23, 59, 59); // 해당 월의 마지막날 23:59
 
         // 해당 월에 해당하는 결제 금액 계산
-        List<PaymentEntity> payments = paymentRepository.findByUserEntity_IdAndPaymentDateBetween(userId, startDate,
-                endDate);
+        List<PaymentEntity> payments = paymentRepository.findByUserEntity_IdAndPaymentDateBetween(userId, startDate, endDate);
         int totalSpent = payments.stream()
                 .mapToInt(payment -> (int) payment.getTotalPrice())
                 .sum();
+
+        System.out.println(totalSpent);
 
         // 결제 금액에 따른 등급 변경
         UserEntity.Grade newGrade = determineGradeBasedOnAmount(totalSpent);
@@ -233,6 +261,62 @@ public class PaymentServiceImpl implements PaymentService {
             e.printStackTrace();
             throw new RuntimeException("PaymentDetailDTO 변환 중 오류 발생", e);
         }
+    }
+
+    // 24.12.20 - uj
+    // 주문 취소 - 결제 완료 & 준비 중일 경우에만 가능
+    @Override
+    public void cancelPayment(String tosscode, int paymentId) {
+        PaymentEntity paymentEntity = paymentRepository.findByIdAndTossCode(paymentId, tosscode);
+
+        if (paymentEntity == null)
+            throw new NotFoundException(
+                    "tosscode: " + tosscode + " & paymentId: " + paymentId + "에 해당하는 결제 내역을 찾지 못했습니다.");
+
+        // 1. 재고 반영
+        List<PaymentDetailEntity> detailEntitnyList = paymentEntity.getPaymentDetailList();
+        for (PaymentDetailEntity detailEntity : detailEntitnyList) {
+            // 구매 상품의 재고 리스트
+            List<ProductStockEntity> paymentstockEntityList = detailEntity.getProductEntity().getStockList();
+            for (ProductStockEntity stockEntity : paymentstockEntityList) {
+                if (detailEntity.getSize().equals(stockEntity.getSize())) {
+                    System.out.println("재고 반영 전 >> 상품 번호: " + stockEntity.getProductEntity().getId() +
+                            "사이즈: " + stockEntity.getSize() +
+                            "재고: " + stockEntity.getCount());
+                    System.out.println("재고 반영 할 값 >> " +
+                            "사이즈: " + stockEntity.getSize() +
+                            "재고: " + stockEntity.getCount());
+
+                    stockEntity.setCount(stockEntity.getCount() + detailEntity.getCount());
+
+                    System.out.println("재고 반영 후 >> 상품 번호: " + stockEntity.getProductEntity().getId() +
+                            "사이즈: " + stockEntity.getSize() +
+                            "재고: " + stockEntity.getCount());
+                    break;
+                }
+            }
+        }
+
+        // 2. 쿠폰 사용 시, 쿠폰 돌려주기
+        List<UserCouponEntity> userCouponEntity = userCouponRepository
+                .findByUserEntity_Id(paymentEntity.getUserEntity().getId());
+        if (userCouponEntity.size() == 0) {
+            throw new NotFoundException("사용자 (" + paymentEntity.getUserEntity().getId() + ") 의 쿠폰 정보를 찾을 수 없습니다.");
+        }
+
+        if (paymentEntity.getDiscount() > 0 && userCouponEntity.get(0).getUsed()) {
+            userCouponEntity.get(0).setUsed(false);
+            userCouponRepository.save(userCouponEntity.get(0));
+            System.out.println("사용자 (" +
+                    paymentEntity.getUserEntity().getId() + ") 의 쿠폰 (" +
+                    userCouponEntity.get(0).getId() +
+                    ") 사용 값을 변경하였습니다. >> " +
+                    userCouponEntity.get(0).getUsed());
+        }
+
+        // 3. 결제 내역 & 결제 상세 내역 삭제
+        paymentRepository.delete(paymentEntity);
+        System.out.println("결제를 취소하였습니다. ");
     }
 
 }

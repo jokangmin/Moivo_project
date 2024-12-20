@@ -12,7 +12,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -23,7 +22,7 @@ public class UserCouponEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id; // 사용자 쿠폰 고유 ID  
+    private Integer id; // 사용자 쿠폰 고유 ID
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "userid") // 사용자 정보와 연결

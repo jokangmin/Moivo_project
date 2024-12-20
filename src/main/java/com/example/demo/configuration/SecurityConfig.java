@@ -69,8 +69,10 @@ public class SecurityConfig {
                                 "/api/user/mypage/orders/**",
                                 "/oauth/**",
                                 "/api/mail/success",
+                                "/api/mail/cancel",
                                 "/api/user/question",
-                                "/api/user/question/faq/list")
+                                "/api/user/question/faq/list",
+                                "/api/user/idCheck")
                         .permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
