@@ -58,6 +58,9 @@ const Mypage_order = () => {
 
                 //주문 취소 성공 시 보내는 이메일 12/20 추가 - 강민
                 if (!emailSent) {
+                    if (!myEmail) {
+                        console.error("이메일 정보가 없습니다");
+                    }
                     const sendEmail = async () => {
                       try {
                         const response = await fetch(`${PATH.SERVER}/api/mail/cancel`, {
@@ -69,10 +72,8 @@ const Mypage_order = () => {
                             toAddress: myEmail, // 받는 사람 이메일
                             orderId: order.tosscode, // 주문번호
                             customerName: order.name, // 결제자
-                            orderName: order?.productName + (order.count > 1 && ` 외 ${order.count - 1}개`), // 상품 이름
+                            orderName: order?.productName, // 상품 이름
                             amount: order.totalPrice, // 결제 금액
-                            addr: "(" + order.zipcode + ") " + order.addr1 + " " + order.addr2, // 배송지
-                            deliverystatus: order.deliverystatus, //배송현황
                           }),
                         });
               

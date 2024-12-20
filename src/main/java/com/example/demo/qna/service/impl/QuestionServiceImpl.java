@@ -36,22 +36,13 @@ public class QuestionServiceImpl implements QuestionService {
     //문의사항 추가
     @Override
     public void addQuestion(QuestionDTO questionDTO) {
-
         QuestionEntity questionEntity = new QuestionEntity();
-        //여기서 로그인한 아이디를 받아오는 방법? 재영이가 jwt 사용시 다른방법으로 가능. 현재는 프론트에서 id 를 받아옴
-//        questionEntity.setQuestionDate(questionDTO.getQuestionDate()); //시간은 자동으로 등록되므로 필요 X
-        System.out.println("프론트에서 받아온 questionDTO = " + questionDTO);
-        System.out.println("프론트에서 받아온 id = " + questionDTO.getUserId()); // QuestionDTO의 userid는 user 테이블 id 값임
-        System.out.println("questionEntity Id 저장 전 = " + questionEntity);
-        System.out.println("PrivatePwd: " + questionDTO.getPrivatePwd());
+        
         QuestionCategoryEntity questionCategoryEntity = questionCategoryRepository.findById(questionDTO.getCategoryId()).orElseThrow();
         UserEntity userEntity = userRepository.findById(questionDTO.getUserId()).orElseThrow();
-        System.out.println("questionDTO = " + questionDTO);
-        System.out.println("questionCategoryEntity = " + questionCategoryEntity);
-//        System.out.println("userEntity = " + userEntity);
+        
         questionEntity = QuestionEntity.tosaveQuestionEntity(questionDTO, questionCategoryEntity, userEntity);
         questionRepository.save(questionEntity);
-        System.out.println("questionEntity Id 저장 후 = " + questionEntity);
     }
 
     //문의사항 수정

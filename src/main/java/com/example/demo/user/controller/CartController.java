@@ -16,7 +16,6 @@ import java.util.Map;
 public class CartController {
     @Autowired
     private CartService cartService;
-
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -68,9 +67,11 @@ public class CartController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteProduct(
             @PathVariable(name = "id") int userCartId,
-            @RequestParam(name = "userid") int userId) {
+            @RequestHeader("Authorization") String token) {
 
         try {
+            String actualToken = token.substring(7);
+            int userId = jwtUtil.getIdFromToken(actualToken);
             cartService.deleteProduct(userCartId, userId);
             return ResponseEntity.ok(null);
         } catch (Exception e) {
@@ -83,12 +84,15 @@ public class CartController {
     @PutMapping("/update/{cartId}")
     public ResponseEntity<Void> updateCartItem(
             @PathVariable(name = "cartId") int cartid,
+            @RequestHeader("Authorization") String token,
             @RequestBody Map<String, Object> updates) {
 
         System.out.println(cartid);
         System.out.println(updates);
 
         try {
+            String actualToken = token.substring(7);
+            int userId = jwtUtil.getIdFromToken(actualToken);
             Integer count = (Integer) updates.get("count");
             String size = (String) updates.get("size");
             cartService.updateCartItem(cartid, count, size);
@@ -102,5 +106,4 @@ public class CartController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 500
         }
     }
-
 }

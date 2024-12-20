@@ -83,6 +83,7 @@ public class EmailController {
 
     @PostMapping("/cancel")
     public ResponseEntity<String> sendCancelMail(@RequestBody OrderDetails orderDetails) {
+        logger.info("Cancel mail endpoint called with data: {}", orderDetails);
         try {
             String mailSubject = "주문 취소가 완료되었습니다..";
             String mailContent = String.format(
@@ -104,7 +105,7 @@ public class EmailController {
                 "        </tr>" +
                 "        <tr>" +
                 "            <th style='text-align: left; padding: 10px; background: #F6F2EE; color: #2f2e2c; border-bottom: 1px solid #988C73;'>상품 이름</th>" +
-                "            <td style='padding: 10px; border-bottom: 1px solid #988C73;'>%s</td>" +
+                "            <td style='padding: 10px; border-bottom: 1px solid #988C73;'>%s 및 상품</td>" +
                 "        </tr>" +
                 "        <tr>" +
                 "            <th style='text-align: left; padding: 10px; background: #F6F2EE; color: #2f2e2c; border-bottom: 1px solid #988C73;'>결제 금액</th>" +
