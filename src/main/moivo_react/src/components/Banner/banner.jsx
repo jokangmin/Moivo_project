@@ -28,7 +28,7 @@ const Banner = () => {
     {
       title: 'COMMUNITY',
       submenu: [
-        { name: 'Q&A', navigateTo: '/qna_faqboard' },
+        { name: '고객센터', navigateTo: '/qna_faqboard' },
         { name: '게시판', navigateTo: '/qna_board' },
       ]
     },

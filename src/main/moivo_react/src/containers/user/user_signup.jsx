@@ -121,9 +121,17 @@ function UserSignup() {
       case "userId":
         newError = value ? "" : "아이디를 입력해주세요.";
         break;
-      case "pwd":
-        newError = value ? "" : "비밀번호를 입력해주세요.";
-        break;
+        case "pwd":
+          if (!value) {
+            newError = "비밀번호를 입력해주세요.";
+          } else {
+            // 비밀번호 정규식 패턴 추가
+            const passwordPattern = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$/;
+            if (!passwordPattern.test(value)) {
+              newError = "비밀번호는 영문, 숫자, 특수문자를 포함한 8~15자리여야 합니다.";
+            }
+          }
+          break;
       case "confirmPwd":
         newError = formData.pwd !== formData.confirmPwd ? "비밀번호가 일치하지 않습니다." : "";
         break;
@@ -230,7 +238,7 @@ function UserSignup() {
           {/* Password */}
           <div className={singup.formRow}>
             <span>PASSWORD</span>
-            <input type="password" name="pwd" value={formData.pwd} onChange={handleChange} onBlur={handleBlur} />
+            <input type="password" name="pwd" placeholder="* 영문, 숫자, 특수문자(!@#$%^&*)를 포함한 8~15자리" value={formData.pwd} onChange={handleChange} onBlur={handleBlur} />
             <div className={singup.exception}>{errors.pwd}</div>
           </div>
           <hr className={singup.signupline} />

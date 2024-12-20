@@ -19,7 +19,7 @@ public interface PaymentRepository extends JpaRepository<PaymentEntity, Integer>
         public Page<PaymentEntity> findByUserEntity_Id(Integer userId, Pageable pageable);
 
         // 12/17 tosscode 값으로 PaymentEntity 조회 - km
-        public List<PaymentEntity> findByTossCode(String tossCode);     
+        public List<PaymentEntity> findByTossCode(String tossCode);
 
         // 특정 User의 Payment 조회 (특정 월에 대한 데이터)
         public List<PaymentEntity> findByUserEntity_IdAndPaymentDateBetween(int userId, LocalDateTime startDate,
@@ -31,8 +31,7 @@ public interface PaymentRepository extends JpaRepository<PaymentEntity, Integer>
         // 2024.12.15 - 사용자 누적 금액 계산 - sumin
         // 특정 사용자의 월별 총 결제 금액 조회
         @Query("SELECT SUM(p.totalPrice) FROM PaymentEntity p WHERE p.userEntity.id = :userid")
-        public long sumTotalPriceByUserId(@Param("userid") Integer userid);    
-        
+        public long sumTotalPriceByUserId(@Param("userid") Integer userid);
 
         // 24.12.13 - 날짜별 매출액 - uj
         @Query("SELECT SUM(p.totalPrice) FROM PaymentEntity p WHERE p.paymentDate BETWEEN :startOfDay AND :endOfDay")
@@ -45,9 +44,9 @@ public interface PaymentRepository extends JpaRepository<PaymentEntity, Integer>
         public long sumTotalPrice();
 
         List<PaymentEntity> findByDeliveryStatusNotAndPaymentDateBefore(
-                DeliveryStatus status, LocalDateTime dateTime
-        );
+                        DeliveryStatus status, LocalDateTime dateTime);
 
         boolean existsByTossCode(String tossCode);
-}
 
+        public PaymentEntity findByIdAndTossCode(int id, String tossCode);
+}

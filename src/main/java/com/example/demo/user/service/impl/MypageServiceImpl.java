@@ -79,7 +79,7 @@ public class MypageServiceImpl implements MypageService {
         YearMonth yearMonth = YearMonth.from(now);
         LocalDateTime startDate = yearMonth.atDay(1).atStartOfDay(); // 해당 월의 첫날 00:00
         LocalDateTime endDate = yearMonth.atEndOfMonth().atTime(23, 59, 59); // 해당 월의 마지막날 23:59
-
+        
         // 해당 월에 해당하는 결제 금액 계산
         List<PaymentEntity> payments = paymentRepository.findByUserEntity_IdAndPaymentDateBetween(userId, startDate,
                 endDate);

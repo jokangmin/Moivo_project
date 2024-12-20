@@ -28,16 +28,18 @@ public class ReviewEntity { // 리뷰
 
     // 리뷰 n개 : 사용자 1개
     @ManyToOne
-    @JoinColumn(name = "userid", nullable = false)
+    @JoinColumn(name = "userid", nullable = true)
+    // @JoinColumn(name = "userid", nullable = false)
     private UserEntity userEntity; // 사용자 (리뷰 작성자)
 
     // 리뷰 n개 : 상품 1개
     @ManyToOne
-    @JoinColumn(name = "productid", nullable = false)
+    @JoinColumn(name = "productid", nullable = true)
+    // @JoinColumn(name = "productid", nullable = false)
     private ProductEntity productEntity; // 상품 고유 키
 
     // 리뷰 1개 : 결제 상품 1개
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne
     @JoinColumn(name = "paymentdetailid", nullable = true)
     private PaymentDetailEntity paymentDetailEntity; // 결제 상세 고유 키
 
@@ -72,7 +74,7 @@ public class ReviewEntity { // 리뷰
         this.rating = reviewDTO.getRating();
         this.content = reviewDTO.getContent().trim();
         this.reviewDate = LocalDateTime.now(); // 수정 시간 업데이트
-        
+
         System.out.println("리뷰 업데이트 완료 - ID: " + this.id);
         System.out.println("수정된 별점: " + this.rating);
         System.out.println("수정된 내용: " + this.content);

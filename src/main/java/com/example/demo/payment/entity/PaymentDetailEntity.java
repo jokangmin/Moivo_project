@@ -38,7 +38,7 @@ public class PaymentDetailEntity {
     private ProductEntity productEntity; // 상품과 연관된 상품 정보
 
     // 결제 상품 1개 : 리뷰 1개
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "reviewid", nullable = true)
     private ReviewEntity reviewEntity; // 리뷰 고유 키
 

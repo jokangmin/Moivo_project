@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Italiana&display=swap');
 
 .loginMain * {
@@ -93,6 +94,7 @@ button.ghost {
 	padding: 12px 15px;
 	margin: 8px 0;
 	width: 100%;
+	font-family: 'Montserrat', sans-serif;
 }
 
 .container {

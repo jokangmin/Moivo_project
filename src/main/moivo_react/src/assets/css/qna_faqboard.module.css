@@ -1,6 +1,6 @@
 .faqmainDiv {
   height: 100%;
-  background-color: #fff;
+  background: linear-gradient(to bottom, #fff 0%, #fafafa 100%);
 }
 
 .faqheader {
@@ -16,6 +16,8 @@
   font-size: 30px;
   font-weight: bold;
   position: relative;
+  color: #333;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
 }
 
 /* QnA 설명 텍스트 아래 밑줄 */
@@ -53,6 +55,27 @@
   transition: all 0.3s ease;
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 0;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.faqNaviBtn::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: -100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: 0.5s;
+}
+
+.faqNaviBtn:hover::after {
+  left: 100%;
 }
 
 .faqNaviBtn:hover {
@@ -80,8 +103,15 @@
 }
 
 .faqItem {
-  padding: 10px 0;
-  border-bottom: 1.5px solid #555;
+  padding: 15px 0;
+  border-bottom: 1px solid #eee;
+  transition: all 0.3s ease;
+  margin: 0 auto;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  margin-bottom: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.08);
 }
 
 /* FAQ 항목 영역 스타일 */
@@ -89,45 +119,79 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 20px;
-  background-color: #FAFAFA;
-  border-bottom: 1px solid #E1E1E1;
+  padding: 15px 25px;
+  background-color: #fff;
   cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
+  transition: all 0.3s ease;
+  border-radius: 8px;
 }
 
 .faqItem label:hover {
-  background-color: #f0f0f0;
-  color: #333;
+  background-color: #f9f9f9;
 }
 
 .faqItem input[type="checkbox"] {
   display: none; 
 }
 
+/* FAQ 제목 스타일 개선 */
+.faqHeading {
+  font-size: 16px;
+  color: #333;
+  margin: 0;
+  line-height: 1.5;
+  flex: 1;
+}
+
+/* 화살표 아이콘 개선 */
 .faqArrow {
-  width: 10px;
-  height: 10px;
-  border-top: 2px solid rgba(0, 0, 0, 0.700);
-  border-right: 2px solid rgba(0, 0, 0, 0.700);
-  transform: rotate(45deg);
-  transition: transform 0.3s ease-in-out;
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid #666;
+  border-right: 2px solid #666;
+  transform: rotate(135deg);
+  transition: all 0.3s ease;
+  margin-left: 20px;
 }
 
 .faqItem input[type="checkbox"]:checked + label .faqArrow {
-  transform: rotate(135deg);
+  transform: rotate(-45deg);
 }
 
+/* FAQ 답변 영역 개선 */
 .faqText {
   max-height: 0;
   overflow: hidden;
-  padding: 0 20px;
-  transition: max-height 0.4s ease, padding 0.4s ease;
+  padding: 0 25px;
+  margin: 0;
+  background-color: #fafafa;
+  transition: all 0.3s ease;
+  opacity: 0;
+  border-radius: 0 0 8px 8px;
+  line-height: 1.6;
+  color: #666;
+  background: linear-gradient(145deg, #fafafa, #f5f5f5);
+  border-radius: 0 0 12px 12px;
+  padding: 20px 30px;
+  font-size: 15px;
+  line-height: 1.8;
 }
 
 .faqItem input[type="checkbox"]:checked + label + .faqText {
   max-height: 500px;
-  padding: 10px 20px;
+  padding: 20px 25px;
+  opacity: 1;
+  margin-top: 5px;
+}
+
+/* 상단 설명 추가 */
+.faqDescription {
+  text-align: center;
+  margin: 0 auto 40px;
+  max-width: 800px;
+  padding: 0 20px;
+  color: #666;
+  line-height: 1.6;
 }
 
 /* --- 반응형 미디어 쿼리 --- */
@@ -180,3 +244,393 @@
     /* margin-bottom: 20px; */
   }
   }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 40px;
+  font-family: 'Arial', sans-serif;
+  flex-wrap: wrap;
+  padding: 0 15px;
+}
+
+.pageButton {
+  min-width: 36px;
+  height: 36px;
+  border: none;
+  background: white;
+  color: #666;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+
+.pageButton::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.pageButton:hover::after {
+  transform: scaleX(1);
+}
+
+.activePage {
+  background: #000;
+  color: white;
+  font-weight: 600;
+}
+
+.activePage:hover {
+  background: #333;
+  color: white;
+}
+
+.pageArrow {
+  font-size: 18px;
+  color: #888;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0 10px;
+  transition: all 0.3s ease;
+  min-width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pageArrow:hover {
+  color: #333;
+  transform: scale(1.2);
+}
+
+.pageArrow:disabled {
+  color: #0f0e0e;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+  .pagination {
+    gap: 4px;
+    margin-top: 30px;
+  }
+
+  .pageButton {
+    min-width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+
+  .pageArrow {
+    font-size: 16px;
+    min-width: 32px;
+    height: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pagination {
+    gap: 2px;
+    margin-top: 20px;
+  }
+
+  .pageButton {
+    min-width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  .pageArrow {
+    font-size: 14px;
+    min-width: 28px;
+    height: 28px;
+  }
+  
+  /* 모바일에서는 현재 페이지 주변의 페이지만 표시하도록 로직 수정 */
+  .pagination span {
+    font-size: 12px;
+    padding: 0 4px;
+  }
+}
+
+/* 터치 디바이스를 위한 최적화 수정 */
+@media (hover: none) {
+  .pageButton:hover {
+    background: transparent;
+    color: #666;
+  }
+
+  .pageButton:active {
+    background: #000000;
+    color: white;
+    transform: scale(0.95);
+  }
+
+  /* 활성 페이지 버튼은 항상 검은 배경 유지 */
+  .activePage,
+  .activePage:hover,
+  .activePage:active {
+    background: #000 !important;
+    color: white !important;
+  }
+}
+
+/* 모바일 환경에서도 활성 페이지 스타일 강제 적용 */
+@media (max-width: 480px) {
+  .activePage,
+  .activePage:hover,
+  .activePage:active {
+    background: #000 !important;
+    color: white !important;
+  }
+}
+
+/* 반응형 디자인 개선 */
+@media (max-width: 768px) {
+  .faqItem label {
+    padding: 12px 20px;
+  }
+
+  .faqHeading {
+    font-size: 15px;
+  }
+
+  .faqText {
+    padding: 0 20px;
+    font-size: 14px;
+  }
+
+  .faqItem input[type="checkbox"]:checked + label + .faqText {
+    padding: 15px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .faqItem label {
+    padding: 10px 15px;
+  }
+
+  .faqHeading {
+    font-size: 14px;
+  }
+
+  .faqText {
+    padding: 0 15px;
+    font-size: 13px;
+  }
+
+  .faqItem input[type="checkbox"]:checked + label + .faqText {
+    padding: 12px 15px;
+  }
+
+  .faqArrow {
+    width: 6px;
+    height: 6px;
+    margin-left: 15px;
+  }
+}
+
+/* 스크롤바 디자인 */
+.faqss {
+  height: 700px;
+  overflow-y: auto;
+}
+
+.faqss::-webkit-scrollbar {
+  width: 8px;
+}
+
+.faqss::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+
+.faqss::-webkit-scrollbar-thumb {
+  background: #e0e0e0;
+  border-radius: 4px;
+  border: 2px solid #f5f5f5;
+}
+
+.faqss::-webkit-scrollbar-thumb:hover {
+  background: #ccc;
+}
+
+/* FAQ 컨테이너 개선 */
+.faqss {
+  height: 700px;
+  overflow-y: auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+}
+
+/* FAQ 아이템 디자인 개선 */
+.faqItem {
+  margin-bottom: 16px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.faqItem:hover {
+  border-color: #ddd;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+}
+
+/* FAQ 질문 영역 */
+.faqItem label {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.faqHeading {
+  flex: 1;
+  font-size: 16px;
+  color: #333;
+  margin: 0;
+  padding-right: 20px;
+  line-height: 1.5;
+}
+
+/* FAQ 답변 영역 */
+.faqText {
+  padding: 0 20px;
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: all 0.3s ease;
+  background: #fafafa;
+  border-top: 1px solid #eee;
+  margin: 0;
+  line-height: 1.6;
+  color: #666;
+}
+
+.faqItem input[type="checkbox"]:checked + label + .faqText {
+  padding: 20px;
+  height: auto;
+  opacity: 1;
+}
+
+/* 페이지네이션 개선 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 30px;
+}
+
+.pageButton {
+  min-width: 36px;
+  height: 36px;
+  border: 1px solid #eee;
+  background: #fff;
+  border-radius: 6px;
+  color: #666;
+  transition: all 0.2s ease;
+}
+
+.pageButton:hover {
+  border-color: #000;
+  color: #000;
+}
+
+.activePage {
+  background: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+/* 스크롤바 디자인 */
+.faqss::-webkit-scrollbar {
+  width: 6px;
+}
+
+.faqss::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+
+.faqss::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 3px;
+}
+
+.faqss::-webkit-scrollbar-thumb:hover {
+  background: #ccc;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .faqss {
+    padding: 15px;
+  }
+
+  .faqItem label {
+    padding: 15px;
+  }
+
+  .faqHeading {
+    font-size: 15px;
+  }
+
+  .faqText {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .faqss {
+    padding: 10px;
+  }
+
+  .faqItem label {
+    padding: 12px;
+  }
+
+  .faqHeading {
+    font-size: 14px;
+  }
+}
+
+/* 로딩 및 에러 메시지 스타일 */
+.errorMessage {
+  text-align: center;
+  color: #666;
+  padding: 40px 20px;
+  background: #f8f8f8;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+/* 로딩 상태 애니메이션 */
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+.loadingState {
+  text-align: center;
+  padding: 40px 0;
+  color: #666;
+  animation: pulse 1.5s infinite;
+}
