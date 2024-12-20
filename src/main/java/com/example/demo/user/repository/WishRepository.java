@@ -15,4 +15,7 @@ public interface WishRepository extends JpaRepository<WishEntity, Integer> {
     // userId로 WishEntity 검색
     //Optional<WishEntity> findByUserId(String userId); 
 
+    // 특정 User의 첫 번째 Wish 조회
+    Optional<WishEntity> findFirstByUserEntity_Id(Integer id);
+    
 }
