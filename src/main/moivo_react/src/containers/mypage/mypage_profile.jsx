@@ -68,12 +68,10 @@ const MypageProfile = () => {
     
         if (!validateForm()) return;  // 유효성 검사를 통과하지 못하면 서버로 전송하지 않음
     
-        const userId = formData.userId;
         const phone = `${formData.phone1}${formData.phone2}${formData.phone3}`;
     
         // 서버로 전송할 데이터 준비
         const updateData = {
-            userId,
             name: formData.name,
             gender: formData.gender,
             address: formData.addr1, // 기본 주소
@@ -89,7 +87,7 @@ const MypageProfile = () => {
         };
 
         try {
-            const response = await axiosInstance.post('/api/user/mypage/update', updateData);
+            await axiosInstance.post('/api/user/mypage/update', updateData);
             alert("회원정보가 성공적으로 수정되었습니다!");
             navigate("/mypage");
         } catch (error) {
@@ -159,18 +157,9 @@ const MypageProfile = () => {
             return;
         }
     
-        const userId = parseInt(localStorage.getItem("id"));
-    
-        if (isNaN(userId)) {
-            alert("로그인이 필요합니다. 다시 로그인해주세요.");
-            navigate("/login");
-            return;
-        }
-    
         try {
             await axiosInstance.post('/api/user/mypage/delete', {
-                userId: userId,
-                pwd: deletePassword,
+                pwd: deletePassword
             });
     
             alert("회원 탈퇴가 완료되었습니다.");
@@ -222,16 +211,8 @@ const MypageProfile = () => {
 
     useEffect(() => {
         const fetchUserInfo = async () => {
-            const id = localStorage.getItem("id");
-        
-            if (!id) {
-                alert("로그인이 필요합니다.");
-                navigate("/user");
-                return;
-            }
-        
             try {
-                const response = await axiosInstance.get(`/api/user/mypage/info/${id}`);
+                const response = await axiosInstance.get('/api/user/mypage/info');
                 const data = response.data;
                 
                 const { phone1, phone2, phone3 } = splitPhoneNumber(data.tel);
