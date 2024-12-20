@@ -28,7 +28,7 @@ const ProductDetail = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [stockInfo, setStockInfo] = useState([]); // 재고 정보 상태 추가
 
-  // 재고 정보와 사이즈 정보를 가져오는 useEffect
+  // 재고 정보와 사이즈 정보를 가져오는 useEffect!!
   useEffect(() => {
     if (stocks && stocks.length > 0) {
       setStockInfo(stocks);
@@ -172,7 +172,6 @@ const ProductDetail = () => {
     try {
       await axiosInstance.get(`/api/user/wish/${productId}`);
       alert('위시리스트에 추가되었습니다.');
-      navigate('/mypage/wish');
     } catch (error) {
       console.error('위시리스트 추가 실패:', error);
       alert('위시리스트 추가에 실패했습니다.');
@@ -221,6 +220,11 @@ const ProductDetail = () => {
       fetchReviews();
     }
   }, [productId, activeTab]);
+
+  // 모든 사이즈가 품절인지 확인하는 함수 추가
+  const isAllSizesSoldOut = () => {
+    return stocks.every(stock => stock.count <= 0);
+  };
 
   if (loading) { // 로딩 중일 때 로딩 모달 표시
     return <LoadingModal isOpen={true} />;
@@ -460,6 +464,11 @@ const ProductDetail = () => {
                 onClick={handlePurchase}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
+                disabled={!selectedProduct || isAllSizesSoldOut()}
+                style={{ 
+                  opacity: (!selectedProduct || isAllSizesSoldOut()) ? 0.5 : 1,
+                  cursor: (!selectedProduct || isAllSizesSoldOut()) ? 'not-allowed' : 'pointer'
+                }}
               >
                 <FaCreditCard /> 바로 구매하기
               </motion.button>

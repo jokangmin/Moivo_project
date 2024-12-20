@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.example.demo.coupon.entity.UserCouponEntity;
 import com.example.demo.coupon.repository.UserCouponRepository;
 import com.example.demo.coupon.service.UserCouponService;
@@ -149,14 +150,14 @@ public class PaymentServiceImpl implements PaymentService {
         if (paymentDTO.getDiscount() > 0) {
             // 사용자에 해당하는 쿠폰 목록을 가져옵니다.
             List<UserCouponEntity> couponEntityList = userCouponRepository.findByUserEntity_Id(paymentDTO.getUserId());
-            
+
             if (!couponEntityList.isEmpty()) {
                 // 첫 번째 쿠폰을 가져와서 사용된 것으로 표시
                 UserCouponEntity userCoupon = couponEntityList.get(0); // 쿠폰 하나만 사용되므로 첫 번째 쿠폰을 사용
 
                 // 쿠폰이 아직 사용되지 않았고 유효하다면
                 if (!userCoupon.getUsed()) {
-                    userCoupon.setUsed(true);  // 사용된 것으로 표시
+                    userCoupon.setUsed(true); // 사용된 것으로 표시
 
                     // 영속성 컨텍스트에 저장
                     userCouponRepository.save(userCoupon); // 변경 사항 저장
@@ -259,6 +260,62 @@ public class PaymentServiceImpl implements PaymentService {
             e.printStackTrace();
             throw new RuntimeException("PaymentDetailDTO 변환 중 오류 발생", e);
         }
+    }
+
+    // 24.12.20 - uj
+    // 주문 취소 - 결제 완료 & 준비 중일 경우에만 가능
+    @Override
+    public void cancelPayment(String tosscode, int paymentId) {
+        PaymentEntity paymentEntity = paymentRepository.findByIdAndTossCode(paymentId, tosscode);
+
+        if (paymentEntity == null)
+            throw new NotFoundException(
+                    "tosscode: " + tosscode + " & paymentId: " + paymentId + "에 해당하는 결제 내역을 찾지 못했습니다.");
+
+        // 1. 재고 반영
+        List<PaymentDetailEntity> detailEntitnyList = paymentEntity.getPaymentDetailList();
+        for (PaymentDetailEntity detailEntity : detailEntitnyList) {
+            // 구매 상품의 재고 리스트
+            List<ProductStockEntity> paymentstockEntityList = detailEntity.getProductEntity().getStockList();
+            for (ProductStockEntity stockEntity : paymentstockEntityList) {
+                if (detailEntity.getSize().equals(stockEntity.getSize())) {
+                    System.out.println("재고 반영 전 >> 상품 번호: " + stockEntity.getProductEntity().getId() +
+                            "사이즈: " + stockEntity.getSize() +
+                            "재고: " + stockEntity.getCount());
+                    System.out.println("재고 반영 할 값 >> " +
+                            "사이즈: " + stockEntity.getSize() +
+                            "재고: " + stockEntity.getCount());
+
+                    stockEntity.setCount(stockEntity.getCount() + detailEntity.getCount());
+
+                    System.out.println("재고 반영 후 >> 상품 번호: " + stockEntity.getProductEntity().getId() +
+                            "사이즈: " + stockEntity.getSize() +
+                            "재고: " + stockEntity.getCount());
+                    break;
+                }
+            }
+        }
+
+        // 2. 쿠폰 사용 시, 쿠폰 돌려주기
+        List<UserCouponEntity> userCouponEntity = userCouponRepository
+                .findByUserEntity_Id(paymentEntity.getUserEntity().getId());
+        if (userCouponEntity.size() == 0) {
+            throw new NotFoundException("사용자 (" + paymentEntity.getUserEntity().getId() + ") 의 쿠폰 정보를 찾을 수 없습니다.");
+        }
+
+        if (paymentEntity.getDiscount() > 0 && userCouponEntity.get(0).getUsed()) {
+            userCouponEntity.get(0).setUsed(false);
+            userCouponRepository.save(userCouponEntity.get(0));
+            System.out.println("사용자 (" +
+                    paymentEntity.getUserEntity().getId() + ") 의 쿠폰 (" +
+                    userCouponEntity.get(0).getId() +
+                    ") 사용 값을 변경하였습니다. >> " +
+                    userCouponEntity.get(0).getUsed());
+        }
+
+        // 3. 결제 내역 & 결제 상세 내역 삭제
+        paymentRepository.delete(paymentEntity);
+        System.out.println("결제를 취소하였습니다. ");
     }
 
 }

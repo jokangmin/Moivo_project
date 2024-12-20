@@ -16,6 +16,26 @@ const Qna_board = () => {
     privatePwd : "",
   });
 
+  const validateForm = () => {
+    if (!formData.type) {
+      alert("문의 유형을 선택해주세요.");
+      return false;
+    }
+    if (!formData.title.trim()) {
+      alert("제목을 입력해주세요.");
+      return false;
+    }
+    if (!formData.question.trim()) {
+      alert("문의 내용을 입력해주세요.");
+      return false;
+    }
+    if (formData.isSecret && !formData.privatePwd) {
+      alert("비밀글 비밀번호를 입력해주세요.");
+      return false;
+    }
+    return true;
+  };
+
   //2024/12/17 핸들러 예외처리 수정 장훈
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -51,7 +71,7 @@ const Qna_board = () => {
   //axios 수정
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!validateForm()) return;
   
     const token = localStorage.getItem("accessToken");

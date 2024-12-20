@@ -12,6 +12,34 @@ const Mypage_order = () => {
     const [totalPages, setTotalPages] = useState(1);
     const navigate = useNavigate();
 
+    //fetchordercancel 부분 추가 - 12/20 강민
+    const handleOrderCancel = (order) => {
+        if (!order.tosscode || !order.id) {
+            console.error("필요한 데이터가 없습니다");
+            return;
+        }
+        const Tosscode = order.tosscode;
+        const orderCancelId = order.id;
+
+        console.log("tosscode :" + Tosscode + "PK id :" + orderCancelId);
+
+        const fetchOrderCancel = async () => {
+            try {
+                const ordersCancelResponse = await axiosInstance.delete(`/api/user/payment`, {
+                    params: { Tosscode, orderCancelId }, 
+                });
+                console.log("Order cancel response:", ordersCancelResponse.data);
+                alert("주문이 성공적으로 취소되었습니다.");
+            } catch (error) {
+                console.error("OrderCancel Error fetching data:", error);
+                alert("주문 취소 중 문제가 발생했습니다. 다시 시도해주세요.");
+            }
+        }
+
+        fetchOrderCancel();
+    };
+
+
     // fetchOrders 함수 정의
     const fetchOrders = async (page = 0, size = 4) => {
         const token = localStorage.getItem("accessToken");
@@ -124,9 +152,25 @@ const Mypage_order = () => {
                                     {order.deliveryStatus === "CONFIRMED" ? (
                                         <div className={styles.confirmedText}>배송완료</div>
                                     ) : order.deliveryStatus === "PAYMENT_COMPLETED" ? (
-                                        <div className={styles.statusText}>결제완료</div>
+                                        <>
+                                            <div className={styles.statusText}>결제완료</div>
+                                            <button
+                                                className={styles.editReviewButton}
+                                                onClick={() => handleOrderCancel(order)}
+                                            >
+                                                주문 취소
+                                            </button>
+                                        </>
                                     ) : order.deliveryStatus === "READY" ? (
-                                        <div className={styles.statusText}>준비중</div>
+                                        <>
+                                            <div className={styles.statusText}>준비중</div>
+                                            <button
+                                                className={styles.editReviewButton}
+                                                onClick={() => handleOrderCancel(order)}
+                                            >
+                                                주문 취소
+                                            </button>
+                                        </>
                                     ) : order.deliveryStatus === "DELIVERY" ? (
                                         <div className={styles.statusText}>배송중</div>
                                     ) : (
