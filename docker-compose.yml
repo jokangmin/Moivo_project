@@ -15,5 +15,5 @@ services:
       context: ./src/main/moivo_react
       dockerfile: Dockerfile.frontend
     ports:
-      - "3000:3000"
+      - "5173:5173"
     restart: always
