@@ -18,6 +18,8 @@ public interface PaymentRepository extends JpaRepository<PaymentEntity, Integer>
         // 특정 User의 orders를 조회
         public Page<PaymentEntity> findByUserEntity_Id(Integer userId, Pageable pageable);
 
+        List<PaymentEntity> findByUserEntity_Id(Integer userId);
+        
         // 12/17 tosscode 값으로 PaymentEntity 조회 - km
         public List<PaymentEntity> findByTossCode(String tossCode);
 
@@ -49,4 +51,6 @@ public interface PaymentRepository extends JpaRepository<PaymentEntity, Integer>
         boolean existsByTossCode(String tossCode);
 
         public PaymentEntity findByIdAndTossCode(int id, String tossCode);
+
+        
 }
