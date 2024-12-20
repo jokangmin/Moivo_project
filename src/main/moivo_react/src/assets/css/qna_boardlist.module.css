@@ -1,13 +1,14 @@
+/* Main Container */
 .qnalistMainDiv {
   height: 100%;
-  background-color: #fff;
+  background: linear-gradient(to bottom, #fff 0%, #fafafa 100%);
 }
-
+/* Header Area */
 .qnalistheader {
   height: 110px;
 }
 
-/* 제목 영역 */
+/* Title Area */
 .qnalistTitle {
   height: 100px;
   display: flex;
@@ -16,6 +17,8 @@
   font-size: 30px;
   font-weight: bold;
   position: relative;
+  color: #333;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
 }
 
 .qnalistTitle::after {
@@ -31,7 +34,7 @@
   margin-bottom: 15px;
 }
 
-/* 네비게이션 버튼 스타일 */
+/* Navigation Buttons */
 .qnalistNavi {
   height: 50px;
   display: flex;
@@ -51,6 +54,27 @@
   transition: all 0.3s ease;
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 0;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.qnalistNaviBtn::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: -100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: 0.5s;
+}
+
+.qnalistNaviBtn:hover::after {
+  left: 100%;
 }
 
 .qnalistNaviBtn:hover {
@@ -64,35 +88,55 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* 드롭다운 컨테이너 */
+/* QnA List Container */
+.qnalist {
+  height: auto;
+  min-height: 700px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  max-width: 1300px;
+  margin: 0 auto;
+  overflow-y: auto;
+}
+
+.qnalistContainer {
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
+  background: white;
+  position: relative;
+}
+
+/* Dropdown and Search */
 .dropdownContainer {
   display: flex;
   justify-content: space-between;
   position: relative;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   align-items: center;
 }
 
-/* 드롭다운 버튼 스타일 */
 .dropdownBtn {
   background-color: white;
   color: black;
-  border: 2px solid;
+  border: 2px solid #ccc;
   cursor: pointer;
-  border-radius: 30px;
-  width: 150px;
+  border-radius: 8px;
+  width: 160px;
+  padding: 10px;
+  position: relative;
+  transition: background-color 0.3s;
 }
 
-/* 드롭다운 버튼 아이콘 스타일 */
-.dropdownBtn i {
-  margin-left: 10px;
+.dropdownBtn:hover {
+  background-color: #f9f9f9;
 }
 
-/* 드롭다운 목록 스타일 */
 .filterList {
   list-style: none;
   padding: 0;
-  background-color: rgba(255, 255, 255, 0.8); /* 불투명한 흰색 */
+  background-color: rgba(255, 255, 255, 0.95);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   display: block;
@@ -105,30 +149,26 @@
   z-index: 10;
 }
 
-/* 드롭다운 항목 스타일 */
 .filterList li {
-  padding: 10px;
+  padding: 10px 15px;
   cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-/* 드롭다운 항목 호버 스타일 */
 .filterList li:hover {
-  background-color: #D2B48C;  /* 밝은 브라운 (#D2B48C) */
+  background-color: #D2B48C;
   color: white;
 }
 
-/* search__container 스타일 */
+/* Search Container */
 .search_container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 20px;
+  flex: 1;
+  margin-left: 20px;
 }
 
-/* 검색 입력 필드 스타일 */
 .search_input {
   width: 100%;
-  padding: 4px 12px;
+  padding: 8px 12px;
   background-color: transparent;
   font-size: 14px;
   line-height: 18px;
@@ -142,17 +182,14 @@
   transition: all 250ms ease-in-out;
 }
 
-/* placeholder 스타일 */
-.search__input::placeholder {
+.search_input::placeholder {
   color: rgba(87, 87, 86, 0.8);
   text-transform: uppercase;
   letter-spacing: 1.5px;
 }
 
-/* hover, focus 상태에서 스타일 */
 .search_input:hover,
 .search_input:focus {
-  padding: 12px 0;
   outline: 0;
   border: 1px solid transparent;
   border-bottom: 1px solid #575756;
@@ -160,66 +197,54 @@
   background-position: 100% center;
 }
 
-.qnalist{
-  height: 700px;
-}
-
-/* QnA 리스트 컨테이너 */
-.qnalistContainer {
-  width: 100%;
-  max-width: 1300px;
-  margin: 0 auto;
-  background: white;
-  position: relative;
-}
-
-/* QnA 항목 스타일 */
+/* QnA List Items */
 .qnalistItem {
-  padding: 10px 0px;
-  border-bottom: 1.5px solid #555;
+  margin-bottom: 16px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.qnalistItem:hover {
+  border-color: #ddd;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
 }
 
 .qnalistHeader {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
-  background-color: #FAFAFA;
-  border-bottom: 1px solid #E1E1E1;
+  padding: 20px;
+  background-color: #fff;
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s;
-}
-
-.qnalistHeader span{
-  margin-bottom: 10px;
+  border-radius: 8px 8px 0 0;
 }
 
 .qnalistHeader:hover {
-  background-color: #f0f0f0;
-  color: #333;
+  background-color: #f9f9f9;
 }
 
 .qnalistQuestionType {
   font-weight: bold;
   color: black;
+  margin-right: 10px;
 }
 
 .qnalistQuestionTitle {
-  flex-grow: 1;
+  flex: 1;
+  font-size: 16px;
+  color: #333;
   margin-left: 10px;
-  color: #222;
-}
-
-.qnalistSecretLabel {
-  font-size: 14px;
-  color: red;
-  font-weight: bold;
+  line-height: 1.5;
 }
 
 .qnalistDetails {
-  padding: 0px 20px;
-  background-color: #fff;
-
+  padding: 20px;
+  background-color: #fafafa;
+  border-radius: 0 0 8px 8px;
+  border-top: 1px solid #eee;
 }
 
 .qnalistUserInfo {
@@ -231,9 +256,10 @@
   gap: 5px;
 }
 
-.actionButtons{
+.actionButtons {
   display: flex;
   margin-left: auto;
+  gap: 10px;
 }
 
 .actionButtons button {
@@ -245,9 +271,13 @@
   transition: color 0.3s ease;
 }
 
+.actionButtons button:hover {
+  color: #333;
+}
+
 .qnalistUserQuestion, .qnalistUserAnswer {
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.8;
   color: #333;
 }
 
@@ -257,58 +287,90 @@
   margin: 15px 0;
 }
 
+/* Pagination */
 .pagination {
   display: flex;
   justify-content: center;
-  gap: 5px;
-  margin: 20px 0;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  font-family: 'Arial', sans-serif;
+  flex-wrap: wrap;
+  padding: 0 15px;
 }
 
 .paginationBtn {
-  padding: 8px 12px;
-  background-color: #f0f0f0;
-  border: 1px solid #ddd;
+  min-width: 36px;
+  height: 36px;
+  border: 1px solid #eee;
+  background: #fff;
+  border-radius: 6px;
+  color: #666;
+  transition: all 0.2s ease;
   cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s, transform 0.2s;
 }
 
 .paginationBtn:hover {
-  background-color: #333;
-  color: white;
+  border-color: #000;
+  color: #000;
 }
 
 .paginationBtn.active {
-  background-color: black;
-  color: white;
+  background: #000;
+  color: #fff;
+  border-color: #000;
 }
 
-/* 모달 오버레이 (배경) */
+.pageArrow {
+  font-size: 18px;
+  color: #888;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0 10px;
+  transition: all 0.3s ease;
+  min-width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pageArrow:hover {
+  color: #333;
+  transform: scale(1.2);
+}
+
+.pageArrow:disabled {
+  color: #0f0e0e;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Modal Styles */
 .modalOverlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* 반투명 검은색 배경 */
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* 모달이 다른 요소들 위에 표시되도록 */
+  z-index: 1000;
 }
 
-/* 모달 콘텐츠 */
 .modalContent {
   background-color: white;
   padding: 20px;
   width: 500px;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* 부드러운 그림자 */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
 }
 
-/* 제목 (모달 헤더) */
 .modalContent h3 {
   font-size: 25px;
   font-weight: bold;
@@ -316,29 +378,18 @@
   text-align: center;
 }
 
-.modalContent input{
-  background-color: white;
-}
-
-.modalContent select {
-  background-color: white;
-}
-
-.modalContent textarea{
-  background-color: white;
-}
-
-/* 문의 유형 선택 */
-.modalSelect {
+.modalSelect,
+.modalInput,
+.modalTextarea {
   width: 100%;
   padding: 10px;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
   margin-bottom: 15px;
+  background-color: white;
 }
 
-/* 비밀글 체크박스 */
 .secretCheckbox {
   display: flex;
   align-items: center;
@@ -346,30 +397,13 @@
   margin-bottom: 15px;
 }
 
-/* 체크박스 라벨 */
 .secretCheckbox label {
   font-size: 14px;
 }
 
-/* 제목 입력 */
-.modalInput {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 15px;
-}
-
-/* 내용 입력 */
 .modalTextarea {
-  width: 100%;
   height: 150px;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 15px;
+  resize: vertical;
 }
 
 .modalButtons {
@@ -378,7 +412,6 @@
   gap: 10px;
 }
 
-/* 수정 버튼 */
 .modalButtons button {
   padding: 10px 20px;
   background-color: black;
@@ -390,61 +423,50 @@
   transition: background-color 0.3s ease;
 }
 
-/* 취소 버튼 */
-.modalButtons button:nth-child(2) {
-  background-color: black;
-}
-
-/* 버튼 호버 효과 */
 .modalButtons button:hover {
   background-color: #888;
 }
 
-/* 취소 버튼 호버 */
-.modalButtons button:nth-child(2):hover {
-  background-color: #888;
-}
-
-.modalQuestionTitle{
+/* Password Modal */
+.errorText {
+  color: #dc3545;
   font-size: 14px;
-  font-weight: bold;
-  text-align: left;
-  display: block;
+  margin-top: 5px;
 }
 
-/* --- 반응형 미디어 쿼리 --- */
-@media (max-width: 1400px){
-  .qnalistNavi{
-    display: flex;
-    justify-content: center;
-    gap: 5px;
-    flex-wrap: nowrap;
-  }
+.modalButtons .button-secondary {
+  background-color: #6c757d;
+}
 
-  .qnalistTitle::after{
-    width: 95%;
-    max-width: 1300px;
-  }
+.modalButtons .button-secondary:hover {
+  background-color: #5a6268;
+}
 
-  .qnalistContainer{
-    max-width: 100%;
-    padding: 0 30px;
+/* Responsive Design */
+@media (max-width: 1400px) {
+  .qnalistQuestionTitle{
+    font-size: 14px;
   }
-
-  .filterList{
-    max-width: 100%;
-    padding: 0 30px;
-  }
-  
-  .qnalist{
-    height: 700px;
-  }
-
-  .qnalistUserInfo{
+  .qnalistNaviBtn {
+    width: 140px;
     font-size: 12px;
   }
 
-  .actionButtons button{
+  .qnalistTitle::after {
+    width: 95%;
+  }
+
+  .qnalistContainer {
+    max-width: 100%;
+    padding: 0 30px;
+  }
+
+  .filterList {
+    max-width: 100%;
+    padding: 0 30px;
+  }
+
+  .search_input {
     font-size: 12px;
   }
 
@@ -486,50 +508,51 @@
   }
 }
 
-@media (max-width: 700px){
-  .qnalistTitle{
+@media (max-width: 700px) {
+  .qnalistTitle {
     font-size: 26px;
   }
 
-  .qnalistNavi{
-    margin-bottom: 0px;
-  }
-
-  .qnalistNaviBtn{
+  .qnalistNaviBtn {
     width: 105px;
     padding: 10px 10px;
     font-size: 12px;
   }
 
-  .qnalistTitle::after{
+  .qnalistTitle::after {
     width: 90%;
-    max-width: 1300px;
   }
 
-  .qnalistContainer{
+  .qnalistContainer {
     font-size: 12px;
   }
 
-  .dropdownContainer{
+  .dropdownContainer {
     font-size: 12px;
   }
 
   .dropdownBtn {
     width: 100px;
   }
-  .search_container{
+
+  .search_container {
     width: 150px;
   }
+
   .search_input {
+    font-size: 12px;
+  }
+
+  .qnalistUserInfo {
     font-size: 12px;
   }
 
   .qnalistUserQuestion, .qnalistUserAnswer{
     font-size: 12px;
   }
-  
-  .qnalist{
-    height: 700px;
+
+  .actionButtons button {
+    font-size: 12px;
   }
 
   .modalContent {
@@ -537,92 +560,74 @@
     padding: 10px;
   }
 
-  /* 모달 제목 글자 크기 조정 */
   .modalContent h3 {
     font-size: 20px;
   }
 
-  .modalQuestionTitle{
-    font-size:12px ;
+  .modalQuestionTitle {
+    font-size: 12px;
   }
 
   .secretCheckbox label {
     font-size: 12px;
   }
 
-  /* 제목, 내용 입력창 폰트 크기 */
-  .modalSelect, .modalInput, .modalTextarea {
+  .modalSelect,
+  .modalInput,
+  .modalTextarea {
     font-size: 12px;
     padding: 8px;
     margin-bottom: 15px;
   }
 
-  /* 버튼 크기 및 폰트 크기 조정 */
   .modalButtons button {
     font-size: 12px;
     padding: 8px 12px;
   }
 
-  .secretCheckbox {
-    font-size: 12px;
-    gap: 5px; 
-  }
-}
-
-/*  관리자 답변 섹션  */
-.adminResponseSection {
-  margin-top: 20px;
-  padding: 15px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-}
-
-.responseTextarea {
-  width: 100%;
-  height: 100px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  resize: vertical;
-  background-color: #333;
-  color: #fff;
-}
-
-.responseButtons {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-}
-
-.responseButton {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  background-color: #333;
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.responseButton:hover {
-  background-color: #555;
-}
-
-.deleteButton {
-  background-color: #dc3545;
-}
-
-.deleteButton:hover {
-  background-color: #c82333;
-}
-
-@media (max-width: 700px) {
-  .responseButton {
-      padding: 6px 12px;
-      font-size: 12px;
-  }
+    .pagination{
+      margin: 10px 0px;
+    }
   
-  .responseTextarea {
-      min-height: 80px;
+    .paginationBtn{
+      font-size: 12px;
+      padding: 2px 4px;
+    }
+}
+
+@media (max-width: 480px) {
+  .qnalistQuestionTitle{
+    font-size: 12px;
+  }
+  .pagination {
+    gap: 2px;
+    margin-top: 20px;
+  }
+
+  .pageButton {
+    min-width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  .pageArrow {
+    font-size: 14px;
+    min-width: 28px;
+    height: 28px;
+  }
+
+  .activePage,
+  .activePage:hover,
+  .activePage:active {
+    background: #000 !important;
+    color: white !important;
+  }
+
+  .qnalistUserInfo {
+    font-size: 10px;
+  }
+
+  .actionButtons button{
+    font-size: 10px;
   }
 }
