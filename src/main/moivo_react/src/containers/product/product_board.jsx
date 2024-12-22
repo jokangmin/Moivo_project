@@ -33,8 +33,7 @@ const ProductBoard = () => {
 
   // 날씨 정보 초기 로드
   useEffect(() => {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=Seoul&appid=dda80aeff247e312804f62c881e8eebd`; //code 숨겨야 함
-
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=Seoul&appid=${import.meta.env.VITE_WEATHER_API_KEY}`;
     axios
       .get(url)
       .then((response) => {
@@ -60,45 +59,7 @@ const ProductBoard = () => {
     transition: { duration: 0.6, ease: "easeOut" }
   };
 
-  const getWeatherDescription = (desc) => {
-    switch (desc) {
-      case "clear sky": return "맑은 하늘";
-      case "few clouds": return "약간의 구름";
-      case "scattered clouds": return "분산된 구름";
-      case "broken clouds": return "흐린 구름";
-      case "overcast clouds": return "완전한 구름 덮인 하늘";
-      case "light rain": return "가벼운 비";
-      case "moderate rain": return "중간 강도의 비";
-      case "heavy intensity rain": return "강한 강도의 비";
-      case "very heavy rain": return "매우 강한 비";
-      case "drizzle": return "이슬비";
-      case "light snow": return "가벼운 눈";
-      case "moderate snow": return "중간 강도의 눈";
-      case "heavy snow": return "강한 눈";
-      case "sleet": return "진눈깨비";
-      case "light shower sleet": return "가벼운 진눈깨비";
-      case "shower sleet": return "진눈깨비 소나기";
-      case "light rain and snow": return "가벼운 비와 눈";
-      case "rain and snow": return "비와 눈";
-      case "light shower rain": return "가벼운 소나기 비";
-      case "shower rain": return "소나기 비";
-      case "thunderstorm": return "천둥 번개";
-      case "thunderstorm with light rain": return "천둥번개와 가벼운 비";
-      case "thunderstorm with rain": return "천둥번개와 비";
-      case "thunderstorm with heavy rain": return "천둥번개와 강한 비";
-      case "mist": return "안개";
-      case "smoke": return "연기";
-      case "haze": return "박무";
-      case "dust": return "먼지";
-      case "sand": return "모래";
-      case "fog": return "안개";
-      case "sand dust": return "모래 먼지";
-      case "volcanic ash": return "화산재";
-      case "squalls": return "돌풍";
-      case "tornado": return "토네이도";
-      default: return desc;
-    }
-  };
+  
 
   const weatherTips = () => {
     const tempC = Math.round(weather.temp - 273.15);
@@ -151,6 +112,64 @@ const ProductBoard = () => {
     return tips.map((tip, index) => <li key={index} className={styles.fashionTip}>{tip}</li>);
   };
 
+  const getWeatherDescription = (desc) => {
+    switch (desc) {
+      case "clear sky": return "맑은 하늘";
+      case "few clouds": return "약간의 구름";
+      case "scattered clouds": return "분산된 구름";
+      case "broken clouds": return "흐린 구름";
+      case "overcast clouds": return "완전한 구름 덮인 하늘";
+      case "light rain": return "가벼운 비";
+      case "moderate rain": return "중간 강도의 비";
+      case "heavy intensity rain": return "강한 강도의 비";
+      case "very heavy rain": return "매우 강한 비";
+      case "drizzle": return "이슬비";
+      case "light snow": return "가벼운 눈";
+      case "moderate snow": return "중간 강도의 눈";
+      case "heavy snow": return "강한 눈";
+      case "sleet": return "진눈깨비";
+      case "light shower sleet": return "가벼운 진눈깨비";
+      case "shower sleet": return "진눈깨비 소나기";
+      case "light rain and snow": return "가벼운 비와 눈";
+      case "rain and snow": return "비와 눈";
+      case "light shower rain": return "가벼운 소나기 비";
+      case "shower rain": return "소나기 비";
+      case "thunderstorm": return "천둥 번개";
+      case "thunderstorm with light rain": return "천둥번개와 가벼운 비";
+      case "thunderstorm with rain": return "천둥번개와 비";
+      case "thunderstorm with heavy rain": return "천둥번개와 강한 비";
+      case "mist": return "안개";
+      case "smoke": return "연기";
+      case "haze": return "박무";
+      case "dust": return "먼지";
+      case "sand": return "모래";
+      case "fog": return "안개";
+      case "sand dust": return "모래 먼지";
+      case "volcanic ash": return "화산재";
+      case "squalls": return "돌풍";
+      case "tornado": return "토네이도";
+      default: return desc;
+    }
+  };
+
+  const getWeatherBackground = (desc) => {
+    if (["clear sky", "few clouds"].includes(desc)) {
+      return "url('https://images.unsplash.com/photo-1648787984772-458ce678bdf3?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')";
+    } else if (["scattered clouds", "broken clouds", "overcast clouds"].includes(desc)) {
+      return "url('https://images.unsplash.com/photo-1706178182179-c008245a1255?q=80&w=2662&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')";
+    } else if (["light rain", "moderate rain", "heavy intensity rain", "very heavy rain", "drizzle", "light rain and snow", "light shower rain", "rain and snow"].includes(desc)) {
+      return "url('https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')";
+    } else if (["light snow", "moderate snow", "heavy snow", "sleet", "light shower sleet", "shower sleet"].includes(desc)) {
+      return "url('https://images.unsplash.com/photo-1547754980-3df97fed72a8?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')";
+    } else if (["thunderstorm", "thunderstorm with light rain", "thunderstorm with rain", "thunderstorm with heavy rain"].includes(desc)) {
+      return "url('https://images.unsplash.com/photo-1548996206-122c521b2d39?q=80&w=2667&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')";
+    } else if (["squalls", "tornado"].includes(desc)) {
+      return "url('https://images.unsplash.com/photo-1695605117745-ae4e67fcaa56?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')";
+    } else {
+      return "default background url here"; // 기본 배경 URL 설정
+    }
+  };
+
   return (
     <div className={styles.productBoardContainer}>
       <Banner />
@@ -172,8 +191,13 @@ const ProductBoard = () => {
         </motion.section>
 
         {/* 날씨 패션 섹션 */}
-        <motion.section 
+        <motion.section
           className={`${styles.weatherFashionSection} ${styles.animatedSection}`}
+          style={{
+            backgroundImage: getWeatherBackground(weather.desc),
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
           {...fadeInUp}
         >
           <h2 className={styles.sectionTitle}>Today's Weather Fashion</h2>
@@ -184,7 +208,7 @@ const ProductBoard = () => {
               <div className={styles.weatherInfo}>
                 <img src={imgSrc} alt={weather.desc} className={styles.weatherIcon} />
                 <div>
-                  <p className={styles.weatherstate }>서울특별시</p>
+                  <p className={styles.weatherstate}>서울특별시</p>
                   <p className={styles.weatherDesc}>{getWeatherDescription(weather.desc)}</p>
                 </div>
                 <p>현재 온도: <span>{Math.round(weather.temp - 273.15)}°C</span></p>
@@ -201,7 +225,6 @@ const ProductBoard = () => {
             </div>
           )}
         </motion.section>
-
         {/* 시즌 컬렉션 쇼케이스 */}
         <motion.section 
           className={styles.seasonShowcase}

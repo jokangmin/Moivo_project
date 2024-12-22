@@ -40,3 +40,6 @@ out/
 
 ##소셜로그인 설정 yml 무시
 socialLogin.yml
+
+##.gitignore git 날씨 및 설정 키 추가 
+/src/main/moivo_react/.env

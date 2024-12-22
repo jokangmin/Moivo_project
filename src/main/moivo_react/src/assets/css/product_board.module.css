@@ -29,9 +29,12 @@
 }
 
 .sectionTitle {
+  position: relative;
+  z-index: 1; 
+  color: white;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7); 
   font-size: clamp(2.5rem, 4vw, 3.5rem);
   font-weight: 600;
-  color: #2d3748;
   margin-bottom: 2rem;
   position: relative;
   display: inline-block;
@@ -448,17 +451,69 @@
 
 /* 날씨 패션 섹션 기본 스타일 */
 .weatherFashionSection {
-  background-color: #f5f5f5; /* 부드러운 배경 색상 */
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 살짝 드리운 그림자 */
-  padding: 20px;
-  margin: 20px 0;
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* 애니메이션 효과 */
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  overflow: hidden; 
 }
 
+.weatherFashionSection::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+  filter: blur(10px); 
+}
+
+.weatherFashionSection::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3); 
+  z-index: 0;
+}
+
+.weatherDetails {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; 
+  gap: 20px; 
+}
+
+.weatherInfo {
+  flex: 1;
+  font-weight: bold;
+  z-index: 3;
+  color: #f6f2ee;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7); 
+}
+
+.weatherFashionTips {
+  flex: 1; 
+  text-align: left; 
+  background-color: rgba(255, 255, 255, 0.8); 
+  padding: 15px; 
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  margin: auto 0;
+  z-index: 3;
+}
+
+
+
 .weatherFashionSection:hover {
-  transform: translateY(-5px); /* 마우스 오버 시 위치 변경 */
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15); /* 더 진한 그림자 */
+  transform: translateY(-5px); 
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
 }
 
 .animatedSection {
@@ -469,27 +524,9 @@
   width: 40%;
   margin: 0 auto;
   margin-bottom: 50px;
-  height: 400px;
-}
-
-.sectionTitle {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 15px;
-}
-
-.weatherDetails {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.weatherInfo {
-  flex: 1;
-  text-align: left;
-  margin-left: 50px;
-  font-size: 12pt;
+  height: 450px;
+  position: relative; 
+  z-index: 2;
 }
 
 .weatherInfo img.weatherIcon {
@@ -499,17 +536,14 @@
 }
 
 .weatherDesc {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 500;
   margin-bottom: 10px;
-  color: cadetblue;
+  font-weight: 900;
+  color: #f6f2ee;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7); 
 }
 
-.weatherFashionTips {
-  flex: 1;
-  text-align: left;
-  margin-left: 20px;
-}
 
 .weatherFashionTips p {
   font-size: 16px;
@@ -523,20 +557,24 @@
 }
 
 .weatherFashionTips li {
-  font-size: 14px;
-  background-color: #e1e1e1; /* 아이템 배경 색상 */
+  font-size: 15px;
+  background-color: #bfbfbf;
   border-radius: 4px;
   padding: 5px 10px;
   margin: 5px 5px;
   display: inline-block;
 }
 
-.weatherFashionTips li.fashionTip:hover {
-  background-color: #d1d1d1; /* 마우스 오버 시 배경 색상 변경 */
+.weatherFashionTips li:hover {
+  background-color: #727272;
   cursor: pointer;
 }
 
-.weatherstate{
+.weatherstate {
   font-size: 19pt;
   margin-bottom: 15px;
+  color: #f6f2ee;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7); 
+  font-weight: bold;
+  z-index: 3;
 }
