@@ -39,7 +39,7 @@ public class PaymentScheduler {
     @Scheduled(fixedRate = 300000) // 5분마다 실행
     public void updateDeliveryStatus() {
         // 현재 시간 기준으로 30분 이상 경과한 데이터만 조회
-        LocalDateTime cutoffTime = LocalDateTime.now().minusMinutes(30);
+        LocalDateTime cutoffTime = LocalDateTime.now().minusMinutes(10);
 
         List<PaymentEntity> payments = paymentRepository.findByDeliveryStatusNotAndPaymentDateBefore(
             DeliveryStatus.CONFIRMED, cutoffTime

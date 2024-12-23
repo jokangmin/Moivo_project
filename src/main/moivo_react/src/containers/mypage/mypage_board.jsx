@@ -74,63 +74,66 @@ const mypage_board = () => {
   };
 
   return (
-    <div className={styles.reviewPage}>
-      <Banner />
-      {/* 타이틀 */}
-      <div className={styles.title}>MY INQUIRIES</div>
+    <>
+      <div className={styles.reviewPage}>
+        <Banner />
+        {/* 타이틀 */}
+        <div className={styles.title}>MY INQUIRIES</div>
 
-      {/* 문의 리스트 */}
-      <div className={styles.reviewList}>
-        {MyQnaList.map((inquiry, index) => (
-          <div key={index} className={styles.reviewCard}>
-            <div className={styles.reviewHeader}>
-              <span className={styles.reviewType}>
-                  {inquiry.categoryId === 1 ? "기본 문의" : 
-                  inquiry.categoryId === 2 ? "기타 문의" : 
-                  inquiry.categoryId === 3 ? "사이즈 문의" : 
-                  inquiry.categoryId === 4 ? "비밀 문의" : 
-                  "전체 문의"}
-              </span>
-              <span className={styles.reviewDate}>{inquiry.questionDate?.replace('T', ' ')}</span>
-            </div>
-            <div className={styles.reviewTitle} onClick={() => toggleAnswer(index)}>
-              {inquiry.title}
-            </div>
-            <div className={styles.reviewContent}>{inquiry.content}</div>
-
-            {/* 답변 토글 */}
-            {showAnswer[index] && (
-              <div className={styles.adminAnswer}>
-                <div className={styles.answerTitle}>관리자의 답변:</div>
-                <div className={styles.answerContent}>{inquiry.response}</div>
+        {/* 문의 리스트 */}
+        <div className={styles.reviewList}>
+          {MyQnaList.map((inquiry, index) => (
+            <div key={index} className={styles.reviewCard}>
+              <div className={styles.reviewHeader}>
+                <span className={styles.reviewType}>
+                    {inquiry.categoryId === 1 ? "기본 문의" : 
+                    inquiry.categoryId === 2 ? "기타 문의" : 
+                    inquiry.categoryId === 3 ? "사이즈 문의" : 
+                    inquiry.categoryId === 4 ? "비밀 문의" : 
+                    "전체 문의"}
+                </span>
+                <span className={styles.reviewDate}>{inquiry.questionDate?.replace('T', ' ')}</span>
               </div>
-            )}
-          </div>
-        ))}
-      </div>
+              <div className={styles.reviewTitle} onClick={() => toggleAnswer(index)}>
+                {inquiry.title}
+              </div>
+              <div className={styles.reviewContent}>{inquiry.content}</div>
 
-      {/* 페이지네이션 */}
-      <div className={styles.pagination}>
-          {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                  key={i}
-                  className={`${styles.pageButton} ${i === currentPage ? styles.active : ""}`}
-                  onClick={() => handlePageClick(i)}
-              >
-                  {i + 1}
-              </button>
+              {/* 답변 토글 */}
+              {showAnswer[index] && (
+                <div className={styles.adminAnswer}>
+                  <div className={styles.answerTitle}>관리자의 답변:</div>
+                  <div className={styles.answerContent}>{inquiry.response}</div>
+                </div>
+              )}
+            </div>
           ))}
-      </div>
+        </div>
 
-      {/* 메뉴로 돌아가기 */}
-      <div className={styles.backToMenu}>
-        <Link to="/mypage" className={styles.backLink}>
-          My Page
-        </Link>
-      </div>
+        {/* 페이지네이션 */}
+        <div className={styles.pagination}>
+            {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                    key={i}
+                    className={`${styles.pageButton} ${i === currentPage ? styles.active : ""}`}
+                    onClick={() => handlePageClick(i)}
+                >
+                    {i + 1}
+                </button>
+            ))}
+        </div>
 
+        {/* 메뉴로 돌아가기 */}
+        <div className={styles.backToMenu}>
+          <Link to="/mypage" className={styles.backLink}>
+            My Page
+          </Link>
+        </div>
+
+
+      </div>
       <Footer />
-    </div>
+    </>
   );
 };
 
