@@ -1,6 +1,8 @@
+/* eslint-disable no-unused-vars */
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../utils/axiosConfig';
+import PropTypes from 'prop-types';
 
 const ProDetailContext = createContext();
 
@@ -225,6 +227,10 @@ export const ProDetailProvider = ({ children }) => {
       {children}
     </ProDetailContext.Provider>
   );
+};
+
+ProDetailProvider.propTypes = {
+  children: PropTypes.node.isRequired
 };
 
 export const useProDetail = () => {

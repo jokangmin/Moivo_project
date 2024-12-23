@@ -43,29 +43,35 @@ const MainProvider = ({ children }) => {
     useEffect(() => {
         const handleScroll = () => {
             const parentDiv = parentDivRef.current;
+            const childDiv = childDivRef.current;
+    
+            if (!parentDiv || !childDiv) {
+                return; // parentDiv나 childDiv가 없으면 함수 종료
+            }
+    
             const viewportHeight = window.innerHeight;
             const fromViewportToParentHeight = parentDiv.getBoundingClientRect().top;
             const scrollPassedAmount = viewportHeight - fromViewportToParentHeight;
-
+    
             let divHeight = parentDiv.clientHeight > viewportHeight ? viewportHeight : parentDiv.clientHeight;
             let scrollRate = (scrollPassedAmount / divHeight) * 100;
-
+    
             if (scrollRate < 0) {
                 scrollRate = 0;
             } else if (scrollRate > 100) {
                 scrollRate = 100;
             }
-
-            const childDiv = childDivRef.current;
+    
             childDiv.style.transform = `scale(${scrollRate / 100})`;
         };
-
+    
         window.addEventListener('scroll', handleScroll);
-
+    
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
     }, []);
+    
 
     const onStop = () => setAnimate(false);
     const onRun = () => setAnimate(true);

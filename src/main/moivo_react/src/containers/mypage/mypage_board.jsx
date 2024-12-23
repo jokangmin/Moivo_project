@@ -40,8 +40,8 @@ const mypage_board = () => {
                                           inquiry.categoryId === 4 ? "비밀 문의" :
                                               "전체 문의"}
                           </span>
-                            <div>
-                                <button onClick={() => handleEditPost(inquiry)}>수정</button>
+                            <div className={styles.reviewupdate}>
+                                <button onClick={() => handleEditPost(inquiry) }>수정</button>
                                 <button onClick={() => handleDeletePost(inquiry)}>삭제</button>
                             </div>
                         </div>
