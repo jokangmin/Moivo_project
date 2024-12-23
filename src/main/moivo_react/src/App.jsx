@@ -40,6 +40,14 @@ import DashBoardProvider from './contexts/DashBoardContext';
 import PaymentProvider from './contexts/payment/PaymentContext';
 
 
+import { MypageProvider } from './contexts/mypageCon/MypageContext';
+import { MypageProfileProvider } from './contexts/mypageCon/MypageProfileContext';
+import { MypageWishProvider } from './contexts/mypageCon/MypageWishContext';
+import { MypageBoardProvider } from './contexts/mypageCon/MypageBoardContext';
+import { MypageOrderProvider } from './contexts/mypageCon/MypageOrderContext';
+import { MypageOrderDetailProvider } from './contexts/mypageCon/MypageOrderDetailContext';
+import { CartProvider } from './contexts/cartCon/CartContext';
+
 
 const routeConfig = [
   { path: "/", element: <Main_index /> },
@@ -82,17 +90,35 @@ const App = () => {
     <Router>
       <AuthProvider>
         <MainProvider>
-          <DashBoardProvider>
+        <DashBoardProvider>
             <PaymentProvider>
               <ProListProvider>
                 <ProDetailProvider>
                   <ReviewProvider>
-                    <Routes>
-                      {routeConfig.map(({ path, element }, index) => (
-                        <Route key={index} path={path} element={element} />
-                      ))}
-                    </Routes>
-                  </ReviewProvider>
+                    <ProListProvider>
+                      <ProDetailProvider>
+                        <CartProvider>
+                          <MypageProvider>
+                            <MypageProfileProvider>
+                              <MypageWishProvider>
+                                <MypageBoardProvider>
+                                    <MypageOrderProvider>
+                                    <MypageOrderDetailProvider>
+                                      <Routes>
+                                        {routeConfig.map(({ path, element }, index) => (
+                                          <Route key={index} path={path} element={element} />
+                                        ))}
+                                      </Routes>
+                                  </MypageOrderDetailProvider>
+                                  </MypageOrderProvider>
+                                </MypageBoardProvider>
+                              </MypageWishProvider>
+                            </MypageProfileProvider>
+                          </MypageProvider>
+                        </CartProvider>
+                      </ProDetailProvider>
+                    </ProListProvider>
+                    </ReviewProvider>
                 </ProDetailProvider>
               </ProListProvider>
             </PaymentProvider>
