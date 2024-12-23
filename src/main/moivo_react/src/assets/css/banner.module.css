@@ -250,9 +250,6 @@
   height: 24px;
 }
 
-
-
-
 /* 반응형 추가 */
 @media screen and (max-width: 1200px) {
   .inner {
@@ -325,6 +322,11 @@
 }
 
 @media screen and (max-width: 768px) {
+  .banner {
+    height: auto;
+    padding: 12px 0;
+  }
+
   .navList {
     gap: 15px;
   }
@@ -340,22 +342,12 @@
   .subMenu {
     width: 140px;
     padding: 8px;
+    margin-top: 5px;
   }
 
   .subLink {
     font-size: 12px;
-  }
-
-  .loginStatus {
-    display: none; /* 숨김 설정 */
-  }
-
-  .text {
-    display: none; /* 576px 이하에서 텍스트 숨김 */
-  }
-
-  .iconImage {
-    display: inline-block; /* 576px 이하에서 아이콘 표시 */
+    padding: 8px;
   }
 }
 
@@ -377,10 +369,18 @@
     flex-direction: row;
     align-items: center;
     gap: 21px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 5px;
+  }
+
+  .navList::-webkit-scrollbar {
+    display: none;
   }
 
   .navLink {
-    font-size: 14px;
+    font-size: 13px;
+    white-space: nowrap;
   }
 
   .subMenu {
@@ -390,7 +390,7 @@
   }
 
   .subLink {
-    font-size: 17px;
+    font-size: 15px;
     padding: 10px;
   }
 
@@ -405,7 +405,7 @@
   .utilityLink,
   .utilityLink2,
   .logoutButton {
-    font-size: 12px;
+    font-size: 13px;
   }
 
   .loginStatus {
@@ -427,7 +427,21 @@
     margin-left: -5px;
   }
 
-  .utilityLink2{
+  .utilityLink2 {
     margin-bottom: 7px;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .navList {
+    gap: 15px;
+  }
+
+  .navLink {
+    font-size: 12px;
+  }
+
+  .logo {
+    font-size: 28px;
   }
 }
