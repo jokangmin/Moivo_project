@@ -14,6 +14,7 @@ const Admins_dashboard = () => {  // 24.12.13 백, 프론트 연결 - yjy , 12/1
   const salaesCanvasRef = useRef(null);
   const { isAdmin, getAccessToken, refreshAccessToken } = useAuth();
   const navigate = useNavigate();
+  const [selectedProductStatus, setSelectedProductStatus] = useState(null);
   const [paymentStatus, setPaymentStatus] = useState({});
   const [deliveryStatus, setDeliveryStatus] = useState({});
   const [productStatus, setProductStatus] = useState({});
@@ -29,6 +30,10 @@ const Admins_dashboard = () => {  // 24.12.13 백, 프론트 연결 - yjy , 12/1
     }
   });
 
+  const handleCardClick = (statusType) => {
+    setSelectedProductStatus(statusType);
+  };
+  
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
@@ -481,7 +486,7 @@ const Admins_dashboard = () => {  // 24.12.13 백, 프론트 연결 - yjy , 12/1
                 </div>
               </div>
             </div>
-          </div>
+            </div>
         </section>
 
         {/* 2번 섹션 */}

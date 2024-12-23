@@ -1,9 +1,13 @@
 import axios from 'axios';
 import { PATH } from '../../scripts/path';
+// yjy 만듬
 
 const axiosInstance = axios.create({
   baseURL: PATH.SERVER,
-  withCredentials: true, // 쿠키 인증 정보 포함
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json'
+  }
 });
 
 let isRefreshing = false;

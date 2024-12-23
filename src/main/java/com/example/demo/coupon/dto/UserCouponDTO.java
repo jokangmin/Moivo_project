@@ -1,5 +1,6 @@
 package com.example.demo.coupon.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.example.demo.coupon.entity.UserCouponEntity;
@@ -20,6 +21,8 @@ public class UserCouponDTO {
     private LocalDateTime startDate; // 쿠폰 발급 시작 일자
     private LocalDateTime endDate; // 쿠폰 발급 종료 일자
     private Boolean used; // 쿠폰 사용 여부
+    private BigDecimal discountValue;  // 쿠폰 할인율
+    private BigDecimal minOrderPrice; 
 
     public static UserCouponDTO toGUserCouponDTO(UserCouponEntity entity) {
         UserCouponDTO dto = new UserCouponDTO();
@@ -30,6 +33,8 @@ public class UserCouponDTO {
         dto.setStartDate(entity.getStartDate());
         dto.setEndDate(entity.getEndDate());
         dto.setUsed(entity.getUsed());
+        dto.setDiscountValue(entity.getCouponEntity().getDiscountValue());
+        dto.setMinOrderPrice(entity.getCouponEntity().getMinOrderPrice());
 
         return dto;
     }

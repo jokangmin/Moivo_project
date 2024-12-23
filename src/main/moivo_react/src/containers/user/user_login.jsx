@@ -5,9 +5,10 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { PATH } from "../../../scripts/path";
 import signin from '../../assets/css/user_login.module.css';
 import kakaoLoginImage from '../../assets/image/kakao_login.png';
+import axiosInstance from '../../utils/axiosConfig';
 
 const user_login = () => {
-
+//d
   const navigate = useNavigate();
   const {login} = useContext(AuthContext);
   const [formData, setFormData] = useState({ userId: '', pwd: '' });
@@ -17,7 +18,7 @@ const user_login = () => {
     const fetchUserData = async () => {
         try {
             const token = localStorage.getItem('accessToken');
-            const response = await apiClient.get('/api/user/info', {
+            const response = await axiosInstance.get('/api/user/info', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -30,7 +31,6 @@ const user_login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
         
         try {
             const success = await login(formData.userId, formData.pwd);
@@ -39,7 +39,7 @@ const user_login = () => {
                 navigate('/');
             }
         } catch (error) {
-            setError(error);
+            setError(error.response?.data?.error || "로그인이 불가능합니다.<br/> 아이디 또는 비밀번호를 확인해주세요.");
         }
     };
 
@@ -60,6 +60,11 @@ const user_login = () => {
         }
     };
 
+    const handleFocus = (e) => {
+        if (e.target.name === 'userId' || e.target.name === 'pwd') {
+            setError('');
+        }
+    };
     return (
         <div className={signin.loginMain}>
             <div className={signin.container} id="container">
@@ -69,38 +74,31 @@ const user_login = () => {
                             <h1>Moivo</h1>
                         </Link>
                         <div className={signin['social-container']}>
-                            <button 
-                                type="button"
-                                onClick={handleKakaoLogin}
-                                style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    padding: 0,
-                                    cursor: 'pointer'
-                                }}
-                            >
-                                <img 
-                                    src={kakaoLoginImage} 
-                                    alt="카카오 로그인" 
-                                    style={{ 
-                                        width: '100%',
-                                        height: '100%',
-                                        cursor: 'pointer'
-                                    }} 
-                                />
-                            </button>
-                            <a href="#" className={signin.social}><i className="fab fa-google-plus-g"></i></a>
-                            <a href="#" className={signin.social}><i className="fab fa-linkedin-in"></i></a>
                         </div>
                         <span>If you don't want to sign up,<br/>or use your account instead.</span>
-                        {error && <div className={signin.error}>{error}</div>}
-                        <input type="text" name="userId" value={formData.id} onChange={handleChange} placeholder="ID" required/>
-                        <input type="password" name="pwd" value={formData.pwd} onChange={handleChange} placeholder="Password" required/>
-                        <a href="#">Forgot your password?</a>
-                        <button type="submit">Sign In</button>
-                        <Link to="/user_signup">
-                            <button type="submit" className={signin.singupbtn}>Sign Up</button>
-                        </Link>
+                        <input type="text" name="userId" value={formData.id} onChange={handleChange} onFocus={handleFocus} placeholder="ID" required/>
+                        <input type="password" name="pwd" value={formData.pwd} onChange={handleChange} onFocus={handleFocus} placeholder="Password" required/>
+                        {error && <div className={signin.error} dangerouslySetInnerHTML={{ __html: error }} />}
+                        <div className={signin.signBtn}>
+                            
+                            <button type="submit" className={signin.signinbtn}>Sign In</button>
+                            
+                            {/* 반응형-> 나타나는 회원가입 버튼 */}
+                            <Link to="/user_signup">
+                                <button type="submit" className={signin.singupbtn}>Sign Up</button>
+                            </Link> 
+                                
+                            <button type="button" className={signin.kakao_nomedia} onClick={handleKakaoLogin} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }} >
+                                <img src={kakaoLoginImage} alt="카카오 로그인"  style={{ width: '100%', height: '100%', cursor: 'pointer' }} />
+                            </button>
+                        </div>
+
+                        {/* 반응형-> 나타나는 카카오 로그인 버튼 */}
+                        <div className={signin.kakao_media}>
+                            <button type="button" onClick={handleKakaoLogin} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }} >
+                                <img src={kakaoLoginImage} alt="카카오 로그인"  style={{ width: '100%', height: '100%', cursor: 'pointer' }} />
+                            </button>
+                        </div>
                     </form>
                 </div>
 

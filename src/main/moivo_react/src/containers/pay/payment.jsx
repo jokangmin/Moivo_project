@@ -46,6 +46,7 @@ const Payment = () => {
   
   console.log(location.state);
   console.log(isCartItem);
+  console.log(coupons);
 
   const fetchUserInfo = async () => {
     const token = localStorage.getItem("accessToken");
@@ -124,30 +125,59 @@ const Payment = () => {
       }
   };
 
-  // 결제 금액 계산 함수 (할인 반영)
-  const getDiscountedTotal = () => {
-    if (!formData.coupon) return totalPrice;
+// 결제 금액 계산 함수 (할인 반영)
+const getDiscountedTotal = () => {
+  if (!formData.coupon) return totalPrice;
 
-    // 선택한 쿠폰을 찾고, 할인 적용
-    const selectedCoupon = coupons.find(coupon => coupon.name === formData.coupon);
-    if (selectedCoupon) {
-      const discountAmount = (totalPrice * selectedCoupon.discountValue) / 100;
-      console.log(discountAmount);
-      return totalPrice - discountAmount;
+  const selectedCoupon = coupons.find(coupon => coupon.couponName === formData.coupon);
+  if (selectedCoupon) {
+    const minOrderPrice = selectedCoupon.minOrderPrice || 0;
+
+    // 총 결제 금액이 최소 금액 이상이어야 쿠폰 적용 가능
+    if (totalPrice < minOrderPrice) {
+      alert(`이 쿠폰은 최소 결제 금액인 ${minOrderPrice.toLocaleString()}원을 초과해야 사용 가능합니다.`);
+      return totalPrice; // 할인 없이 원래 금액 반환
     }
-    return totalPrice;
+
+    const discountAmount = (totalPrice * selectedCoupon.discountValue) / 100;
+    return totalPrice - discountAmount;
+  }
+  return totalPrice;
+};
+
+  // 쿠폰 목록을 렌더링할 때 최소 주문 금액 표시 및 비활성화
+  const renderCouponOptions = () => {
+    return coupons.map((coupon) => {
+      const minOrderPrice = coupon.minOrderPrice || 0;
+      const isDisabled = totalPrice < minOrderPrice;
+
+      return (
+        <option key={coupon.id} value={coupon.couponName} disabled={isDisabled}>
+          {coupon.couponName} ({coupon.discountValue}% 할인)
+          {minOrderPrice > 0 && ` - 최소 주문 금액: KRW ${minOrderPrice.toLocaleString()}`}
+        </option>
+      );
+    });
   };
 
-  // 상품별 할인된 가격 계산
-  const calculateDiscountedPrice = (price) => {
-    if (!formData.coupon) return price; // 쿠폰 선택 안 된 경우 원래 가격 반환
-    const selectedCoupon = coupons.find(coupon => coupon.name === formData.coupon);
-    if (selectedCoupon) {
-      const discountValue = selectedCoupon.discountValue; // 할인율
-      return price - (price * discountValue) / 100;
+// 상품별 할인된 가격 계산
+const calculateDiscountedPrice = (price) => {
+  if (!formData.coupon) return price; // 쿠폰 선택 안 된 경우 원래 가격 반환
+
+  const selectedCoupon = coupons.find(coupon => coupon.couponName === formData.coupon);
+  if (selectedCoupon) {
+    const minOrderPrice = selectedCoupon.minOrderPrice || 0;
+
+    // 총 결제 금액이 최소 금액 이상이어야 쿠폰 적용 가능
+    if (totalPrice < minOrderPrice) {
+      return price; // 할인 없이 원래 가격 반환
     }
-    return price;
-  };
+
+    const discountValue = selectedCoupon.discountValue; // 할인율
+    return price - (price * discountValue) / 100;
+  }
+  return price;
+};
 
   useEffect(() => {
       console.log("Updated paymentData:", paymentData);
@@ -163,7 +193,7 @@ const Payment = () => {
       return;
     }
 
-    const selectedCoupon = coupons.find(coupon => coupon.name === formData.coupon);
+    const selectedCoupon = coupons.find(coupon => coupon.couponName === formData.couponName);
     if (selectedCoupon) {
       const discountAmount = (totalPrice * selectedCoupon.discountValue) / 100;
       setPaymentData((prevData) => ({
@@ -181,6 +211,7 @@ const Payment = () => {
       return;
     }
   
+    // 결제 데이터 업데이트
     const updatedPaymentData = {
       ...paymentData,
       name: formData.name,
@@ -189,18 +220,29 @@ const Payment = () => {
       addr1: formData.addr1,
       addr2: formData.addr2,
       zipcode: formData.zipcode,
-      totalPrice: getDiscountedTotal(),
+      totalPrice: getDiscountedTotal(), // 총 결제 금액 (할인 적용된 가격)
+      discount: getDiscountedTotal() < totalPrice ? totalPrice - getDiscountedTotal() : 0, // 할인 금액 계산
     };
+  
+    // 각 상품에 대해 할인된 가격을 포함하여 새로운 배열을 만듭니다.
+    const updatedCartItems = cartItems.map(item => {
+      const discount = calculateDiscountedPrice(item.price);
+      console.log(discount);
+      return {
+        ...item,
+        discountedPrice: discount, // 할인된 가격 추가
+      };
+    });
   
     setPaymentData(updatedPaymentData);
     console.log(updatedPaymentData);
-
-    // 사용자가 입력한 정보와 카트 정보를 state로 전달하면서 payment-method로 이동
+  
+    // 결제 정보와 카트 정보를 state로 전달하면서 payment-method로 이동
     navigate("/payment-method", {
       state: {
         paymentData: updatedPaymentData, // 결제자 정보
-        paymentDetailList: cartItems, // 상품 정보
-        isCartItem: isCartItem
+        paymentDetailList: updatedCartItems, // 할인된 가격 포함된 상품 정보
+        isCartItem: isCartItem,
       },
     });
   };
@@ -285,11 +327,7 @@ const Payment = () => {
                   onChange={handleChange}
                 >
                   <option value="">쿠폰을 선택하세요</option>
-                  {coupons.map((coupon) => (
-                    <option key={coupon.id} value={coupon.name}>
-                      {coupon.name} ({coupon.discountValue}% 할인)
-                    </option>
-                  ))}
+                  {renderCouponOptions()}
                 </select>
               </div>
             </form>

@@ -2,6 +2,7 @@ package com.example.demo.user.service.impl;
 
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -19,15 +20,22 @@ import com.example.demo.jwt.prop.JwtProps;
 import com.example.demo.jwt.service.BlacklistService;
 import com.example.demo.jwt.service.RefreshTokenService;
 import com.example.demo.jwt.util.JwtUtil;
+import com.example.demo.payment.entity.PaymentDetailEntity;
 import com.example.demo.payment.entity.PaymentEntity;
+import com.example.demo.payment.repository.PaymentDetailRepository;
 import com.example.demo.payment.repository.PaymentRepository;
+import com.example.demo.qna.entity.QuestionEntity;
+import com.example.demo.qna.repository.QuestionRepository;
+import com.example.demo.store.repository.ReviewRepository;
 import com.example.demo.user.dto.UserDTO;
 import com.example.demo.user.entity.CartEntity;
 import com.example.demo.user.entity.UserEntity;
 import com.example.demo.user.entity.WishEntity;
 import com.example.demo.user.entity.UserEntity.LoginType;
 import com.example.demo.user.repository.CartRepository;
+import com.example.demo.user.repository.UserCartRepository;
 import com.example.demo.user.repository.UserRepository;
+import com.example.demo.user.repository.UserWishRepository;
 import com.example.demo.user.repository.WishRepository;
 import com.example.demo.user.service.UserService;
 
@@ -46,15 +54,32 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
+
     @Autowired
     private PaymentRepository paymentRepository;
+
+    @Autowired
+    private PaymentDetailRepository paymentDetailRepository;
 
     @Autowired
     private UserCouponRepository userCouponRepository;
     @Autowired
     private WishRepository wishRepository;
+
+    @Autowired
+    private UserWishRepository userWishRepository;
+
+    @Autowired
+    private QuestionRepository questionRepository;
+
     @Autowired
     private CartRepository cartRepository;
+
+    @Autowired
+    private UserCartRepository userCartRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -188,6 +213,15 @@ public class UserServiceImpl implements UserService {
         result.put("isAdmin", user.isAdmin());
 
         return result;
+    }
+
+    @Override
+    public int idCheck(String userid) {
+        if (userRepository.existsByUserId(userid)) {
+            System.out.println("중복된 ID 있음. 가입불가");
+            return 1;
+        }
+        return 0;
     }
 
     @Override
@@ -417,28 +451,50 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
-    // 회원정보 삭제 - sumin (2024.12.12)
+    // 회원정보 삭제 - sumin (2024.12.12) (2024.12.20)
+    @Transactional
+    @Override
     public void deleteUser(int userId) {
-        // 사용자 정보 조회
         UserEntity userEntity = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // 연관된 데이터 삭제
-        // 1. UserEntity와 관련된 DB 삭제
-        if (userEntity.getWishEntity() != null) {
-            // WishEntity 삭제
-            userEntity.getWishEntity().setUserEntity(null); // 양방향 관계 해제
-        }
-        if (userEntity.getCartEntity() != null) {
-            // CartEntity 삭제
-            userEntity.getCartEntity().setUserEntity(null); // 양방향 관계 해제
-        }
+        // 1. Wish 관련 데이터 삭제
+        userEntity.setWishEntity(null);
+        userRepository.save(userEntity);
 
-        // UserCouponEntity 삭제
+        // 2. Cart 관련 데이터 삭제
+        userEntity.setCartEntity(null);
+        userRepository.save(userEntity);
+
+        // 3. 쿠폰 데이터 삭제
         userCouponRepository.deleteByUserEntity_Id(userId);
 
-        // 3. 사용자 삭제
+        // 4. 문의 데이터 수정 (연관 관계 끊기)
+        questionRepository.removeUserAssociationFromQuestion(userId);
+
+        // 5. 리뷰 데이터 수정 (연관 관계 끊기)
+        reviewRepository.removeUserAssociationFromReview(userId);
+
+        // 6. 결제 데이터 수정 (연관 관계 끊기)
+        removeUserAssociationFromPayments(userId);
+
+        // 7. 사용자 삭제
         userRepository.delete(userEntity);
+         
+    }
+    
+
+    // 결제 정보에서 사용자와의 연관 관계 끊기 
+    @Transactional
+    public void removeUserAssociationFromPayments(int userId) {
+        List<PaymentEntity> payments = paymentRepository.findByUserEntity_Id(userId);
+        if (!payments.isEmpty()) {
+            for (PaymentEntity payment : payments) {
+                // 결제 정보에서 사용자 연결 해제 (userId를 null로 설정)
+                payment.setUserEntity(null); 
+                paymentRepository.save(payment); // 변경된 결제 정보 저장
+            }
+        }
     }
 
     @Override

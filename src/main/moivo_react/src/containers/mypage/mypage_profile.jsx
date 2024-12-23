@@ -34,6 +34,13 @@ const MypageProfile = () => {
 
     const { refreshAccessToken } = useAuth();  // useAuth에서 refreshAccessToken 가져오기
 
+    //2024-12-19 비밀번호 정규화 추가 장훈
+    const validatePassword = (password) => {
+        // 비밀번호 정규식: 영문, 숫자, 특수문자 조합 8~15자
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,15}$/;
+        return passwordRegex.test(password);
+    };
+
     const validateForm = () => {
         const newErrors = {};
         if (!formData.name) newErrors.name = "이름을 입력해 주세요.";
@@ -42,6 +49,12 @@ const MypageProfile = () => {
             newErrors.phone = "전화번호를 입력해 주세요.";
         }
         if (!formData.pwd) newErrors.pwd = "비밀번호를 입력해 주세요.";
+        //2024-12-19 비밀번호 정규화 추가 장훈
+        if (formData.pwd) {
+            if (!validatePassword(formData.pwd)) {
+                newErrors.pwd = "비밀번호는 영문, 숫자, 특수문자 조합으로 8~15자여야 합니다.";
+            }
+        }
         if (formData.pwd !== formData.confirmPwd) {
             newErrors.confirmPwd = "비밀번호가 일치하지 않습니다.";
         }
@@ -68,12 +81,10 @@ const MypageProfile = () => {
     
         if (!validateForm()) return;  // 유효성 검사를 통과하지 못하면 서버로 전송하지 않음
     
-        const userId = formData.userId;
         const phone = `${formData.phone1}${formData.phone2}${formData.phone3}`;
     
         // 서버로 전송할 데이터 준비
         const updateData = {
-            userId,
             name: formData.name,
             gender: formData.gender,
             address: formData.addr1, // 기본 주소
@@ -89,7 +100,7 @@ const MypageProfile = () => {
         };
 
         try {
-            const response = await axiosInstance.post('/api/user/mypage/update', updateData);
+            await axiosInstance.post('/api/user/mypage/update', updateData);
             alert("회원정보가 성공적으로 수정되었습니다!");
             navigate("/mypage");
         } catch (error) {
@@ -154,23 +165,23 @@ const MypageProfile = () => {
     const handleDeletePasswordChange = (e) => setDeletePassword(e.target.value);
 
     const handleDeleteAccount = async () => {
+        const token = localStorage.getItem("accessToken");
+        
+         // 토큰 디코딩 (jwt-decode 없이)
+         const payload = token.split('.')[1];
+         const decodedPayload = JSON.parse(atob(payload));
+         const id = decodedPayload.id;  //토큰에 있는 id 추출
+         console.log("User ID:", id);
+
         if (!deletePassword) {
             alert("비밀번호를 입력해주세요.");
             return;
         }
     
-        const userId = parseInt(localStorage.getItem("id"));
-    
-        if (isNaN(userId)) {
-            alert("로그인이 필요합니다. 다시 로그인해주세요.");
-            navigate("/login");
-            return;
-        }
-    
         try {
             await axiosInstance.post('/api/user/mypage/delete', {
-                userId: userId,
                 pwd: deletePassword,
+                userId: id
             });
     
             alert("회원 탈퇴가 완료되었습니다.");
@@ -221,19 +232,27 @@ const MypageProfile = () => {
     };
 
     useEffect(() => {
+        const token = localStorage.getItem("accessToken");
+        console.log("Access Token:", token);
+        
+        if (!token) {
+            alert("로그인이 필요합니다.");
+            navigate("/user");
+            return;
+        }
+
+         // 토큰 디코딩 (jwt-decode 없이)
+        const payload = token.split('.')[1];
+        const decodedPayload = JSON.parse(atob(payload));
+        const id = decodedPayload.id;  //토큰에 있는 id 추출
+        console.log("User ID:", id);
+
+
         const fetchUserInfo = async () => {
-            const id = localStorage.getItem("id");
-        
-            if (!id) {
-                alert("로그인이 필요합니다.");
-                navigate("/user");
-                return;
-            }
-        
             try {
                 const response = await axiosInstance.get(`/api/user/mypage/info/${id}`);
                 const data = response.data;
-                
+
                 const { phone1, phone2, phone3 } = splitPhoneNumber(data.tel);
         
                 setUserInfo(data);
@@ -301,14 +320,15 @@ const MypageProfile = () => {
                         {userInfo ? (
                             <>
                                 <p>{userInfo.name}님의 멤버십 등급은 <strong>[ {userInfo.grade} ]</strong>입니다.</p>
-                                {userInfo.nextLevelTarget === 0 ? (
-                                <strong><p></p></strong>
+                                {userInfo && userInfo.nextLevelTarget !== undefined ? (
+                                    <p>
+                                        다음 등급까지 남은 구매금액은 
+                                        <strong>KRW {userInfo.nextLevelTarget.toLocaleString()}원</strong>입니다.
+                                    </p>
                                 ) : (
-                                <p>
-                                    다음 등급까지 남은 구매금액은 
-                                    <strong> KRW {userInfo.nextLevelTarget.toLocaleString()}원</strong>입니다.
-                                </p>
+                                    <strong><p>다음 등급 정보가 없습니다.</p></strong>
                                 )}
+
                                 <p>
                                 키: <strong>{userInfo.height}cm</strong> &nbsp;
                                 몸무게: <strong>{userInfo.weight}kg</strong>
@@ -323,7 +343,7 @@ const MypageProfile = () => {
                                 COUPON: &nbsp;
                                 {userInfo && userInfo.coupons ? (
                                 userInfo.coupons.map((coupon, index) => (
-                                    <strong key={index}>{coupon.name}</strong>
+                                    <strong key={index}>{coupon.couponName}</strong>
                                 ))
                                 ) : (
                                 "쿠폰 정보를 불러오는 중입니다..."

@@ -20,7 +20,7 @@ public class AdminManagementController {
     @Autowired
     private AdminManagementService adminManagementService;
 
-    // 자주 묻는 질문 등록
+    // 자주 묻는 질문 등록 - 24.12.18 yjy
     @PostMapping("/faq")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> addFAQ(@RequestBody QuestionDTO questionDTO) {
@@ -115,7 +115,7 @@ public class AdminManagementController {
         return ResponseEntity.ok(adminManagementService.getUnansweredQuestions());
     }
 
-    // 관리자 대시보드 데이터 가져오기
+    // 관리자 대시보드 데이터 가져오기 - 24.12.13 yjy
     @GetMapping("/questions/status")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Integer>> getQuestionStatus() {

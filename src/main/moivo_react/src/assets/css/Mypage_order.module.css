@@ -368,6 +368,20 @@
 }
 
 
+.editReviewButton{
+    margin-top: 10px;
+    background-color: #ebd9c8;
+    color: #2f2e2c;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    border-radius: 5px;
+}
+
+.editReviewButton:hover {
+    background-color: #988c73; 
+    color: #fff;
+}
 
 
   @media (max-width: 768px) {
