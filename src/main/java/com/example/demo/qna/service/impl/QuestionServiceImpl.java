@@ -66,6 +66,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public void deleteQuestion(QuestionDTO questionDTO) {
         QuestionEntity questionEntity = questionRepository.findById(questionDTO.getId()).get(); //Question 레포지토리에서 Question Id(글 번호)로 등록한 글 찾기
+        System.out.println("게시글 삭제완료");
         questionRepository.delete(questionEntity);
     }
 
