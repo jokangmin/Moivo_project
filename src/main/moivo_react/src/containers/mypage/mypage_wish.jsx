@@ -62,38 +62,41 @@ const MypageWish = () => {
   };
   
   return (
-    <div className={styles.wishlistPage}>
-      <Banner />
-      <div className={styles.title}>WISHLIST</div>
-      <div className={styles.container}>
-      {wishlistItems.length > 0 ? (
-          <div className={styles.wishlistContainer}>
-            {wishlistItems.map((item) => (
-              <div key={item.id} className={styles.wishlistItem}>
-                <div className={styles.itemImage}>
-                  <img src={item.img} alt={item.name} />
+    <div>
+      <div className={styles.wishlistPage}>
+        <Banner />
+        <div className={styles.title}>WISHLIST</div>
+        <div className={styles.container}>
+        {wishlistItems.length > 0 ? (
+            <div className={styles.wishlistContainer}>
+              {wishlistItems.map((item) => (
+                <div key={item.id} className={styles.wishlistItem}>
+                  <div className={styles.itemImage}>
+                    <img src={item.img} alt={item.name} />
+                  </div>
+                  <div className={styles.itemInfo}>
+                    <div className={styles.itemName}>{item.name}</div>
+                    <div className={styles.itemPrice}>{item.price}원</div>
+                    <button
+                      className={styles.removeButton}
+                      onClick={() => handleRemove(item.id)}
+                    >
+                      Remove
+                    </button>
+                  </div>
                 </div>
-                <div className={styles.itemInfo}>
-                  <div className={styles.itemName}>{item.name}</div>
-                  <div className={styles.itemPrice}>{item.price}원</div>
-                  <button
-                    className={styles.removeButton}
-                    onClick={() => handleRemove(item.id)}
-                  >
-                    Remove
-                  </button>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
+          ) : (
+            <div className={styles.emptyMessage}>Your wishlist is empty.</div>
+          )}
+          <div className={styles.bottomBar}></div>
+            <Link to="/mypage" className={styles.backLink}>
+              Go Back to MyPage
+            </Link>
           </div>
-        ) : (
-          <div className={styles.emptyMessage}>Your wishlist is empty.</div>
-        )}
-        <div className={styles.bottomBar}></div>
-          <Link to="/mypage" className={styles.backLink}>
-            Go Back to MyPage
-          </Link>
-        </div>
+
+      </div>
       <Footer />
     </div>
   );

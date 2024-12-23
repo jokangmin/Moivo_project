@@ -12,7 +12,7 @@ public interface ProductService {
 
     public Map<String, Object> getProductList(Map<String, Object> dataMap);
 
-    public List<ProductCategoryDTO> getCategory();
+    public List<ProductCategoryDTO> getParentCategory();
 
     public List<Gender> getGenders();
 

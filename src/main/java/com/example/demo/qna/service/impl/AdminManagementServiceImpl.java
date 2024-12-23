@@ -1,19 +1,6 @@
 package com.example.demo.qna.service.impl;
 
-import com.example.demo.store.dto.ProductCategoryDTO;
-import com.example.demo.store.dto.ProductDTO;
-import com.example.demo.store.dto.ProductStockDTO;
-import com.example.demo.store.entity.ProductCategoryEntity;
-import com.example.demo.store.entity.ProductEntity;
-import com.example.demo.store.entity.ProductStockEntity;
-import com.example.demo.store.repository.ProductCategoryRepository;
-import com.example.demo.store.repository.ProductRepository;
-import com.example.demo.store.repository.ProductStockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.qna.dto.QuestionCategoryDTO;
@@ -46,14 +33,6 @@ public class AdminManagementServiceImpl implements AdminManagementService {
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private ProductCategoryRepository productCategoryRepository;
-
-    @Autowired
-    private ProductStockRepository productStockRepository;
 
     @Override
     public void addFAQ(QuestionDTO questionDTO) {
