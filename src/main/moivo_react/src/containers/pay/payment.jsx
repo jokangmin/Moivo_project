@@ -149,12 +149,24 @@ const getDiscountedTotal = () => {
   const renderCouponOptions = () => {
     return coupons.map((coupon) => {
       const minOrderPrice = coupon.minOrderPrice || 0;
-      const isDisabled = totalPrice < minOrderPrice;
-
+      const isDisabled =
+        coupon.couponName === "이미 사용한 쿠폰입니다." ||
+        coupon.couponName === "유효기간이 지난 쿠폰입니다." ||
+        totalPrice < minOrderPrice;
+  
       return (
-        <option key={coupon.id} value={coupon.couponName} disabled={isDisabled}>
-          {coupon.couponName} ({coupon.discountValue}% 할인)
-          {minOrderPrice > 0 && ` - 최소 주문 금액: KRW ${minOrderPrice.toLocaleString()}`}
+        <option
+          key={coupon.id}
+          value={coupon.couponName}
+          disabled={isDisabled} // 조건에 따라 선택 비활성화
+        >
+          {isDisabled
+            ? "쿠폰 없음" // 비활성화된 경우 표시
+            : `${coupon.couponName} (${coupon.discountValue}% 할인)${
+                minOrderPrice > 0
+                  ? ` - 최소 주문 금액: KRW ${minOrderPrice.toLocaleString()}`
+                  : ""
+              }`}
         </option>
       );
     });
