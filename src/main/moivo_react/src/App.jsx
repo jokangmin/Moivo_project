@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProListProvider } from './contexts/productCon/ProListContext';
 import { ProDetailProvider } from './contexts/productCon/ProDetailContext';
+
 import Main_index from './components/Main_index';
 import MainProvider from './contexts/MainContext';
 import User_login from './containers/user/user_login';
@@ -35,6 +36,14 @@ import KakaoCallback from './components/kakao/KakaoCallback';
 import Admins_FAQ from './containers/admin/admins_FAQ';
 import Admins_ProductList from './containers/admin/admin_productList';
 import ReviewWrite from './containers/review/review_write';
+
+import { MypageProvider } from './contexts/mypageCon/MypageContext';
+import { MypageProfileProvider } from './contexts/mypageCon/MypageProfileContext';
+import { MypageWishProvider } from './contexts/mypageCon/MypageWishContext';
+import { MypageBoardProvider } from './contexts/mypageCon/MypageBoardContext';
+import { MypageOrderProvider } from './contexts/mypageCon/MypageOrderContext';
+import { MypageOrderDetailProvider } from './contexts/mypageCon/MypageOrderDetailContext';
+import { CartProvider } from './contexts/cartCon/CartContext';
 
 
 const routeConfig = [
@@ -80,11 +89,25 @@ const App = () => {
         <MainProvider>
           <ProListProvider>
             <ProDetailProvider>
-              <Routes>
-                {routeConfig.map(({ path, element }, index) => (
-                  <Route key={index} path={path} element={element} />
-                ))}
-              </Routes>
+              <CartProvider>
+                <MypageProvider>
+                  <MypageProfileProvider>
+                    <MypageWishProvider>
+                      <MypageBoardProvider>
+                          <MypageOrderProvider>
+                          <MypageOrderDetailProvider>
+                            <Routes>
+                              {routeConfig.map(({ path, element }, index) => (
+                                <Route key={index} path={path} element={element} />
+                              ))}
+                            </Routes>
+                        </MypageOrderDetailProvider>
+                        </MypageOrderProvider>
+                      </MypageBoardProvider>
+                    </MypageWishProvider>
+                  </MypageProfileProvider>
+                </MypageProvider>
+              </CartProvider>
             </ProDetailProvider>
           </ProListProvider>
         </MainProvider>
