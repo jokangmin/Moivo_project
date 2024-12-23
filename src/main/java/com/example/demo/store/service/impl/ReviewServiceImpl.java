@@ -14,7 +14,6 @@ import com.example.demo.store.entity.ProductEntity;
 import com.example.demo.store.entity.ReviewEntity;
 import com.example.demo.store.repository.ProductRepository;
 import com.example.demo.store.repository.ReviewRepository;
-import com.example.demo.store.repository.ReviewRepositoryCustom;
 import com.example.demo.store.service.ReviewService;
 import com.example.demo.user.entity.UserEntity;
 import com.example.demo.user.repository.UserRepository;
