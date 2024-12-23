@@ -250,6 +250,9 @@
   height: 24px;
 }
 
+
+
+
 /* 반응형 추가 */
 @media screen and (max-width: 1200px) {
   .inner {
@@ -257,39 +260,44 @@
   }
 
   .navList {
-    gap: 35px;
+    gap: 30px;
   }
 
   .navLink {
     font-size: 16px;
-    padding: 10px 15px; /* 터치 영역 확대 */
   }
 
   .subMenu {
-    width: 190px;
-    padding: 12px;
+    width: 180px;
+    padding: 10px;
   }
 
   .subLink {
     font-size: 14px;
-    padding: 10px 12px; /* 터치 영역 확대 */
+    padding: 8px;
   }
 
   .utility {
-    gap: 20px;
+    gap: 15px;
   }
 
-  .utilityLink,
+  .utilityLink {
+    font-size: 13px;
+  }
+
   .logoutButton {
-    font-size: 14px;
-    padding: 10px 15px; /* 터치 영역 확대 */
+    font-size: 13px;
+  }
+
+  .loginStatus {
+    font-size: 13px;
   }
 }
 
 @media screen and (max-width: 992px) {
   .banner {
     height: auto;
-    padding: 20px 0;
+    padding: 15px 0;
   }
 
   .inner {
@@ -303,116 +311,123 @@
   .navList {
     flex-wrap: wrap;
     justify-content: center;
-    gap: 25px;
-  }
-
-  .navLink {
-    font-size: 15px;
-    padding: 12px 18px; /* 터치 영역 확대 */
+    gap: 20px;
   }
 
   .subMenu {
-    width: 170px;
+    width: 150px;
   }
 
   .subLink {
-    font-size: 13px;
-    padding: 10px 12px; /* 터치 영역 확대 */
-  }
-
-  .utility {
-    gap: 18px;
-  }
-
-  .utilityLink,
-  .logoutButton {
-    font-size: 13px;
-    padding: 10px 15px; /* 터치 영역 확대 */
+    font-size: 12px;
+    padding: 6px;
   }
 }
 
 @media screen and (max-width: 768px) {
   .navList {
-    gap: 20px;
+    gap: 15px;
   }
 
   .utility {
-    gap: 12px;
+    gap: 10px;
   }
 
   .navLink {
     font-size: 14px;
-    padding: 12px 20px; /* 터치 영역 확대 */
   }
 
   .subMenu {
-    width: 150px;
-    padding: 10px;
+    width: 140px;
+    padding: 8px;
   }
 
   .subLink {
     font-size: 12px;
-    padding: 10px 12px; /* 터치 영역 확대 */
+  }
+
+  .loginStatus {
+    display: none; /* 숨김 설정 */
+  }
+
+  .text {
+    display: none; /* 576px 이하에서 텍스트 숨김 */
   }
 
   .iconImage {
-    display: inline-block;
-    width: 24px; /* 터치 영역에 적합한 크기 */
-    height: 24px;
+    display: inline-block; /* 576px 이하에서 아이콘 표시 */
   }
 }
 
 @media screen and (max-width: 576px) {
   .banner {
-    padding: 15px 0;
+    padding: 10px 0;
   }
 
   .inner {
-    padding: 0 10px;
+    padding: 0 12px;
   }
 
   .logo {
-    font-size: 28px;
+    font-size: 32px;
     text-align: center;
   }
 
   .navList {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 20px;
+    gap: 21px;
   }
 
   .navLink {
     font-size: 14px;
-    padding: 14px 22px; /* 터치 영역 확대 */
   }
 
   .subMenu {
-    width: 140px;
-    padding: 10px;
+    width: 145px;
+    padding: 5px;
     margin-top: 10px;
   }
 
   .subLink {
-    font-size: 12px;
-    padding: 12px 15px; /* 터치 영역 확대 */
+    font-size: 17px;
+    padding: 10px;
   }
 
   .utility {
     flex-direction: column;
-    gap: 12px;
-    align-items: center;
+    gap: 10px;
+    align-items: baseline;
+    margin-top: 10px;
+    display: block;
   }
 
   .utilityLink,
+  .utilityLink2,
   .logoutButton {
     font-size: 12px;
-    padding: 12px 15px; /* 터치 영역 확대 */
+  }
+
+  .loginStatus {
+    display: none;
+  }
+
+  .text {
+    display: none;
   }
 
   .iconImage {
-    display: inline-block;
-    width: 22px;
-    height: 22px;
+    display: inline-block; 
+    margin-right: 10px;
+  }
+
+  .logoutButton {
+    display: block;
+    margin-top: 10px;
+    margin-left: -5px;
+  }
+
+  .utilityLink2{
+    margin-bottom: 7px;
   }
 }
