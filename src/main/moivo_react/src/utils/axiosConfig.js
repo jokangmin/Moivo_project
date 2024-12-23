@@ -114,6 +114,14 @@ axiosInstance.interceptors.response.use(
       return Promise.resolve({ data: null });
     }
 
+    if (error.response?.data?.error === 'DuplicateLogin') {
+      // 로컬 스토리지 클리어
+      localStorage.clear();
+      // 홈페이지로 리다이렉트
+      window.location.href = '/';
+      return Promise.reject(error);
+    }
+
     console.error('[RESPONSE ERROR] 요청 실패:', error);
     return Promise.reject(error);
   }

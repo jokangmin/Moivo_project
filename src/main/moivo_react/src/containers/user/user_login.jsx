@@ -35,14 +35,11 @@ const user_login = () => {
         try {
             const success = await login(formData.userId, formData.pwd);
             if (success) {
+                await fetchUserData();
                 navigate('/');
             }
         } catch (error) {
-            if (error.message.includes('이미 다른 곳에서 로그인된 계정입니다')) {
-                setError('이미 다른 곳에서 로그인된 계정입니다.<br/>기존 세션을 종료하고 다시 시도해주세요.');
-            } else {
-                setError('로그인에 실패했습니다.<br/>아이디와 비밀번호를 확인해주세요.');
-            }
+            setError(error.response?.data?.error || "로그인이 불가능합니다.<br/> 아이디 또는 비밀번호를 확인해주세요.");
         }
     };
 

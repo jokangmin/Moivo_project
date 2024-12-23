@@ -50,6 +50,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = getJwtFromRequest(request);
             
             if (StringUtils.hasText(token)) {
+                // 블랙리스트 체크를 먼저 수행
+                if (jwtUtil.isTokenBlacklisted(token)) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"error\": \"DuplicateLogin\", \"message\": \"다른 기기에서 로그인되어 로그아웃되었습니다.\"}");
+                    return;
+                }
+
                 if (jwtUtil.validateToken(token)) {
                     String userId = jwtUtil.getUserIdFromToken(token);
                     

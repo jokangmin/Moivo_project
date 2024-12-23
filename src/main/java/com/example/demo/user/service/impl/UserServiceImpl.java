@@ -2,7 +2,6 @@ package com.example.demo.user.service.impl;
 
 import java.time.LocalDateTime;
 import java.time.YearMonth;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -20,11 +19,8 @@ import com.example.demo.jwt.prop.JwtProps;
 import com.example.demo.jwt.service.BlacklistService;
 import com.example.demo.jwt.service.RefreshTokenService;
 import com.example.demo.jwt.util.JwtUtil;
-import com.example.demo.payment.entity.PaymentDetailEntity;
 import com.example.demo.payment.entity.PaymentEntity;
-import com.example.demo.payment.repository.PaymentDetailRepository;
 import com.example.demo.payment.repository.PaymentRepository;
-import com.example.demo.qna.entity.QuestionEntity;
 import com.example.demo.qna.repository.QuestionRepository;
 import com.example.demo.store.repository.ReviewRepository;
 import com.example.demo.user.dto.UserDTO;
@@ -33,9 +29,7 @@ import com.example.demo.user.entity.UserEntity;
 import com.example.demo.user.entity.WishEntity;
 import com.example.demo.user.entity.UserEntity.LoginType;
 import com.example.demo.user.repository.CartRepository;
-import com.example.demo.user.repository.UserCartRepository;
 import com.example.demo.user.repository.UserRepository;
-import com.example.demo.user.repository.UserWishRepository;
 import com.example.demo.user.repository.WishRepository;
 import com.example.demo.user.service.UserService;
 
@@ -62,15 +56,9 @@ public class UserServiceImpl implements UserService {
     private PaymentRepository paymentRepository;
 
     @Autowired
-    private PaymentDetailRepository paymentDetailRepository;
-
-    @Autowired
     private UserCouponRepository userCouponRepository;
     @Autowired
     private WishRepository wishRepository;
-
-    @Autowired
-    private UserWishRepository userWishRepository;
 
     @Autowired
     private QuestionRepository questionRepository;
@@ -78,8 +66,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private CartRepository cartRepository;
 
-    @Autowired
-    private UserCartRepository userCartRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -147,55 +133,6 @@ public class UserServiceImpl implements UserService {
 
         return userEntity;
     }
-    /*
-     * @Override
-     * public Map<String, Object> login(String userId, String pwd) {
-     * // 사용자 인증
-     * UserEntity userEntity = authenticate(userId, pwd);
-     *
-     * // Wish와 Cart 정보 조회
-     * WishEntity wishEntity =
-     * wishRepository.findByUserEntity_Id(userEntity.getId())
-     * .stream()
-     * .findFirst()
-     * .orElseGet(() -> {
-     * WishEntity newWish = new WishEntity();
-     * newWish.setUserEntity(userEntity);
-     * return wishRepository.save(newWish);
-     * });
-     *
-     * CartEntity cartEntity =
-     * cartRepository.findByUserEntity_Id(userEntity.getId())
-     * .orElseGet(() -> {
-     * CartEntity newCart = new CartEntity();
-     * newCart.setUserEntity(userEntity);
-     * return cartRepository.save(newCart);
-     * });
-     *
-     * // JWT 토큰 생성 (JwtUtil 사용)
-     * String accessToken = jwtUtil.generateAccessToken(
-     * userEntity.getUserId(),
-     * userEntity.getId(),
-     * wishEntity.getId(),
-     * cartEntity.getId()
-     * );
-     *
-     * String refreshToken = jwtUtil.generateRefreshToken(
-     * userEntity.getUserId(),
-     * userEntity.getId()
-     * );
-     *
-     * // 결과 맵 생성
-     * Map<String, Object> result = new HashMap<>();
-     * result.put("accessToken", accessToken);
-     * result.put("refreshToken", refreshToken);
-     * result.put("id", userEntity.getId());
-     * result.put("wishId", wishEntity.getId());
-     * result.put("cartId", cartEntity.getId());
-     *
-     * return result;
-     * }
-     */
 
     // 24.12.16 - uj (소셜 & Moivo 로그인 공통 사용, 함수처리)
     // JWT 토큰 생성 & 응답 데이터
@@ -226,17 +163,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Map<String, Object> login(String userId, String pwd) {
-        // 사용자 인증 로직
-        UserEntity user = authenticate(userId, pwd);
+        // 1. 중복 로그인 체크
+        if (refreshTokenService.hasActiveToken(userId)) {
+            throw new RuntimeException("DuplicateLogin");
+        }
 
+        // 2. 사용자 인증
+        UserEntity user = authenticate(userId, pwd);
         if (user == null) {
             throw new RuntimeException("Invalid credentials");
         }
 
-        // 24.12.16 - uj (수정, 함수 처리)
-        // JWT 토큰 생성 & 응답 데이터
-        Map<String, Object> result = loginResponseData(user);
-        return result;
+        // 3. 기존에 저장된 토큰이 있다면 제거 (안전장치)
+        refreshTokenService.removeActiveToken(userId);
+
+        // 4. 새로운 토큰 생성 및 저장
+        Map<String, Object> responseData = loginResponseData(user);
+        String newToken = (String) responseData.get("accessToken");
+        refreshTokenService.saveActiveToken(userId, newToken);
+
+        return responseData;
     }
 
     @Override
@@ -484,19 +430,9 @@ public class UserServiceImpl implements UserService {
     }
     
 
-        // 4. 문의 데이터 수정 (삭제하지 않고 상태 변경)
-        // questionRepository.updateUserStatusToDeleted(userId);
-    
-        // // 5. 리뷰 데이터 수정 (삭제하지 않고 상태 변경)
-        // reviewRepository.updateUserStatusToDeleted(userId);
-    
-        // 6. 결제 데이터 수정 (삭제하지 않고 상태 변경)
-
-
     // 결제 정보에서 사용자와의 연관 관계 끊기 
     @Transactional
     public void removeUserAssociationFromPayments(int userId) {
-
         List<PaymentEntity> payments = paymentRepository.findByUserEntity_Id(userId);
         if (!payments.isEmpty()) {
             for (PaymentEntity payment : payments) {
@@ -512,6 +448,10 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
         return userEntity.isAdmin();
+    }
+
+    public boolean isUserAlreadyLoggedIn(String userId) {
+        return refreshTokenService.hasActiveToken(userId);
     }
 
 }

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.demo.jwt.service.RefreshTokenService;
 import com.example.demo.jwt.util.JwtUtil;
 import com.example.demo.user.dto.UserDTO;
 import com.example.demo.user.service.UserService;
@@ -23,6 +24,9 @@ public class UserController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private RefreshTokenService refreshTokenService;
 
     // 회원가입시 ID 중복 체크
     @GetMapping("/idCheck")
@@ -105,6 +109,8 @@ public class UserController {
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String accesstoken,
                                          @CookieValue("refreshToken") String refreshToken) {
+        String userId = jwtUtil.getUserIdFromToken(accesstoken.substring(7));
+        refreshTokenService.removeActiveToken(userId);
         userService.logout(accesstoken, refreshToken);
         return ResponseEntity.ok("로그아웃 성공");
     }

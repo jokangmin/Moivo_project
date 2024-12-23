@@ -142,9 +142,16 @@ export const AuthProvider = ({ children }) => {
 
     // 일반, 카카오 로그인 성공 시 공통 함수
     const handleLoginSuccess = async (response) => {
-        const { accessToken, isAdmin } = response.data; //2024-12-11 idAdmin 추가 장훈
+        const { accessToken, isAdmin, userId } = response.data;
         if (!accessToken) {
             throw new Error('로그인에 실패했습니다.');
+        }
+        
+        // 기존 토큰 무효화 요청
+        try {
+            await axiosInstance.post('/api/auth/invalidate-sessions', { userId });
+        } catch (error) {
+            console.error('기존 세션 무효화 실패:', error);
         }
         
         // 토큰 만료 시간 설정 12.16 성찬

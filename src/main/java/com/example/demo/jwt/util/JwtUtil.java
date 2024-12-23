@@ -2,7 +2,9 @@ package com.example.demo.jwt.util;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,6 +61,13 @@ public class JwtUtil {
 
     // Refresh Token 생성
     public String generateRefreshToken(String userId, int id) {
+        // 이전 Refresh Token 무효화
+        blacklistRepository.deleteByExpiryDateLessThan(new Date()); // 만료된 블랙리스트 정리
+        blacklistRepository.findByToken(userId).ifPresent(blacklist -> {
+            blacklistRepository.delete(blacklist); // 기존 토큰 삭제
+        });
+    
+        // 새로운 Refresh Token 생성
         String refreshToken = Jwts.builder()
                 .setSubject(userId)
                 .claim("id", id)
@@ -66,8 +75,7 @@ public class JwtUtil {
                 .setExpiration(new Date(System.currentTimeMillis() + refreshTokenDate))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
-
-        // 리프레시 토큰 저장 로직 추가
+    
         return refreshToken;
     }
 
@@ -124,11 +132,12 @@ public class JwtUtil {
     }
 
     // 블랙리스트에 토큰 추가
-    public void addTokenToBlacklist(String token) {
+    public void addTokenToBlacklist(String token, String reason) {
         if (validateToken(token)) {
             BlacklistEntity blacklistEntity = new BlacklistEntity();
             blacklistEntity.setToken(token);
             blacklistEntity.setExpiryDate(getExpirationDateFromToken(token));
+            blacklistEntity.setReason(reason);
             blacklistRepository.save(blacklistEntity);
         }
     }
@@ -178,7 +187,30 @@ public class JwtUtil {
             userData.put("isAdmin", claims.get("isAdmin"));
             return userData;
         } catch (Exception e) {
-            throw new RuntimeException("토큰에서 사용자 정보를 추출할 ��� 없습니다.");
+            throw new RuntimeException("토큰에서 사용자 정보를 추출할  없습니다.");
         }
     }
+
+    // 특정 사용자의 이전 토큰들을 블랙리스트에 추가
+    public void invalidateUserTokens(String userId, String reason) {
+        blacklistRepository.findAll().stream()
+            .filter(blacklist -> blacklist.getToken().contains(userId))
+            .forEach(token -> {
+                BlacklistEntity blacklistEntity = new BlacklistEntity();
+                blacklistEntity.setToken(token.getToken());
+                blacklistEntity.setExpiryDate(new Date());
+                blacklistEntity.setReason(reason);
+                blacklistRepository.save(blacklistEntity); // 블랙리스트에 추가
+            });
+    }
+
+    // 쿠키 무효화 로직 추가
+public void invalidateRefreshTokenCookie(HttpServletResponse response) {
+    Cookie cookie = new Cookie("refreshToken", null);
+    cookie.setHttpOnly(true);
+    cookie.setSecure(true);
+    cookie.setMaxAge(0); // 즉시 만료
+    cookie.setPath("/");
+    response.addCookie(cookie);
+}
 }
