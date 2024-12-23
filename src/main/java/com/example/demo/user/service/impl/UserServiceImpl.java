@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private ReviewRepository reviewRepository;
-    
+
     @Autowired
     private PaymentRepository paymentRepository;
 
@@ -455,47 +455,47 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void deleteUser(int userId) {
+        UserEntity userEntity = userRepository.findById(userId)
+        .orElseThrow(() -> new RuntimeException("User not found"));
+
         // 1. Wish 관련 데이터 삭제
-        Optional<WishEntity> optionalWish = wishRepository.findFirstByUserEntity_Id(userId);
-        optionalWish.ifPresent(wish -> {
-            // userWish에서 연결된 모든 데이터를 삭제
-            userWishRepository.deleteByWishEntity_Id(wish.getId());
-            // wish 테이블에서 데이터를 삭제
-            wishRepository.deleteById(wish.getId());
-        });
-    
+        userEntity.setWishEntity(null);
+        userRepository.save(userEntity);
+
         // 2. Cart 관련 데이터 삭제
-        Optional<CartEntity> optionalCart = cartRepository.findByUserEntity_Id(userId);
-        optionalCart.ifPresent(cart -> {
-            // userCart에서 연결된 모든 데이터를 삭제
-            userCartRepository.deleteByCartEntity_Id(cart.getId());
-            // cart 테이블에서 데이터를 삭제
-            cartRepository.deleteById(cart.getId());
-        });
-    
+        userEntity.setCartEntity(null);
+        userRepository.save(userEntity);
+
         // 3. 쿠폰 데이터 삭제
         userCouponRepository.deleteByUserEntity_Id(userId);
+
+        // 4. 문의 데이터 수정 (연관 관계 끊기)
+        questionRepository.removeUserAssociationFromQuestion(userId);
+
+        // 5. 리뷰 데이터 수정 (연관 관계 끊기)
+        reviewRepository.removeUserAssociationFromReview(userId);
+
+        // 6. 결제 데이터 수정 (연관 관계 끊기)
+        removeUserAssociationFromPayments(userId);
+
+        // 7. 사용자 삭제
+        userRepository.delete(userEntity);
+         
+    }
     
-        // 4. 문의 데이터 수정 (삭제하지 않고 상태 변경)
-        questionRepository.updateUserStatusToDeleted(userId);
-    
-        // 5. 리뷰 데이터 수정 (삭제하지 않고 상태 변경)
-        reviewRepository.updateUserStatusToDeleted(userId);
-    
-        // 6. 결제 데이터 수정 (삭제하지 않고 상태 변경)
+
+    // 결제 정보에서 사용자와의 연관 관계 끊기 
+    @Transactional
+    public void removeUserAssociationFromPayments(int userId) {
         List<PaymentEntity> payments = paymentRepository.findByUserEntity_Id(userId);
         if (!payments.isEmpty()) {
             for (PaymentEntity payment : payments) {
-                // 결제 관련 데이터 상태 변경 (예: userId를 null로 설정하거나 'isDeleted' 플래그 사용)
-                payment.setUserEntity(null);  // 또는 payment.setIsDeleted(true);와 같은 방식으로 처리
-                paymentRepository.save(payment);
+                // 결제 정보에서 사용자 연결 해제 (userId를 null로 설정)
+                payment.setUserEntity(null); 
+                paymentRepository.save(payment); // 변경된 결제 정보 저장
             }
         }
-    
-        // 7. 사용자 삭제
-        userRepository.deleteById(userId);
     }
-
 
     @Override
     public boolean isUserAdmin(int id) {

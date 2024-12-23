@@ -14,5 +14,7 @@ public interface UserWishRepository extends JpaRepository<UserWishEntity, Intege
     Optional<UserWishEntity> findByWishEntityAndProductEntity(WishEntity wishEntity, ProductEntity productEntity);
 
     // 특정 WishEntity에 연관된 UserWish 삭제
-    void deleteByWishEntity_Id(Integer wishId);
+    void deleteByWishEntity(WishEntity wish);
+
+    
 }

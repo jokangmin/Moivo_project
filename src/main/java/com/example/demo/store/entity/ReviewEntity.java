@@ -28,7 +28,7 @@ public class ReviewEntity { // 리뷰
 
     // 리뷰 n개 : 사용자 1개
     @ManyToOne
-    @JoinColumn(name = "userid", nullable = true)
+    @JoinColumn(name = "userid")
     // @JoinColumn(name = "userid", nullable = false)
     private UserEntity userEntity; // 사용자 (리뷰 작성자)
 
@@ -80,4 +80,5 @@ public class ReviewEntity { // 리뷰
         System.out.println("수정된 내용: " + this.content);
     }
 
+    
 }
