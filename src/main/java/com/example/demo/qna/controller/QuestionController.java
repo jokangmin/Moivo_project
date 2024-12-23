@@ -37,7 +37,7 @@ public class QuestionController {
         
         Map<String, String> response = new HashMap<>();
         response.put("message", "200ok");
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.SC_CREATED).body(response);
     }
 
     //문의 수정
