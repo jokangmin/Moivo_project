@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class QuestionDTO {
     private Integer id; // 문의 고유 키
     private Integer categoryId; // 문의 카테고리
-    private Integer userId; // 문의 작성
+    private Integer userId; // 작성자 pk
     private String title; // 문의글 제목 (추가)
     private String content; // 문의 내용
     private LocalDateTime questionDate; // 문의 작성 일시
@@ -22,7 +22,7 @@ public class QuestionDTO {
     private LocalDateTime responseDate; // 응답 일시 (NULL이면 미응답)
     private String privatePwd; // 비밀글 비밀번호 (추가)
     private Boolean fixQuestion; // 수정 문의 (추가)
-    private String name;
+    private String name; // 작성자 이름
 //    private Boolean isQuestionView; //Access 토큰에서 자기 id값만 확인해서
 
     // entity => dto 변환
@@ -34,10 +34,15 @@ public class QuestionDTO {
         dto.setResponseDate(entity.getResponseDate());
         dto.setQuestionDate(entity.getQuestionDate());
         dto.setTitle(entity.getTitle());
-        dto.setUserId(entity.getUserEntity().getId());
         dto.setCategoryId(entity.getCategoryEntity().getId());
-        dto.setName(entity.getUserEntity().getName());
-//        dto.setPrivatePwd(entity.getPrivatePwd()); //프론트에 보내주지 않기 위함
+        if(entity.getUserEntity() == null) {
+            dto.setUserId(null);
+            dto.setName("알수없음");
+        } else {
+            dto.setUserId(entity.getUserEntity().getId());
+            dto.setName(entity.getUserEntity().getName());
+        }
+        //        dto.setPrivatePwd(entity.getPrivatePwd()); //프론트에 보내주지 않기 위함
         dto.setFixQuestion(entity.getFixQuestion());
         return dto;
     }

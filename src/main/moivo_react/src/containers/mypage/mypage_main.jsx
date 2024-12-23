@@ -140,11 +140,12 @@ const MypageMain = () => {
               {userInfo && userInfo.coupons ? (
                 userInfo.coupons.map((coupon, index) => {
                   // 이미 사용했거나 유효기간이 지난 쿠폰인지 확인
-                  const isInvalidCoupon = coupon.couponName === "이미 사용한 쿠폰" || coupon.couponName === "유효기간이 지난 쿠폰";
+                  const isInvalidCoupon =
+                    coupon.couponName === "이미 사용한 쿠폰입니다." || coupon.couponName === "유효기간이 지난 쿠폰";
 
                   return (
-                    <div 
-                      key={index} 
+                    <div
+                      key={index}
                       className={styles.couponItem}
                       onMouseEnter={() => !isInvalidCoupon && handleCouponMouseEnter(coupon)}
                       onMouseLeave={handleCouponMouseLeave}
@@ -152,7 +153,8 @@ const MypageMain = () => {
                       <strong>{coupon.couponName}</strong>
                       {!isInvalidCoupon && showCouponTooltip && (
                         <div className={styles.couponTooltip}>
-                            유효기간: {new Date(coupon.startDate).toLocaleDateString()} ~ {new Date(coupon.endDate).toLocaleDateString()}
+                          유효기간: {new Date(coupon.startDate).toLocaleDateString()} ~{" "}
+                          {new Date(coupon.endDate).toLocaleDateString()}
                         </div>
                       )}
                     </div>
