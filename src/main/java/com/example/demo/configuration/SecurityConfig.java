@@ -88,6 +88,8 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:5173",
+                "http://101.79.9.149", // 배포 시, react 사용
+                "http://101.79.9.149:9090", // 배포 시, spring boot 사용 
                 "https://kauth.kakao.com",
                 "https://kapi.kakao.com",
                 "http://localhost:8080"));
