@@ -36,6 +36,8 @@ import KakaoCallback from './components/kakao/KakaoCallback';
 import Admins_FAQ from './containers/admin/admins_FAQ';
 import Admins_ProductList from './containers/admin/admin_productList';
 import ReviewWrite from './containers/review/review_write';
+import DashBoardProvider from './contexts/DashBoardContext';
+import PaymentProvider from './contexts/payment/PaymentContext';
 
 
 
@@ -80,24 +82,19 @@ const App = () => {
     <Router>
       <AuthProvider>
         <MainProvider>
-          <ProListProvider>
-            <ProDetailProvider>
-              <ReviewProvider>
-                <Routes>
-                  {routeConfig.map(({ path, element }, index) => (
-                    <Route key={index} path={path} element={element} />
-                  ))}
-                </Routes>
-              </ReviewProvider>
-            </ProDetailProvider>
-          </ProListProvider>
           <DashBoardProvider>
             <PaymentProvider>
-              <Routes>
-                {routeConfig.map(({ path, element }, index) => (
-                  <Route key={index} path={path} element={element} />
-                ))}
-              </Routes>
+              <ProListProvider>
+                <ProDetailProvider>
+                  <ReviewProvider>
+                    <Routes>
+                      {routeConfig.map(({ path, element }, index) => (
+                        <Route key={index} path={path} element={element} />
+                      ))}
+                    </Routes>
+                  </ReviewProvider>
+                </ProDetailProvider>
+              </ProListProvider>
             </PaymentProvider>
           </DashBoardProvider>
         </MainProvider>
