@@ -254,7 +254,7 @@ public class MypageServiceImpl implements MypageService {
             PaymentDetailDTO paymentDetailDTO = PaymentDetailDTO.toGetOrderDetailDTO(paymentDetailEntity);
             paymentDetailDTOList.add(paymentDetailDTO);
         }
-
+        System.out.println("주문상세내역 = " + paymentDetailDTOList);
         return paymentDetailDTOList;
     }
 
