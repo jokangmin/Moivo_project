@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProListProvider } from './contexts/productCon/ProListContext';
 import { ProDetailProvider } from './contexts/productCon/ProDetailContext';
+import { ReviewProvider } from './contexts/reviewCon/ReviewContext';
 import Main_index from './components/Main_index';
 import MainProvider from './contexts/MainContext';
 import User_login from './containers/user/user_login';
@@ -80,11 +81,13 @@ const App = () => {
         <MainProvider>
           <ProListProvider>
             <ProDetailProvider>
-              <Routes>
-                {routeConfig.map(({ path, element }, index) => (
-                  <Route key={index} path={path} element={element} />
-                ))}
-              </Routes>
+              <ReviewProvider>
+                <Routes>
+                  {routeConfig.map(({ path, element }, index) => (
+                    <Route key={index} path={path} element={element} />
+                  ))}
+                </Routes>
+              </ReviewProvider>
             </ProDetailProvider>
           </ProListProvider>
         </MainProvider>

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import styles from "../../assets/css/product_list.module.css";

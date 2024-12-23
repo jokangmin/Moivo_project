@@ -100,8 +100,14 @@ public class ReviewController {
 
     // 리뷰 삭제
     @DeleteMapping("/{reviewId}")
-    public ResponseEntity<String> deleteReview(@PathVariable int reviewId) {
+    public ResponseEntity<String> deleteReview(
+            @PathVariable(name = "reviewId") int reviewId,
+            @RequestHeader(value = "Authorization", required = true) String token) {
         try {
+            if (!token.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.SC_UNAUTHORIZED).body("유효하지 않은 토큰입니다.");
+            }
+            
             reviewService.deleteReview(reviewId);
             return ResponseEntity.ok("리뷰가 성공적으로 삭제되었습니다.");
         } catch (RuntimeException e) {
