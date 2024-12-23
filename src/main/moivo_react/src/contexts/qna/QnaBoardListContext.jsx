@@ -1,11 +1,12 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from "../../utils/axiosConfig";
 import QnA_b from '../../assets/css/qna_boardlist.module.css';
 
 const QnaBoardListContext = createContext();
+export const useQnaBoardList = () => useContext(QnaBoardListContext);
 
-export const QnaBoardListProvider = ({ children }) => {
+const QnaBoardListProvider = ({ children }) => {
     const navigate = useNavigate();
 
     const [qnaData, setQnaData] = useState([]);

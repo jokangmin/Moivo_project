@@ -1,10 +1,11 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from "../../utils/axiosConfig";
 
 const QnaBoardContext = createContext();
+export const useQnaBoard = () => useContext(QnaBoardContext);
 
-export const QnaBoardProvider = ({ children }) => {
+const QnaBoardProvider = ({ children }) => {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({

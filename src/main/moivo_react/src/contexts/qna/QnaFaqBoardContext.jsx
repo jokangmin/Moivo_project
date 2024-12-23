@@ -1,9 +1,10 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import axiosInstance from '../../utils/axiosConfig';
 
 const QnaFaqBoardContext = createContext();
+export const useQnaFaqBoard = () => useContext(QnaFaqBoardContext);
 
-export const QnaFaqBoardProvider = ({ children }) => {
+const QnaFaqBoardProvider = ({ children }) => {
   const [faqList, setFaqList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);

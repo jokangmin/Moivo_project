@@ -3,7 +3,7 @@ import QnA_b from '../../assets/css/qna_boardlist.module.css';
 import { Link } from 'react-router-dom';
 import Footer from './../../components/Footer/Footer';
 import Banner from '../../components/Banner/banner';
-import QnaBoardListContext from '../../contexts/qna/QnaBoardListContext';
+import { useQnaBoardList } from '../../contexts/qna/QnaBoardListContext';
 
 const Qna_boardlist = () => {
     const {
@@ -43,7 +43,7 @@ const Qna_boardlist = () => {
         setPasswordError,
         setEditModalVisible,
         setEditedPost
-    } = useContext(QnaBoardListContext);
+    } = useQnaBoardList();
 
     return (
         <div className={QnA_b.qnalistMainDiv}> 

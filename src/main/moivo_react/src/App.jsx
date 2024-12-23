@@ -43,6 +43,14 @@ import DashBoardProvider from './contexts/DashBoardContext';
 import PaymentProvider from './contexts/payment/PaymentContext';
 
 
+import MypageProvider from './contexts/mypageCon/MypageContext';
+import MypageProfileProvider from './contexts/mypageCon/MypageProfileContext';
+import MypageWishProvider from './contexts/mypageCon/MypageWishContext';
+import MypageBoardProvider from './contexts/mypageCon/MypageBoardContext';
+import MypageOrderProvider from './contexts/mypageCon/MypageOrderContext';
+import MypageOrderDetailProvider from './contexts/mypageCon/MypageOrderDetailContext';
+import CartProvider from './contexts/cartCon/CartContext';
+
 
 const routeConfig = [
   { path: "/", element: <Main_index /> },
@@ -54,16 +62,16 @@ const routeConfig = [
   { path: "/review/write", element: <ReviewWrite /> },
   { path: "/upload", element: <Upload /> },
   { path: "/update", element: <Update /> },
-  { path: "/mypage", element: <MypageMain /> },
-  { path: "/mypage/profile", element: <MypageProfile /> },
-  { path: "/mypage/wish", element: <MypageWish /> },
-  { path: "/mypage/board", element: <MypageBoard /> },
-  { path: "/mypage/order", element: <MypageOrder /> },
-  { path: "/mypage/orderDetails", element: <MypageOrderDetails /> },
+  { path: "/mypage", element: (<MypageProvider><MypageMain /></MypageProvider>) },
+  { path: "/mypage/profile", element: (<MypageProfileProvider><MypageProfile /></MypageProfileProvider>) },
+  { path: "/mypage/wish", element: (<MypageWishProvider><MypageWish /></MypageWishProvider>) },
+  { path: "/mypage/board", element: (<MypageBoardProvider><MypageBoard /></MypageBoardProvider>) },
+  { path: "/mypage/order", element: (<MypageOrderProvider><MypageOrder /></MypageOrderProvider>) },
+  { path: "/mypage/orderDetails", element: (<MypageOrderDetailProvider><MypageOrderDetails /></MypageOrderDetailProvider>) },
   { path: '/qna_faqboard', element: (<QnaFaqBoardProvider><Qna_faqboard /></QnaFaqBoardProvider>) },
   { path: '/qna_board', element: (<QnaBoardProvider><Qna_board /></QnaBoardProvider>) },
   { path: '/qna_boardlist', element: (<QnaBoardListProvider><Qna_boardlist /></QnaBoardListProvider>) },
-  { path: "/cart", element: <Cart /> },
+  { path: "/cart", element: (<CartProvider><Cart /></CartProvider>) },
   { path: "/payment", element: ( <PaymentProvider> <Payment /> </PaymentProvider> ),},
   { path: "/payment-method", element: ( <PaymentProvider> <PaymentMethod /> </PaymentProvider> ),},
   { path: "/payment-success", element: ( <PaymentProvider> <SuccessPage /> </PaymentProvider> ),},
@@ -90,17 +98,11 @@ const App = () => {
               <ProListProvider>
                 <ProDetailProvider>
                   <ReviewProvider>
-                    <QnaFaqBoardProvider>
-                      <QnaBoardProvider>
-                        <QnaBoardListProvider>
                     <Routes>
                       {routeConfig.map(({ path, element }, index) => (
                         <Route key={index} path={path} element={element} />
                       ))}
                     </Routes>
-                        </QnaBoardListProvider>
-                      </QnaBoardProvider>
-                    </QnaFaqBoardProvider>
                   </ReviewProvider>
                 </ProDetailProvider>
               </ProListProvider>
