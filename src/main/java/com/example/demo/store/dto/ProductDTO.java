@@ -41,16 +41,4 @@ public class ProductDTO { // 상품
         return dto;
     }
 
-    // ProductEntity -> ProductDTO 변환
-    // public ProductDTO(ProductEntity entity) {
-    // NCPObjectStorageDTO ncpDTO = new NCPObjectStorageDTO();
-
-    // this.id = entity.getId();
-    // this.name = entity.getName();
-    // this.img = ncpDTO.getURL() + entity.getImg();
-    // this.content = entity.getContent();
-    // this.price = entity.getPrice();
-    // this.gender = entity.getGender();
-    // this.categoryId = entity.getCategoryEntity().getId();
-    // }
 }
