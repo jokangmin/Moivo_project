@@ -39,16 +39,42 @@ import ReviewWrite from './containers/review/review_write';
 import DashBoardProvider from './contexts/DashBoardContext';
 import PaymentProvider from './contexts/payment/PaymentContext';
 
-
-
 const routeConfig = [
   { path: "/", element: <Main_index /> },
   { path: "/user", element: <User_login /> },
   { path: "/user_signup", element: <User_signup /> },
-  { path: "/product-board", element: <ProductBoard /> },
-  { path: "/product-list", element: <ProductList /> },
-  { path: "/product-detail/:productId", element: <ProductDetail /> },
-  { path: "/review/write", element: <ReviewWrite /> },
+  { 
+    path: "/product-board", 
+    element: (
+      <DashBoardProvider>
+        <ProductBoard />
+      </DashBoardProvider>
+    ),
+  },
+  { 
+    path: "/product-list", 
+    element: (
+      <ProListProvider>
+        <ProductList />
+      </ProListProvider>
+    ),
+  },
+  { 
+    path: "/product-detail/:productId", 
+    element: (
+      <ProDetailProvider>
+        <ProductDetail />
+      </ProDetailProvider>
+    ),
+  },
+  { 
+    path: "/review/write", 
+    element: (
+      <ReviewProvider>
+        <ReviewWrite />
+      </ReviewProvider>
+    ),
+  },
   { path: "/upload", element: <Upload /> },
   { path: "/update", element: <Update /> },
   { path: "/mypage", element: <MypageMain /> },
@@ -61,20 +87,47 @@ const routeConfig = [
   { path: "/qna_board", element: <Qna_board /> },
   { path: "/qna_boardlist", element: <Qna_boardlist /> },
   { path: "/cart", element: <Cart /> },
-  { path: "/payment", element: <Payment /> },
-  { path: "/payment-method", element: <PaymentMethod /> },
-  { path: "/payment-success", element: <SuccessPage /> },
-  { path: "/payment-fail", element: <FailPage /> },
-  { path : "/admins_dashboard", element: <Dashboard/>},
+  {
+    path: "/payment",
+    element: (
+      <PaymentProvider>
+        <Payment />
+      </PaymentProvider>
+    ),
+  },
+  {
+    path: "/payment-method",
+    element: (
+      <PaymentProvider>
+        <PaymentMethod />
+      </PaymentProvider>
+    ),
+  },
+  {
+    path: "/payment-success",
+    element: (
+      <PaymentProvider>
+        <SuccessPage />
+      </PaymentProvider>
+    ),
+  },
+  {
+    path: "/payment-fail",
+    element: (
+      <PaymentProvider>
+        <FailPage />
+      </PaymentProvider>
+    ),
+  },
+  { path: "/admins_dashboard", element: <Dashboard /> },
   { path: "/api/oauth/kakao/callback", element: <KakaoCallback /> },
-  { path : "/admins_qnaboard", element: <Admins_qna/>},
-  { path : "/admins_productadd", element: <Admins_productAdd/>},
-  { path : "/admins_productupdate/:productId", element: <Admins_productUpdate/>},
-  { path : "/admin/admin_productTrash", element: <ProductTrash/>},
-  { path : "/admin/admin_productList", element: <Admins_ProductList/>},
+  { path: "/admins_qnaboard", element: <Admins_qna /> },
+  { path: "/admins_productadd", element: <Admins_productAdd /> },
+  { path: "/admins_productupdate/:productId", element: <Admins_productUpdate /> },
+  { path: "/admin/admin_productTrash", element: <ProductTrash /> },
+  { path: "/admin/admin_productList", element: <Admins_ProductList /> },
   { path: "/oauth2/callback/kakao", element: <KakaoCallback /> },
-  { path: "/admins_FAQ", element: <Admins_FAQ /> }
-
+  { path: "/admins_FAQ", element: <Admins_FAQ /> },
 ];
 
 const App = () => {
@@ -82,21 +135,11 @@ const App = () => {
     <Router>
       <AuthProvider>
         <MainProvider>
-          <DashBoardProvider>
-            <PaymentProvider>
-              <ProListProvider>
-                <ProDetailProvider>
-                  <ReviewProvider>
-                    <Routes>
-                      {routeConfig.map(({ path, element }, index) => (
-                        <Route key={index} path={path} element={element} />
-                      ))}
-                    </Routes>
-                  </ReviewProvider>
-                </ProDetailProvider>
-              </ProListProvider>
-            </PaymentProvider>
-          </DashBoardProvider>
+          <Routes>
+            {routeConfig.map(({ path, element }, index) => (
+              <Route key={index} path={path} element={element} />
+            ))}
+          </Routes>
         </MainProvider>
       </AuthProvider>
     </Router>
