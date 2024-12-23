@@ -397,7 +397,7 @@ const Qna_boardlist = () => {
                                         </div>
                                         <div className={QnA_b.qnalistDivider}></div>
                                         <div className={QnA_b.qnalistUserAnswer}>
-                                            {item.response || '답변 대기 중'}
+                                            <i className='fas fa-user-tie'></i> 관리자 : {item.response || '답변 대기 중'}
                                         </div>
                                     </div>
                                 )}

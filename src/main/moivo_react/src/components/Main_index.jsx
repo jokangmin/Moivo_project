@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { useAuth } from '../contexts/AuthContext';
-
+import Modal from 'react-modal';
 //확인하기 위해 아래 사용 NCP 연동 시 수정 및 삭제
 import image1 from "../assets/image/1_outer.jpg";
 import image2 from "../assets/image/2_outer.jpg";
@@ -19,6 +19,17 @@ const Main_index = () => {
     const [animate, setAnimate] = useState(true);
     const [menuOpen, setMenuOpen] = useState(false);
     const { isAuthenticated, logout } = useAuth();
+    //2024/12/23 팝업 상태 관리 추가 장훈
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    //2024/12/23 날짜 형식 변환 추가 장훈
+    const getTodayDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
 
     //확인하기 위해 아래 사용 NCP 연동 시 수정 및 삭제
     const slides = [
@@ -43,6 +54,16 @@ const Main_index = () => {
             offset: 0,        // 애니메이션 트리거 위치
         });
         AOS.refresh();
+
+        // 2024/12/23 "오늘 하루 안 보기" 확인 추가 장훈
+        const hidePopup = localStorage.getItem('hidePopup');
+        const today = getTodayDate();
+        if (hidePopup !== today) {
+            console.log(`모달 표시: 저장된 날짜(${hidePopup})와 오늘(${today})가 다릅니다.`);
+            setIsModalOpen(true);
+        } else {
+            console.log(`모달 숨김: 저장된 날짜(${hidePopup})가 오늘(${today})과 같습니다.`);
+        }
     }, []);
 
     const parentDivRef = useRef(null);
@@ -85,10 +106,40 @@ const Main_index = () => {
         logout();
     };
 
+    //2024/12/23 모달 취소 핸들러 추가 장훈
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
+    //2024/12/23 로컬 스토리지 날짜 저장 추가 장훈
+    const hideForToday = () => {
+        const today = getTodayDate();
+        localStorage.setItem('hidePopup', today);
+        console.log(`로컬스토리지에 저장된 날짜: ${today}`);
+        setIsModalOpen(false); // 모달 닫기
+    };
+
     return (
         <div className={styles.maindiv}>
             <Banner/>
             {/* banner */}
+
+            {/* 2024/12/23 모달 추가 장훈 */}
+            <Modal isOpen={isModalOpen} onRequestClose={closeModal} className={styles.modal} overlayClassName={styles.overlay} ariaHideApp={false} >
+                <div className={styles.modalContent}>
+                    <h2>이벤트 안내</h2>
+                    <p>Moivo에서 진행하는 새로운 이벤트를 확인하세요!</p>
+                    <div className={styles.modalButtons}>
+                        <button onClick={closeModal} className={styles.closeButton}>
+                            닫기
+                        </button>
+                        <button onClick={hideForToday} className={styles.todayButton}>
+                            오늘 하루 안 보기
+                        </button>
+                    </div>
+                </div>
+            </Modal>
+
             <div className={styles.videoContainer}>
                 <video className={styles.video} autoPlay muted loop>
                     <source src={video} type="video/mp4" />

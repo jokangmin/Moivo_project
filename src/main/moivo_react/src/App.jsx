@@ -34,7 +34,6 @@ import Admins_ProductList from './containers/admin/admin_productList';
 import ReviewWrite from './containers/review/review_write';
 
 
-
 const routeConfig = [
   { path: "/", element: <Main_index /> },
   { path: "/user", element: <User_login /> },
@@ -67,7 +66,7 @@ const routeConfig = [
   { path : "/admin/admin_productTrash", element: <ProductTrash/>},
   { path : "/admin/admin_productList", element: <Admins_ProductList/>},
   { path: "/oauth2/callback/kakao", element: <KakaoCallback /> },
-  { path: "/admins_FAQ", element: <Admins_FAQ /> }
+  { path: "/admins_FAQ", element: <Admins_FAQ /> },
 
 ];
 
