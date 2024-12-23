@@ -127,7 +127,6 @@ public class QuestionController {
 
         // 값 존재 O
         System.out.println("map =" + map);
-//        return ResponseEntity.ok(map);
             return ResponseEntity.status(HttpStatus.SC_OK).body(map);
         } catch (Exception e) {
             Map<String, String> response = new HashMap<>();
