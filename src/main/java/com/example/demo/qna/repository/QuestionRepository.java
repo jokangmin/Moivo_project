@@ -12,12 +12,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.example.demo.qna.dto.QuestionDTO;
 import com.example.demo.qna.entity.QuestionEntity;
+
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-public interface QuestionRepository extends JpaRepository<QuestionEntity, Integer> {
+public interface QuestionRepository extends JpaRepository<QuestionEntity, Integer>, QuestionRepositoryCustom {
 
     // 모든 문의 조회
     @Query("SELECT q FROM QuestionEntity q ORDER BY q.questionDate DESC")
@@ -112,4 +112,6 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Intege
 
     // 특정 User의 모든 문의 조회
     List<QuestionEntity> findByUserEntity_Id(Integer userId);
+
+    void removeUserAssociationFromQuestion(int userId);
 }

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.example.demo.user.entity.CartEntity;
 import com.example.demo.user.entity.UserCartEntity;
 
 public interface UserCartRepository extends JpaRepository<UserCartEntity, Integer> {
@@ -13,5 +14,5 @@ public interface UserCartRepository extends JpaRepository<UserCartEntity, Intege
     Optional<UserCartEntity> findByCartEntity_Id(int cartId);
 
     // 특정 Cart와 연관된 데이터 삭제
-    void deleteByCartEntity_Id(Integer cartId);
+    void deleteByCartEntity(CartEntity cart);
 }

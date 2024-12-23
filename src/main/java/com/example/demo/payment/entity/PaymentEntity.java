@@ -36,7 +36,7 @@ public class PaymentEntity {
 
     // 주문 n건 : 사용자 1명
     @ManyToOne
-    @JoinColumn(name = "userid", nullable = false)
+    @JoinColumn(name = "userid")
     private UserEntity userEntity; // 결제 사용자
 
     @Column(name = "totalprice", nullable = false)
