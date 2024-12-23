@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from "../../assets/css/ReviewWrite.module.css";
