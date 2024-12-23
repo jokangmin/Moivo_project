@@ -34,7 +34,7 @@ public class UserEntity { // 사용자 & 관리자
         // 0, 10, 30, 50, 70
     }
 
-    // 양방량 매핑시킴
+    // 양방향 매핑시킴
     @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private WishEntity wishEntity; // Wish와 연결
 

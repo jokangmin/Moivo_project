@@ -62,7 +62,7 @@ public class ReviewServiceImpl implements ReviewService {
             paymentDetailEntity.setWriteReview(true);
             detailRepository.save(paymentDetailEntity);
         } else {
-            throw new RuntimeException("결제 상품에 대한 리뷰를 이미 작���하였습니다.");
+            throw new RuntimeException("결제 상품에 대한 리뷰를 이미 작성하였습니다.");
         }
 
         System.out.println("리뷰 작성 성공");
@@ -99,18 +99,18 @@ public class ReviewServiceImpl implements ReviewService {
         try {
             ReviewEntity review = reviewRepository.findById(reviewId)
                     .orElseThrow(() -> new RuntimeException("리뷰를 찾을 수 없습니다. ID: " + reviewId));
-            
+
             // 로그 추가 - 수정 전 데이터 확인
             System.out.println("기존 리뷰 내용: " + review.getContent());
             System.out.println("수정 요청 데이터: " + reviewDTO);
-    
+
             // 리뷰 수정
             review.setRating(reviewDTO.getRating());
             review.setContent(reviewDTO.getContent().trim());
             review.setReviewDate(LocalDateTime.now());
-    
+
             reviewRepository.save(review); // 수정된 리뷰 저장
-    
+
             // 로그 추가 - 저장 후 데이터 확인
             System.out.println("수정된 리뷰 내용: " + review.getContent());
         } catch (Exception e) {
@@ -118,20 +118,25 @@ public class ReviewServiceImpl implements ReviewService {
             throw new RuntimeException("리뷰 수정에 실패했습니다: " + e.getMessage());
         }
     }
-    
 
-    // 리뷰 삭제
+    // 24.12.19 - 리뷰 삭제 - uj
     @Override
+    @Transactional
     public void deleteReview(int reviewId) {
         ReviewEntity review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new RuntimeException("Review not found"));
 
         // 리뷰 작성 여부 false로 변경
         PaymentDetailEntity paymentDetail = review.getPaymentDetailEntity();
+        paymentDetail.setReviewEntity(null);
         paymentDetail.setWriteReview(false);
         detailRepository.save(paymentDetail);
+        System.out.println("결제 상세 리뷰 관련 데이터 변경 >> writereview : " +
+                paymentDetail.isWriteReview());
 
+        review.setPaymentDetailEntity(null);
         reviewRepository.delete(review);
+        System.out.println("리뷰 삭제");
     }
 
     @Override
@@ -146,7 +151,7 @@ public class ReviewServiceImpl implements ReviewService {
         if (paymentDetailId <= 0) {
             throw new IllegalArgumentException("유효하지 않은 paymentDetailId입니다: " + paymentDetailId);
         }
-        
+
         ReviewEntity review = reviewRepository.findByPaymentDetailEntityId(paymentDetailId)
                 .orElseThrow(() -> new RuntimeException("해당 결제 상세에 대한 리뷰를 찾을 수 없습니다."));
         return ReviewDTO.toGetReviewDTO(review);

@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap');
 @import url("https://cdn.jsdelivr.net/gh/webfontworld/gmarket/GmarketSans.css");
 
 /* 멤버십 박스 */
@@ -246,6 +247,7 @@
     font-size: 14px;
     outline: none;
     background-color: transparent;
+    font-family: 'Montserrat', sans-serif;
   }
 
   .addressContainer {

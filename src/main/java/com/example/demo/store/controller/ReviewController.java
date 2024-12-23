@@ -39,7 +39,7 @@ public class ReviewController {
         }
     }
 
-    // 리뷰 조회는 인증 없이 접근 가능하도록 
+    // 리뷰 조회는 인증 없이 접근 가능하도록
     @GetMapping("/product/{productId}")
     public ResponseEntity<Page<ReviewDTO>> getReviewsByPage(
             @PathVariable int productId,
@@ -62,11 +62,11 @@ public class ReviewController {
         try {
             System.out.println("사용자 리뷰 조회 요청 - userId: " + userId);
             System.out.println("Authorization 토큰: " + token);
-            
+
             if (!token.startsWith("Bearer ")) {
                 return ResponseEntity.status(HttpStatus.SC_UNAUTHORIZED).build();
             }
-            
+
             Page<ReviewDTO> reviews = reviewService.getAllUserReviews(userId, pageable);
             System.out.println("조회된 리뷰 수: " + reviews.getContent().size());
             return ResponseEntity.ok(reviews);
@@ -87,7 +87,7 @@ public class ReviewController {
             if (token == null || !token.startsWith("Bearer ")) {
                 return ResponseEntity.status(HttpStatus.SC_UNAUTHORIZED).body("유효하지 않은 토큰입니다.");
             }
-            
+
             reviewDTO.validate();
             reviewService.updateReview(reviewId, reviewDTO);
             return ResponseEntity.ok("리뷰가 성공적으로 수정되었습니다.");
@@ -123,13 +123,13 @@ public class ReviewController {
     // 결제상세ID로 리뷰 조회
     @GetMapping("/payment/{paymentDetailId}")
     public ResponseEntity<ReviewDTO> getReviewByPaymentDetailId(
-        @PathVariable("paymentDetailId") int paymentDetailId,
-        @RequestHeader(value = "Authorization", required = true) String token) {
+            @PathVariable("paymentDetailId") int paymentDetailId,
+            @RequestHeader(value = "Authorization", required = true) String token) {
         try {
             if (!token.startsWith("Bearer ")) {
                 return ResponseEntity.status(HttpStatus.SC_UNAUTHORIZED).build();
             }
-            
+
             ReviewDTO review = reviewService.getReviewByPaymentDetailId(paymentDetailId);
             if (review == null) {
                 return ResponseEntity.notFound().build();

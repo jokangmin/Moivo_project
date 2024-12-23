@@ -120,11 +120,18 @@ const Qna_boardlist = () => {
             navigate('/user');
             return;
         }
+        // 현재 열려있는 글인지 확인
+        if (activeIndex === index) {
+            // 같은 글을 한번 더 클릭했을 때는 글을 닫음
+            setActiveIndex(null);
+            return;
+        }
+
         if (item.categoryId === 4) { // 비밀글인 경우
             setSelectedPost(item);
             setPasswordModalVisible(true);
         } else {
-            setActiveIndex(activeIndex === index ? null : index);
+            setActiveIndex(index);
         }
     };
 
@@ -147,7 +154,18 @@ const Qna_boardlist = () => {
 
     // 게시글 수정 제출 핸들러
     const handleEditSubmit = async () => {
+        if (!editedPost.title.trim()) {
+            alert('제목을 입력해주세요.');
+            return;
+        }
+        
+        if (!editedPost.content.trim()) {
+            alert('내용을 입력해주세요.');
+            return;
+        }
+        
         try {
+            console.log('수정 요청 데이터:', editedPost);
             await axiosInstance.put('/api/user/question/update', {
                 ...editedPost,
                 userId: currentUserId
@@ -214,6 +232,9 @@ const Qna_boardlist = () => {
 
     // 비밀번호 확인 함수 수정
     const handlePasswordCheck = async () => {
+        console.log(selectedPost.id);
+        console.log(enteredPassword);
+        
         try {
             // 서버로 비밀번호 확인 요청
             const response = await axiosInstance.get('/api/user/question/private', {
@@ -260,6 +281,11 @@ const Qna_boardlist = () => {
         ));
     };
 
+    // 날짜 형식 변환 함수
+    const formatDate = (dateString) => {
+        return dateString.replace('T', ' ');
+    };
+
     // 페이징 처리
     const renderPagination = () => {
         const maxPagesToShow = 5;  // 한 번에 표시할 최대 페이지 버튼 수
@@ -297,11 +323,11 @@ const Qna_boardlist = () => {
 
 
     return (
-        <div className={QnA_b.qnalistMainDiv}>
+        <div className={QnA_b.qnalistMainDiv}> 
             <div><Banner /></div>
             <div className={QnA_b.qnalistheader}></div>
 
-            <div className={QnA_b.qnalistTitle}>고객센터</div>
+            <div className={QnA_b.qnalistTitle}>문의 게시글</div>
 
             {/* 네비게이션 */}
             <div className={QnA_b.qnalistNavi}>
@@ -318,29 +344,29 @@ const Qna_boardlist = () => {
 
             {/* QnA 리스트 */}
             <div className={QnA_b.qnalist}>
-                <div className={QnA_b.qnalistContainer}>
+                    <div className={QnA_b.qnalistContainer}>
 
-                    {/* 문의 유형 드롭다운 , 검색*/}
-                    <div className={QnA_b.dropdownContainer}>
-                        <button className={QnA_b.dropdownBtn} onClick={toggleDropdown}>
-                            {selectedType || '전체 문의'} {isDropdownVisible ? '▲' : '▼'}
-                        </button>
-                        {isDropdownVisible && (
-                            <ul className={QnA_b.filterList}>
-                                <li onClick={() => handleFilterChange('')}>전체</li>
-                                <li onClick={() => handleFilterChange('일반 문의')}>일반 문의</li>
-                                <li onClick={() => handleFilterChange('기타 문의')}>기타 문의</li>
-                                <li onClick={() => handleFilterChange('사이즈 문의')}>사이즈 문의</li>
-                                <li onClick={() => handleFilterChange('비밀 문의')}>비밀 문의</li>
-                            </ul>
-                        )}  
-                    
-                        {/* 검색 */}
-                        <div className={QnA_b.search_container}>
-                            <input type="text" placeholder="제목으로 검색" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className={QnA_b.search_input} onKeyDown={handleKeyDown}/>
+                        {/* 문의 유형 드롭다운 , 검색*/}
+                        <div className={QnA_b.dropdownContainer}>
+                            <button className={QnA_b.dropdownBtn} onClick={toggleDropdown}>
+                                {selectedType || '전체 문의'} {isDropdownVisible ? '▲' : '▼'}
+                            </button>
+                            {isDropdownVisible && (
+                                <ul className={QnA_b.filterList}>
+                                    <li onClick={() => handleFilterChange('')}>전체</li>
+                                    <li onClick={() => handleFilterChange('일반 문의')}>일반 문의</li>
+                                    <li onClick={() => handleFilterChange('기타 문의')}>기타 문의</li>
+                                    <li onClick={() => handleFilterChange('사이즈 문의')}>사이즈 문의</li>
+                                    <li onClick={() => handleFilterChange('비밀 문의')}>비밀 문의</li>
+                                </ul>
+                            )}  
+                        
+                            {/* 검색 */}
+                            <div className={QnA_b.search_container}>
+                                <input type="text" placeholder="제목으로 검색" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className={QnA_b.search_input} onKeyDown={handleKeyDown}/>
+                            </div>
                         </div>
-                    </div>
-                    
+                        
 
                     {qnaData.length === 0 ? (
                         <div>등록된 문의가 없습니다.</div>
@@ -358,7 +384,7 @@ const Qna_boardlist = () => {
                                 {activeIndex === index && (
                                     <div className={QnA_b.qnalistDetails}>
                                         <div className={QnA_b.qnalistUserInfo}>
-                                            <span> <i className="fas fa-user"></i> ID : {item.userId}</span> | <i className="far fa-clock"></i> <span>{item.questionDate}</span>
+                                            <span> <i className="fas fa-user"></i> 작성자 : {item.name}</span> | <i className="far fa-clock"></i> <span>{formatDate(item.questionDate)}</span>
                                                 {/* 수정, 삭제 버튼 추가 */}
                                                 {currentUserId === item.userId && (
                                                 <div className={QnA_b.actionButtons}>
@@ -390,11 +416,13 @@ const Qna_boardlist = () => {
                                             ...editedPost, 
                                             categoryId: parseInt(e.target.value)
                                         })}
-                                className={QnA_b.modalSelect}>
+                                className={QnA_b.modalSelect}
+                                disabled={editedPost.categoryId === 4}
+                                >
                                     <option value={1}>일반 문의</option>
                                     <option value={2}>기타 문의</option>
                                     <option value={3}>사이즈 문의</option>
-                                    <option value={4}>비밀 문의</option>
+                                    {editedPost.categoryId == 4 && ( <option value={4}>비밀 문의</option>)}
                                 </select>
                                 
                                 {/* 제목 입력 */}
@@ -404,57 +432,59 @@ const Qna_boardlist = () => {
                                         title: e.target.value
                                     })}
                                     placeholder="제목을 입력하세요"
-                                    className={QnA_b.modalInput} />
+                                    className={QnA_b.modalInput}/>
                                     
                                 {/* 비밀글 여부 체크박스 */}
+                                {editedPost.categoryId == 4 && (
                                 <div className={QnA_b.secretCheckbox}>
                                     <label>비밀글</label>
                                     <input type="checkbox" checked={editedPost.categoryId === 4 || editedPost.secret === true} onChange={(e) => setEditedPost({
                                             ...editedPost, 
                                             categoryId: e.target.checked ? 4 : 1,
                                             secret: e.target.checked
-                                        })} />
+                                        })}
+                                        disabled={editedPost.categoryId === 4} />
                                 </div>
+                                )}
 
-                                {/* 내용 입력 */}
-                                <span className={QnA_b.modalQuestionTitle}>내용</span>
-                                <textarea value={editedPost.content} onChange={(e) => setEditedPost({
-                                        ...editedPost, 
-                                        content: e.target.value
-                                    })}
-                                    placeholder="내용을 입력하세요"
-                                    className={QnA_b.modalTextarea} />
+                                    {/* 내용 입력 */}
+                                    <span className={QnA_b.modalQuestionTitle}>내용</span>
+                                    <textarea value={editedPost.content} onChange={(e) => setEditedPost({
+                                            ...editedPost, 
+                                            content: e.target.value
+                                        })}
+                                        placeholder="내용을 입력하세요"
+                                        className={QnA_b.modalTextarea} />
 
-                                <div className={QnA_b.modalButtons}>
-                                    <button onClick={handleEditSubmit}>수정</button>
-                                    <button onClick={() => setEditModalVisible(false)}>취소</button>
+                                    <div className={QnA_b.modalButtons}>
+                                        <button onClick={handleEditSubmit}>수정</button>
+                                        <button onClick={() => setEditModalVisible(false)}>취소</button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    )}
-                </div>
-                                
-                {/* 페이징 버튼 */}
-                <div className={QnA_b.pagination}>
-                    {renderPagination()}
-                </div>
-            </div>
-
-            {/* 비밀번호 확인 모달 */}
-            {passwordModalVisible && (
-                <div className={QnA_b.modalOverlay}>
-                    <div className={QnA_b.modalContent}>
-                        <h3>비밀글 비밀번호 확인</h3>
-                        <input type="password" placeholder="비밀번호 입력" value={enteredPassword} onChange={(e) => setEnteredPassword(e.target.value)} className={QnA_b.modalInput} />
-                        {passwordError && <p className={QnA_b.errorText}>{passwordError}</p>}
-                        <div className={QnA_b.modalButtons}>
-                            <button onClick={handlePasswordCheck}>확인</button>
-                            <button onClick={closePasswordModal}>취소</button>
-                        </div>
+                        )}
+                    </div>
+                                    
+                    {/* 페이징 버튼! */}
+                    <div className={QnA_b.pagination}>
+                        {renderPagination()}
                     </div>
                 </div>
-            )}
 
+                {/* 비밀번호 확인 모달 */}
+                {passwordModalVisible && (
+                    <div className={QnA_b.modalOverlay}>
+                        <div className={QnA_b.modalContent}>
+                            <h3>비밀글 비밀번호 확인</h3>
+                            <input type="password" placeholder="비밀번호 입력" value={enteredPassword} onChange={(e) => setEnteredPassword(e.target.value)} className={QnA_b.modalInput} />
+                            {passwordError && <p className={QnA_b.errorText}>{passwordError}</p>}
+                            <div className={QnA_b.modalButtons}>
+                                <button onClick={handlePasswordCheck}>확인</button>
+                                <button onClick={closePasswordModal}>취소</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             <Footer />
         </div>
     );

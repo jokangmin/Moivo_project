@@ -23,7 +23,7 @@ public class AdminFaqServiceImpl implements AdminFaqService {
     @Autowired
     private UserRepository userRepository;
 
-    // FAQ 목록 조회
+    // FAQ 목록 조회 - 24.12.18 yjy
     @Override
     public List<QuestionDTO> getFaqList() {
         List<QuestionEntity> faqEntities = questionRepository.findByFixQuestionTrueOrderByQuestionDateDesc();
@@ -32,7 +32,7 @@ public class AdminFaqServiceImpl implements AdminFaqService {
                 .collect(Collectors.toList());
     }
 
-    // FAQ 추가
+    // FAQ 추가 - 24.12.18 yjy
     @Override
     public boolean addFaq(QuestionDTO questionDTO) {
         try {
@@ -81,7 +81,7 @@ public class AdminFaqServiceImpl implements AdminFaqService {
         }
     }
 
-    // FAQ 삭제
+    // FAQ 삭제 - 24.12.18 yjy
     @Override
     public boolean deleteFaq(Integer id) {
         try {

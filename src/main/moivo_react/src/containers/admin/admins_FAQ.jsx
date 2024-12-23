@@ -77,6 +77,12 @@ const admins_FAQ = () => {
         e.preventDefault();
         if (!selectedFaq) return;
 
+        // 변경사항이 있는지 확인
+        if (selectedFaq.title === formData.title && selectedFaq.content === formData.content) {
+            alert('수정된 내용이 없습니다.');
+            return;
+        }
+
         try {
             const response = await axiosInstance.put(`/api/admin/faq/update/${selectedFaq.id}`, {
                 title: formData.title,
