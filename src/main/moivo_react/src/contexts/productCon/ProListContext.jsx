@@ -6,10 +6,10 @@ import axiosInstance from '../../utils/axiosConfig';
 export const ProListContext = createContext();
 
 export function ProListProvider({ children }) {
-    const { token } = useContext(AuthContext);
-    const accessToken = localStorage.getItem('accessToken');
-    const [products, setProducts] = useState([]); 
-    const [currentPage, setCurrentPage] = useState(0);
+    const { token } = useContext(AuthContext); // 토큰 가져오기
+    const accessToken = localStorage.getItem('accessToken'); // 로컬스토리지에서 토큰 가져오기
+    const [products, setProducts] = useState([]); // 상품 목록 상태
+    const [currentPage, setCurrentPage] = useState(0); // 현재 페이지 상태
     const [pageInfo, setPageInfo] = useState({
         "isFirst": false,
         "isLast": false,
@@ -19,16 +19,16 @@ export function ProListProvider({ children }) {
         "startPage": 0,
         "endPage": 0
     });
-    const pageBlock = 3;
-    const itemsPerPage = 15;
-    const [sortBy, setSortBy] = useState("newest");
-    const [categories, setCategories] = useState([{ id: 0, name: '전체' }]);
+    const pageBlock = 3; // 페이지 블록 크기
+    const itemsPerPage = 15; // 페이지당 상품 수
+    const [sortBy, setSortBy] = useState("newest"); // 정렬 기준
+    const [categories, setCategories] = useState([{ id: 0, name: '전체' }]); // 카테고리 목록
     const [activeCategory, setActiveCategory] = useState({ id: 0, name: '전체' });
-    const [cartItem, setCartItem] = useState(0);
-    const [wishItem, setWishItem] = useState(0);
-    const [searchOpen, setSearchOpen] = useState(false);
-    const [searchTerm, setSearchTerm] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
+    const [cartItem, setCartItem] = useState(0); // 장바구니 아이템 수
+    const [wishItem, setWishItem] = useState(0); // 찜 아이템 수
+    const [searchOpen, setSearchOpen] = useState(false); // 검색 열기 상태
+    const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
+    const [isLoading, setIsLoading] = useState(false); // 로딩 상태
     const navigate = useNavigate();
 
     const fetchProducts = useCallback(async (page) => {
