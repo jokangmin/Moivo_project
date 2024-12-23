@@ -1,7 +1,9 @@
+/* eslint-disable no-unused-vars */
 import React, { createContext, useState, useContext, useCallback, useMemo } from 'react';
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
 import axiosInstance from '../../utils/axiosConfig';
+import PropTypes from 'prop-types';
 
 export const ProListContext = createContext();
 
@@ -26,7 +28,7 @@ export function ProListProvider({ children }) {
     const [activeCategory, setActiveCategory] = useState({ id: 0, name: '전체' });
     const [cartItem, setCartItem] = useState(0); // 장바구니 아이템 수
     const [wishItem, setWishItem] = useState(0); // 찜 아이템 수
-    const [searchOpen, setSearchOpen] = useState(false); // 검색 열기 상태
+    const [searchOpen, setSearchOpen] = useState(false); // 검색 열��� 상태
     const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
     const [isLoading, setIsLoading] = useState(false); // 로딩 상태
     const navigate = useNavigate();
@@ -149,3 +151,7 @@ export function ProListProvider({ children }) {
         </ProListContext.Provider>
     );
 }
+
+ProListProvider.propTypes = {
+    children: PropTypes.node.isRequired
+};
