@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from "../../utils/axiosConfig";
 
@@ -109,11 +109,4 @@ export const QnaBoardProvider = ({ children }) => {
     );
 };
 
-// useContext 훅
-export const useQnaBoard = () => {
-    const context = useContext(QnaBoardContext);
-    if (!context) {
-        throw new Error("useQnaBoard must be used within a QnaBoardProvider");
-    }
-    return context;
-};
+export default QnaBoardProvider;

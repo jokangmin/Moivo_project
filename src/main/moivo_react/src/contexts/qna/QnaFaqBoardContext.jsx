@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import axiosInstance from '../../utils/axiosConfig';
 
 const QnaFaqBoardContext = createContext();
@@ -116,10 +116,4 @@ export const QnaFaqBoardProvider = ({ children }) => {
     );
 };
 
-export const useQnaFaqBoard = () => {
-    const context = useContext(QnaFaqBoardContext);
-    if (!context) {
-      throw new Error('useQnaFaqBoard must be used within a QnaFaqBoardProvider');
-    }
-    return context;
-  };
+export default QnaFaqBoardProvider;

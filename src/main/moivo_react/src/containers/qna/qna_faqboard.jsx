@@ -1,9 +1,9 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import QnA from '../../assets/css/qna_faqboard.module.css';
 import Footer from '../../components/Footer/Footer';
 import Banner from '../../components/Banner/banner';
 import { Link } from 'react-router-dom';
-import { useQnaFaqBoard } from '../../contexts/qna/QnaFaqBoardContext';
+import QnaFaqBoardContext from '../../contexts/qna/QnaFaqBoardContext';
 
 const Qna_faqboard = () => {
   const {
@@ -16,7 +16,7 @@ const Qna_faqboard = () => {
     handleToggle,
     handlePageChange,
     getVisiblePages,
-  } = useQnaFaqBoard();
+  } = useContext(QnaFaqBoardContext);
 
   const totalPages = Math.ceil(faqList.length / 6);
 

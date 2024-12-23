@@ -482,7 +482,7 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(userEntity);
          
     }
-    
+
 
     // 결제 정보에서 사용자와의 연관 관계 끊기 
     @Transactional

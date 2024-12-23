@@ -3,8 +3,10 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProListProvider } from './contexts/productCon/ProListContext';
 import { ProDetailProvider } from './contexts/productCon/ProDetailContext';
-import { QnaBoardProvider } from './contexts/qna/QnaBoardContext';
-import { QnaFaqBoardProvider } from './contexts/qna/QnaFaqBoardContext';
+import { ReviewProvider } from './contexts/reviewCon/ReviewContext';
+import QnaBoardProvider from './contexts/qna/QnaBoardContext';
+import QnaFaqBoardProvider from './contexts/qna/QnaFaqBoardContext';
+import QnaBoardListProvider from './contexts/qna/QnaBoardListContext';
 import Main_index from './components/Main_index';
 import MainProvider from './contexts/MainContext';
 import User_login from './containers/user/user_login';
@@ -37,6 +39,9 @@ import KakaoCallback from './components/kakao/KakaoCallback';
 import Admins_FAQ from './containers/admin/admins_FAQ';
 import Admins_ProductList from './containers/admin/admin_productList';
 import ReviewWrite from './containers/review/review_write';
+import DashBoardProvider from './contexts/DashBoardContext';
+import PaymentProvider from './contexts/payment/PaymentContext';
+
 
 
 const routeConfig = [
@@ -55,14 +60,14 @@ const routeConfig = [
   { path: "/mypage/board", element: <MypageBoard /> },
   { path: "/mypage/order", element: <MypageOrder /> },
   { path: "/mypage/orderDetails", element: <MypageOrderDetails /> },
-  { path: "/qna_faqboard", element: <Qna_faqboard /> },
-  { path: "/qna_board", element: <Qna_board /> },
-  { path: "/qna_boardlist", element: <Qna_boardlist /> },
+  { path: '/qna_faqboard', element: (<QnaFaqBoardProvider><Qna_faqboard /></QnaFaqBoardProvider>) },
+  { path: '/qna_board', element: (<QnaBoardProvider><Qna_board /></QnaBoardProvider>) },
+  { path: '/qna_boardlist', element: (<QnaBoardListProvider><Qna_boardlist /></QnaBoardListProvider>) },
   { path: "/cart", element: <Cart /> },
-  { path: "/payment", element: <Payment /> },
-  { path: "/payment-method", element: <PaymentMethod /> },
-  { path: "/payment-success", element: <SuccessPage /> },
-  { path: "/payment-fail", element: <FailPage /> },
+  { path: "/payment", element: ( <PaymentProvider> <Payment /> </PaymentProvider> ),},
+  { path: "/payment-method", element: ( <PaymentProvider> <PaymentMethod /> </PaymentProvider> ),},
+  { path: "/payment-success", element: ( <PaymentProvider> <SuccessPage /> </PaymentProvider> ),},
+  { path: "/payment-fail", element: ( <PaymentProvider> <FailPage /> </PaymentProvider> ),},
   { path : "/admins_dashboard", element: <Dashboard/>},
   { path: "/api/oauth/kakao/callback", element: <KakaoCallback /> },
   { path : "/admins_qnaboard", element: <Admins_qna/>},
@@ -73,6 +78,7 @@ const routeConfig = [
   { path: "/oauth2/callback/kakao", element: <KakaoCallback /> },
   { path: "/admins_FAQ", element: <Admins_FAQ /> },
 
+
 ];
 
 const App = () => {
@@ -80,19 +86,25 @@ const App = () => {
     <Router>
       <AuthProvider>
         <MainProvider>
-          <ProListProvider>
-            <ProDetailProvider>
-              <QnaFaqBoardProvider>
-                <QnaBoardProvider>
-              <Routes>
-                {routeConfig.map(({ path, element }, index) => (
-                  <Route key={index} path={path} element={element} />
-                ))}
-              </Routes>
-                </QnaBoardProvider>
-              </QnaFaqBoardProvider>
-            </ProDetailProvider>
-          </ProListProvider>
+          <DashBoardProvider>
+              <ProListProvider>
+                <ProDetailProvider>
+                  <ReviewProvider>
+                    <QnaFaqBoardProvider>
+                      <QnaBoardProvider>
+                        <QnaBoardListProvider>
+                    <Routes>
+                      {routeConfig.map(({ path, element }, index) => (
+                        <Route key={index} path={path} element={element} />
+                      ))}
+                    </Routes>
+                        </QnaBoardListProvider>
+                      </QnaBoardProvider>
+                    </QnaFaqBoardProvider>
+                  </ReviewProvider>
+                </ProDetailProvider>
+              </ProListProvider>
+          </DashBoardProvider>
         </MainProvider>
       </AuthProvider>
     </Router>

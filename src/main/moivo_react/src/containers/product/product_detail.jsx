@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable no-unused-vars */
+import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaHeart, FaShoppingCart, FaMinus, FaPlus, FaTruck, FaExchangeAlt, FaCreditCard } from 'react-icons/fa';
@@ -6,7 +7,6 @@ import styles from '../../assets/css/product_detail.module.css';
 import Banner from '../../components/Banner/banner';
 import Footer from '../../components/Footer/Footer';
 import LoadingModal from './LoadingModal';
-
 import { useProDetail } from '../../contexts/productCon/ProDetailContext';
 
 const ProductDetail = () => {

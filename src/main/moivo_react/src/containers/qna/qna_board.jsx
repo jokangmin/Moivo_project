@@ -1,12 +1,12 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import QnA_w from '../../assets/css/qna_board.module.css'; 
 import { Link } from 'react-router-dom';
 import Footer from '../../components/Footer/Footer';
 import Banner from '../../components/Banner/banner';
-import { useQnaBoard } from "../../contexts/qna/QnaBoardContext";
+import QnaBoardContext from '../../contexts/qna/QnaBoardContext';
 
 const Qna_board = () => {
-  const { formData, handleChange, handleSubmit } = useQnaBoard();
+  const { formData, handleChange, handleSubmit } = useContext(QnaBoardContext);
 
   return (
     <div className={QnA_w.qnaboardMainDiv}>
