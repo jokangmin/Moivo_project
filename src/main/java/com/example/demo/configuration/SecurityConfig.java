@@ -10,8 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.session.SessionRegistry;
-import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -79,12 +77,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement(session -> session 
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                        .maximumSessions(1) //동시에 허용되는 세션 수
-                        .maxSessionsPreventsLogin(false) //true : 새로운 로그인 차단, false : 기존 세션 종료/ false 선택 이유 : 만약 털렸을 때, 내가 들어가 있는 세션이 종료되면 나는 로그인 못함.
-                        .expiredUrl("/api/user/login?error=duplicate") //중복 로그인 시 이동할 페이지
-                        .sessionRegistry(sessionRegistry()));
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
@@ -106,6 +100,47 @@ public class SecurityConfig {
         return source;
     }
 
+    // Kakao 로그인 설정(자동설정이 안되서 임시로 수동 삽입, 스프링부트 2.0이상에선 자동생성이 안될수도 있다고함)
+    // import
+    // org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+    // 현재 위 import로 생성가능 yml설정과 동일.
+    // @Bean
+    // public ClientRegistrationRepository clientRegistrationRepository() {
+    // // Kakao ClientRegistration 설정
+    // ClientRegistration kakao = ClientRegistration.withRegistrationId("kakao")
+    // .clientId("714a575754949434c7f9e10bb527da9a")
+    // .clientSecret("zAQRGb72z0JexxUESus4CMGV90BYP4Rs")
+    // .redirectUri("http://localhost:8080/api/user/oauth2/callback/kakao")
+    // .authorizationUri("https://kauth.kakao.com/oauth/authorize")
+    // .tokenUri("https://kauth.kakao.com/oauth/token")
+    // .userInfoUri("https://kapi.kakao.com/v2/user/me")
+    // .userNameAttributeName("id")
+    // .clientName("Kakao")
+    // .authorizationGrantType(new AuthorizationGrantType("authorization_code"))
+    // .scope("profile_nickname", "profile_image")
+    // .build();
+    //
+    // ClientRegistration google = ClientRegistration.withRegistrationId("google")
+    // .clientId("679990079220-prfchh4nd9k9oit85na1guc84jk6pjje.apps.googleusercontent.com")
+    // .clientSecret("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")
+    // .redirectUri("http://localhost:8080/api/user/oauth2/callback/google")
+    // .authorizationUri("https://accounts.google.com/o/oauth2/auth")
+    // .authorizationGrantType(new AuthorizationGrantType("authorization_code"))
+    // .tokenUri("https://oauth2.googleapis.com/token")
+    // .userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
+    // .scope("profile", "email")
+    // .build();
+    //
+    // return new InMemoryClientRegistrationRepository(kakao, google);
+    // }
+
+    // OAuth2 인증 후 사용자 정보를 저장할 메서드
+    // @Bean
+    // public OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService(
+    // @Qualifier("OAuth2UserServiceImpl") DefaultOAuth2UserService
+    // oAuth2UserService) {
+    // return new CustomOAuth2UserService();
+    // }
 
     // 클라이언트 인증 정보를 세션에 저장
     @Bean
@@ -113,7 +148,7 @@ public class SecurityConfig {
         return new HttpSessionOAuth2AuthorizedClientRepository();
     }
 
-    // 로그인 성공시 호출 SecurityContext 저장
+    // 로그인 성공시 호출 SecurityContext 저장관련
     @Bean
     public AuthenticationSuccessHandler successHandler() {
         return new CustomAuthenticationSuccessHandler(); // Custom handler에서 SecurityContext 설정
@@ -122,10 +157,5 @@ public class SecurityConfig {
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
-    }
-
-    @Bean
-    public SessionRegistry sessionRegistry() {
-        return new SessionRegistryImpl();
     }
 }

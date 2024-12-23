@@ -53,18 +53,18 @@ axiosInstance.interceptors.response.use(
       // 토큰이 만료되었는지 확인
       const errorMessage = error.response?.data?.message;
       if (errorMessage?.includes('만료된 토큰') || errorMessage?.includes('expired')) {
-        console.warn('토큰 만료: 갱신 시도');
+        console.warn('[RESPONSE] 토큰 만료: 갱신 시도');
         if (isRefreshing) {
           return new Promise((resolve, reject) => {
             failedQueue.push({ resolve, reject });
           })
             .then((token) => {
-              console.log('갱신된 토큰으로 재요청 진행');
+              console.log('[RESPONSE] 갱신된 토큰으로 재요청 진행');
               originalRequest.headers.Authorization = `Bearer ${token}`;
               return axiosInstance(originalRequest);
             })
             .catch((err) => {
-              console.error('재요청 중 에러 발생:', err);
+              console.error('[RESPONSE ERROR] 재요청 중 에러 발생:', err);
               return Promise.reject(err);
             });
         }
@@ -73,7 +73,7 @@ axiosInstance.interceptors.response.use(
         isRefreshing = true;
 
         try {
-          console.log('토큰 갱신 요청 시작');
+          console.log('[RESPONSE] 토큰 갱신 요청 시작');
           const response = await axios.post(
               `${PATH.SERVER}/api/auth/token/refresh`,
               {}, // Refresh Token 요청 시 Body 필요 여부 확인
@@ -102,24 +102,19 @@ axiosInstance.interceptors.response.use(
         } finally {
           isRefreshing = false; // 갱신 상태 초기화
         }
-      }
-    }
-
-    if (error.response?.status === 401) {
-      // 중복 로그인 에러 처리
-      if (error.response.data?.error === 'duplicate_login') {
-        localStorage.removeItem('accessToken');
-        window.location.href = '/user?error=duplicate';
-        return Promise.reject(new Error('이미 다른 곳에서 로그인된 계정입니다.'));
+      } else {
+        // 다른 인증 오류의 경우 바로 에러 반환
+        console.error('[RESPONSE] 인증 오류:', errorMessage);
+        return Promise.reject(error);
       }
     }
 
     if (error.response?.status === 404) {
-      console.warn('404 응답 처리: 데이터 없음');
+      console.warn('[RESPONSE] 404 응답 처리: 데이터 없음');
       return Promise.resolve({ data: null });
     }
 
-    console.error('응답 요청 실패:', error);
+    console.error('[RESPONSE ERROR] 요청 실패:', error);
     return Promise.reject(error);
   }
 );

@@ -477,10 +477,10 @@ public class UserServiceImpl implements UserService {
         userCouponRepository.deleteByUserEntity_Id(userId);
     
         // 4. 문의 데이터 수정 (삭제하지 않고 상태 변경)
-        questionRepository.updateUserStatusToDeleted(userId);
+        // questionRepository.updateUserStatusToDeleted(userId);
     
-        // 5. 리뷰 데이터 수정 (삭제하지 않고 상태 변경)
-        reviewRepository.updateUserStatusToDeleted(userId);
+        // // 5. 리뷰 데이터 수정 (삭제하지 않고 상태 변경)
+        // reviewRepository.updateUserStatusToDeleted(userId);
     
         // 6. 결제 데이터 수정 (삭제하지 않고 상태 변경)
         List<PaymentEntity> payments = paymentRepository.findByUserEntity_Id(userId);

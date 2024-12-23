@@ -4,7 +4,6 @@ import { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PATH } from "../../scripts/path";
 import PropTypes from 'prop-types';
-//yjy 파일 생성
 
 // AuthContext 생성 및 내보내기
 export const AuthContext = createContext(null);
@@ -113,22 +112,13 @@ export const AuthProvider = ({ children }) => {
             }, {
                 withCredentials: true  // 쿠키 전송을 위해 작성한거임
             });
-
-            // 중복 로그인 에러 처리
-            if (response.data.error === 'duplicate_login') {
-                throw new Error('이미 다른 곳에서 로그인된 계정입니다.');
-            }
-
             return await handleLoginSuccess(response);
         } catch (error) {
-            if (error.response?.data?.error === 'duplicate_login') {
-                throw new Error('이미 다른 곳에서 로그인된 계정입니다.');
-            }
             throw error.response?.data?.error || error.message;
         }
     };
 
-    // 카카오 로그인 함수 - yjy
+    // 카카오 로그인 함수
     // 24.1216~17 - uj (수정)
     const kakaoLogin = async (code) => {
         try {
@@ -150,7 +140,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // 일반, 카카오 로그인 성공 시 공통 함수 - yjy
+    // 일반, 카카오 로그인 성공 시 공통 함수
     const handleLoginSuccess = async (response) => {
         const { accessToken, isAdmin } = response.data; //2024-12-11 idAdmin 추가 장훈
         if (!accessToken) {
@@ -176,7 +166,7 @@ export const AuthProvider = ({ children }) => {
         return true;
     };
 
-    // 초기 인증 상태 확인 (새로고침해도 로그인 상태 유지) - yjy
+    // 초기 인증 상태 확인 (새로고침해도 로그인 상태 유지)
     useEffect(() => {
         const token = getAccessToken();
         const storedIsAdmin = localStorage.getItem('isAdmin') === 'true'; // 2024-12-11 isAdmin 값을 가져옴 장훈
