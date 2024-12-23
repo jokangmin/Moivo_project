@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { ProListProvider } from './contexts/productCon/ProListContext';
+import { ProDetailProvider } from './contexts/productCon/ProDetailContext';
 import Main_index from './components/Main_index';
 import MainProvider from './contexts/MainContext';
 import User_login from './containers/user/user_login';
@@ -33,7 +35,6 @@ import KakaoCallback from './components/kakao/KakaoCallback';
 import Admins_FAQ from './containers/admin/admins_FAQ';
 import Admins_ProductList from './containers/admin/admin_productList';
 import ReviewWrite from './containers/review/review_write';
-
 
 
 const routeConfig = [
@@ -77,11 +78,15 @@ const App = () => {
     <Router>
       <AuthProvider>
         <MainProvider>
-          <Routes>
-            {routeConfig.map(({ path, element }, index) => (
-              <Route key={index} path={path} element={element} />
-            ))}
-          </Routes>
+          <ProListProvider>
+            <ProDetailProvider>
+              <Routes>
+                {routeConfig.map(({ path, element }, index) => (
+                  <Route key={index} path={path} element={element} />
+                ))}
+              </Routes>
+            </ProDetailProvider>
+          </ProListProvider>
         </MainProvider>
       </AuthProvider>
     </Router>
