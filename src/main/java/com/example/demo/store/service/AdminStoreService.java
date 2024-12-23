@@ -1,6 +1,9 @@
 package com.example.demo.store.service;
 
+import java.util.List;
 import java.util.Map;
+
+import com.example.demo.store.dto.ProductCategoryDTO;
 
 public interface AdminStoreService {
 
@@ -21,5 +24,8 @@ public interface AdminStoreService {
 
     // 24.12.11 - 상품 복구 - sumin
     public boolean restoreProduct(int productId);
+
+    // 24.12.23 - 상위 & 하위 카테고리 - uj
+    public Map<String,List<ProductCategoryDTO>> getAllCategory();
 
 }
