@@ -244,19 +244,20 @@ const Qna_boardlist = () => {
                 }
             });
 
-            if (response.data.true === "200ok") {
+            if (response.status === 200) {
                 // 비밀번호가 맞으면
                 setActiveIndex(qnaData.indexOf(selectedPost));
                 setPasswordModalVisible(false);
                 setEnteredPassword('');
                 setPasswordError('');
-            } else {
-                // 비밀번호가 틀리면
-                setPasswordError('비밀번호가 틀렸습니다.');
             }
         } catch (error) {
-            console.error('비밀번호 확인 중 오류:', error);
-            if (error.response && error.response.status === 401) {
+            // console.error('비밀번호 확인 중 오류:', error);
+            // 상태 코드가 403이면 비밀번호가 틀린 경우
+            if (error.response && error.response.status === 403) {
+                setPasswordError('비밀번호가 틀렸습니다.');
+            }
+            else if (error.response && error.response.status === 401) {
                 setPasswordError('인증에 실패했습니다. 다시 로그인해주세요.');
             } else {
                 setPasswordError('비밀번호 확인 중 오류가 발생했습니다.');
