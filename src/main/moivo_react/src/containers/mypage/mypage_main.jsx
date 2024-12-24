@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import styles from "../../assets/css/Mypage.module.css";
 import Banner from "../../components/Banner/banner";
 import Footer from "../../components/Footer/Footer";
-import { PATH } from '../../../scripts/path';
 import { useMypageContext } from "../../contexts/mypageCon/MypageContext";
 
 const MypageMain = () => {

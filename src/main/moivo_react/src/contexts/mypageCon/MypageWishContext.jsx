@@ -6,7 +6,7 @@ const MypageWishContext = createContext();
 
 export const useMypageWishContext = () => useContext(MypageWishContext);
 
-export const MypageWishProvider = ({ children }) => {
+const MypageWishProvider = ({ children }) => {
     const [wishlistItems, setWishlistItems] = useState([]); // 상태로 찜 목록 관리
     const [userid, setUserid] = useState(null);
     console.log(userid);
@@ -72,3 +72,5 @@ export const MypageWishProvider = ({ children }) => {
         </MypageWishContext.Provider>
     );
 };
+
+export default MypageWishProvider;

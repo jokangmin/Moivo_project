@@ -4,6 +4,9 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ProListProvider } from './contexts/productCon/ProListContext';
 import { ProDetailProvider } from './contexts/productCon/ProDetailContext';
 import { ReviewProvider } from './contexts/reviewCon/ReviewContext';
+import QnaBoardProvider from './contexts/qna/QnaBoardContext';
+import QnaFaqBoardProvider from './contexts/qna/QnaFaqBoardContext';
+import QnaBoardListProvider from './contexts/qna/QnaBoardListContext';
 import Main_index from './components/Main_index';
 import MainProvider from './contexts/MainContext';
 import User_login from './containers/user/user_login';
@@ -40,6 +43,14 @@ import DashBoardProvider from './contexts/DashBoardContext';
 import PaymentProvider from './contexts/payment/PaymentContext';
 
 
+import MypageProvider from './contexts/mypageCon/MypageContext';
+import MypageProfileProvider from './contexts/mypageCon/MypageProfileContext';
+import MypageWishProvider from './contexts/mypageCon/MypageWishContext';
+import MypageBoardProvider from './contexts/mypageCon/MypageBoardContext';
+import MypageOrderProvider from './contexts/mypageCon/MypageOrderContext';
+import MypageOrderDetailProvider from './contexts/mypageCon/MypageOrderDetailContext';
+import CartProvider from './contexts/cartCon/CartContext';
+
 
 const routeConfig = [
   { path: "/", element: <Main_index /> },
@@ -51,20 +62,20 @@ const routeConfig = [
   { path: "/review/write", element: <ReviewWrite /> },
   { path: "/upload", element: <Upload /> },
   { path: "/update", element: <Update /> },
-  { path: "/mypage", element: <MypageMain /> },
-  { path: "/mypage/profile", element: <MypageProfile /> },
-  { path: "/mypage/wish", element: <MypageWish /> },
-  { path: "/mypage/board", element: <MypageBoard /> },
-  { path: "/mypage/order", element: <MypageOrder /> },
-  { path: "/mypage/orderDetails", element: <MypageOrderDetails /> },
-  { path: "/qna_faqboard", element: <Qna_faqboard /> },
-  { path: "/qna_board", element: <Qna_board /> },
-  { path: "/qna_boardlist", element: <Qna_boardlist /> },
-  { path: "/cart", element: <Cart /> },
-  { path: "/payment", element: <Payment /> },
-  { path: "/payment-method", element: <PaymentMethod /> },
-  { path: "/payment-success", element: <SuccessPage /> },
-  { path: "/payment-fail", element: <FailPage /> },
+  { path: "/mypage", element: (<MypageProvider><MypageMain /></MypageProvider>) },
+  { path: "/mypage/profile", element: (<MypageProfileProvider><MypageProfile /></MypageProfileProvider>) },
+  { path: "/mypage/wish", element: (<MypageWishProvider><MypageWish /></MypageWishProvider>) },
+  { path: "/mypage/board", element: (<MypageBoardProvider><MypageBoard /></MypageBoardProvider>) },
+  { path: "/mypage/order", element: (<MypageOrderProvider><MypageOrder /></MypageOrderProvider>) },
+  { path: "/mypage/orderDetails", element: (<MypageOrderDetailProvider><MypageOrderDetails /></MypageOrderDetailProvider>) },
+  { path: '/qna_faqboard', element: (<QnaFaqBoardProvider><Qna_faqboard /></QnaFaqBoardProvider>) },
+  { path: '/qna_board', element: (<QnaBoardProvider><Qna_board /></QnaBoardProvider>) },
+  { path: '/qna_boardlist', element: (<QnaBoardListProvider><Qna_boardlist /></QnaBoardListProvider>) },
+  { path: "/cart", element: (<CartProvider><Cart /></CartProvider>) },
+  { path: "/payment", element: ( <PaymentProvider> <Payment /> </PaymentProvider> ),},
+  { path: "/payment-method", element: ( <PaymentProvider> <PaymentMethod /> </PaymentProvider> ),},
+  { path: "/payment-success", element: ( <PaymentProvider> <SuccessPage /> </PaymentProvider> ),},
+  { path: "/payment-fail", element: ( <PaymentProvider> <FailPage /> </PaymentProvider> ),},
   { path : "/admins_dashboard", element: <Dashboard/>},
   { path: "/api/oauth/kakao/callback", element: <KakaoCallback /> },
   { path : "/admins_qnaboard", element: <Admins_qna/>},
@@ -73,7 +84,8 @@ const routeConfig = [
   { path : "/admin/admin_productTrash", element: <ProductTrash/>},
   { path : "/admin/admin_productList", element: <Admins_ProductList/>},
   { path: "/oauth2/callback/kakao", element: <KakaoCallback /> },
-  { path: "/admins_FAQ", element: <Admins_FAQ /> }
+  { path: "/admins_FAQ", element: <Admins_FAQ /> },
+
 
 ];
 
@@ -83,7 +95,6 @@ const App = () => {
       <AuthProvider>
         <MainProvider>
           <DashBoardProvider>
-            <PaymentProvider>
               <ProListProvider>
                 <ProDetailProvider>
                   <ReviewProvider>
@@ -95,7 +106,6 @@ const App = () => {
                   </ReviewProvider>
                 </ProDetailProvider>
               </ProListProvider>
-            </PaymentProvider>
           </DashBoardProvider>
         </MainProvider>
       </AuthProvider>
