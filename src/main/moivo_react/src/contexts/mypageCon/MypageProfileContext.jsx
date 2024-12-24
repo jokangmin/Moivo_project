@@ -45,10 +45,18 @@ const MypageProfileProvider = ({ children }) => {
         const newErrors = {};
         if (!formData.name) newErrors.name = "이름을 입력해 주세요.";
         if (!formData.email) newErrors.email = "이메일을 입력해 주세요.";
-        if (!formData.phone1 || !formData.phone2 || !formData.phone3) {
-            newErrors.phone = "전화번호를 입력해 주세요.";
+        // 전화번호 유효성 체크 첫번째는 3자리 숫자만, 두 세번째는 4자리 숫자만 입력받는 정규식 추가
+        if (!formData.phone1 || formData.phone1.length !== 3 || !/^\d{3}$/.test(formData.phone1)) {
+            newErrors.phone = "전화번호 첫 번째(3자리 숫자)를 입력해 주세요.";
         }
-        if (!formData.pwd) newErrors.pwd = "비밀번호를 입력해 주세요.";
+        if (!formData.phone2 || formData.phone2.length !== 4 || !/^\d{4}$/.test(formData.phone2)) {
+            newErrors.phone = "전화번호 두 번째(4자리 숫자)를 입력해 주세요.";
+        }
+        if (!formData.phone3 || formData.phone3.length !== 4 || !/^\d{4}$/.test(formData.phone3)) {
+            newErrors.phone = "전화번호 세 번째(4자리 숫자)를 입력해 주세요.";
+        }
+        //회원정보 수정시 비밀번호를 입력하지 않으면, DB의 비밀번호 값 그대로 유지
+        // if (!formData.pwd) newErrors.pwd = "비밀번호를 입력해 주세요.";
         //2024-12-19 비밀번호 정규화 추가 장훈
         if (formData.pwd) {
             if (!validatePassword(formData.pwd)) {
@@ -58,6 +66,8 @@ const MypageProfileProvider = ({ children }) => {
         if (formData.pwd !== formData.confirmPwd) {
             newErrors.confirmPwd = "비밀번호가 일치하지 않습니다.";
         }
+
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -77,28 +87,28 @@ const MypageProfileProvider = ({ children }) => {
 
      // 회원정보 수정
     const handleSubmit = async (e) => {
-        console.log("Fffff");
         e.preventDefault();
-    
+
         if (!validateForm()) return;  // 유효성 검사를 통과하지 못하면 서버로 전송하지 않음
-    
-        const phone = `${formData.phone1}${formData.phone2}${formData.phone3}`;
-    
+
+        //전화번호 저장 시 하이픈 추가
+        const phone = `${formData.phone1}-${formData.phone2}-${formData.phone3}`;
+
         // 서버로 전송할 데이터 준비
         const updateData = {
-            userId: formData.userId,
-            name: formData.name,
-            gender: formData.gender,
-            address: formData.addr1, // 기본 주소
-            zipcode: formData.zipcode, // 우편번호
-            addr1: formData.addr1, // 기본 주소
-            addr2: formData.addr2, // 상세 주소
-            tel: phone, // 전화번호
-            email: formData.email,
-            pwd: formData.pwd, // 비밀번호
-            height: formData.height, // 키
-            weight: formData.weight, // 몸무게
-            birth: formData.birth, // 생일
+            userId: formData.userId || null,
+            name: formData.name || null,
+            gender: formData.gender || null,
+            address: formData.addr1 || null, // 기본 주소
+            zipcode: formData.zipcode || null, // 우편번호
+            addr1: formData.addr1 || null, // 기본 주소
+            addr2: formData.addr2 || null, // 상세 주소
+            tel: phone || null, // 전화번호
+            email: formData.email || null,
+            pwd: formData.pwd || null, // 비밀번호
+            height: formData.height || null, // 키
+            weight: formData.weight || null, // 몸무게
+            birth:formData.birth || null // 생일
         };
         console.log(updateData);
         try {
@@ -168,7 +178,7 @@ const MypageProfileProvider = ({ children }) => {
 
     const handleDeleteAccount = async () => {
         const token = localStorage.getItem("accessToken");
-        
+
          // 토큰 디코딩 (jwt-decode 없이)
          const payload = token.split('.')[1];
          const decodedPayload = JSON.parse(atob(payload));
@@ -179,13 +189,13 @@ const MypageProfileProvider = ({ children }) => {
             alert("비밀번호를 입력해주세요.");
             return;
         }
-    
+
         try {
             await axiosInstance.post('/api/user/mypage/delete', {
                 pwd: deletePassword,
                 userId: id
             });
-    
+
             alert("회원 탈퇴가 완료되었습니다.");
             localStorage.clear();
             navigate("/");
@@ -207,7 +217,7 @@ const MypageProfileProvider = ({ children }) => {
         }
     };
 
-    
+
 
     const handleCancel = () => {
 
@@ -228,7 +238,7 @@ const MypageProfileProvider = ({ children }) => {
             email: userInfo?.email || "",
             bitrh: userInfo?.bitrh || "",
             height: userInfo?.height || "",
-            weight: userInfo?.weight || "", 
+            weight: userInfo?.weight || "",
         });
         alert("수정이 취소되었습니다.");
     };
@@ -236,7 +246,7 @@ const MypageProfileProvider = ({ children }) => {
     useEffect(() => {
         const token = localStorage.getItem("accessToken");
         console.log("Access Token:", token);
-        
+
         if (!token) {
             alert("로그인이 필요합니다.");
             navigate("/user");
@@ -254,9 +264,9 @@ const MypageProfileProvider = ({ children }) => {
             try {
                 const response = await axiosInstance.get(`/api/user/mypage/info/${id}`);
                 const data = response.data;
-
+                console.log("서버 응답 데이터:", data);  // 추가된 로그
                 const { phone1, phone2, phone3 } = splitPhoneNumber(data.tel);
-        
+
                 setUserInfo(data);
                 setFormData({
                     userId: data.userId,
@@ -299,10 +309,11 @@ const MypageProfileProvider = ({ children }) => {
 
     const splitPhoneNumber = (tel) => {
         if (!tel) return { phone1: "", phone2: "", phone3: "" };
-        const phoneParts = tel.match(/^(\d{3})(\d{4})(\d{4})$/);
+        const phoneParts = tel.match(/^(\d{3})-(\d{4})-(\d{4})$/);
         console.log(phoneParts);
         return phoneParts ? { phone1: phoneParts[1], phone2: phoneParts[2], phone3: phoneParts[3] } : { phone1: "", phone2: "", phone3: "" };
     };
+
 
 
     const value = {
