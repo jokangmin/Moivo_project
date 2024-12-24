@@ -7,7 +7,7 @@ const MypageOrderContext = createContext();
 
 export const useMypageOrderContext = () => useContext(MypageOrderContext);
 
-export const MypageOrderProvider = ({ children }) => {
+const MypageOrderProvider = ({ children }) => {
     const [OrdersList, setOrdersList] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
@@ -180,3 +180,5 @@ export const MypageOrderProvider = ({ children }) => {
         </MypageOrderContext.Provider>
     );
 };
+
+export default MypageOrderProvider;

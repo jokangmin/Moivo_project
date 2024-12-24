@@ -7,7 +7,7 @@ const MypageProfileContext = createContext();
 
 export const useMypageProfileContext = () => useContext(MypageProfileContext);
 
-export const MypageProfileProvider = ({ children }) => {
+const MypageProfileProvider = ({ children }) => {
     const [userInfo, setUserInfo] = useState(null); // 사용자 정보 상태
     const [formData, setFormData] = useState({
         userId: "",
@@ -321,7 +321,7 @@ export const MypageProfileProvider = ({ children }) => {
         handleOpenModal,
         handleCloseModal,
         handleCancel,
-        handleDeletePasswordChange,
+        //handleDeletePasswordChange, 2024/12/24 중복 선언으로 오류 남 장훈 (03:06)
         showTooltip,
         showModal,
         deletePassword,
@@ -337,3 +337,5 @@ export const MypageProfileProvider = ({ children }) => {
         </MypageProfileContext.Provider>
     );
 };
+
+export default MypageProfileProvider;

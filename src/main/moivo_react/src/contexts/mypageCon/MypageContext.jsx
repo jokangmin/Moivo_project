@@ -6,7 +6,7 @@ const MypageContext = createContext();
 
 export const useMypageContext = () => useContext(MypageContext);
 
-export const MypageProvider = ({ children }) => {
+const MypageProvider = ({ children }) => {
   const [userInfo, setUserInfo] = useState(null); // 사용자 정보 저장
   const [productList, setProductList] = useState([]); // 상품 목록 저장
   const [startIndex, setStartIndex] = useState(0);
@@ -89,3 +89,5 @@ export const MypageProvider = ({ children }) => {
     </MypageContext.Provider>
   );
 };
+
+export default MypageProvider;

@@ -6,7 +6,7 @@ const MypageBoardContext = createContext();
 
 export const useMypageBoardContext = () => useContext(MypageBoardContext);
 
-export const MypageBoardProvider = ({ children }) => {
+const MypageBoardProvider = ({ children }) => {
     const [MyQnaList, setMyQnaList] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
@@ -185,3 +185,5 @@ export const MypageBoardProvider = ({ children }) => {
         </MypageBoardContext.Provider>
     );
 };
+
+export default MypageBoardProvider;

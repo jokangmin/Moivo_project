@@ -6,7 +6,7 @@ const MypageOrderDetailContext = createContext();
 
 export const useMypageOrderDetailContext = () => useContext(MypageOrderDetailContext);
 
-export const MypageOrderDetailProvider = ({ children }) => {
+const MypageOrderDetailProvider = ({ children }) => {
     const location = useLocation();
     const [OrderDetailList, setOrderDetailList] = useState([]);
     const [OrdersInfo, setOrdersInfo] = useState({});
@@ -100,3 +100,5 @@ export const MypageOrderDetailProvider = ({ children }) => {
         </MypageOrderDetailContext.Provider>
     );
 };
+
+export default MypageOrderDetailProvider;
