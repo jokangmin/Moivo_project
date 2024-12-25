@@ -1,11 +1,11 @@
 package com.example.demo.jwt.filter;
 
-import com.example.demo.jwt.service.RefreshTokenService;
 import com.example.demo.jwt.util.JwtUtil;
+import com.example.demo.jwt.entity.ActiveSessionEntity;
+import com.example.demo.jwt.repository.ActiveSessionRepository;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -15,97 +15,77 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.util.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil;
-    private final RefreshTokenService refreshTokenService;
-    private final UserDetailsService userDetailsService;
-
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, RefreshTokenService refreshTokenService, UserDetailsService userDetailsService) {
-        this.jwtUtil = jwtUtil;
-        this.refreshTokenService = refreshTokenService;
-        this.userDetailsService = userDetailsService;
-    }
-
+    @Autowired
+    private JwtUtil jwtUtil;
+    
+    @Autowired
+    private UserDetailsService userDetailsService;
+    
+    @Autowired
+    private ActiveSessionRepository activeSessionRepository;
+    
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        
-        String requestURI = request.getRequestURI();
-        
-        // 토큰 검증이 필요없는 경로 스킵
-        if (requestURI.equals("/api/auth/token/refresh") || requestURI.equals("/api/user/login")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         try {
-            String token = getJwtFromRequest(request);
-            
-            if (StringUtils.hasText(token)) {
-                // 블랙리스트 체크를 먼저 수행
-                if (jwtUtil.isTokenBlacklisted(token)) {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.setContentType("application/json");
-                    response.getWriter().write("{\"error\": \"DuplicateLogin\", \"message\": \"다른 기기에서 로그인되어 로그아웃되었습니다.\"}");
-                    return;
-                }
-
+            String bearerToken = request.getHeader("Authorization");
+            if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+                String token = bearerToken.substring(7);
+                
                 if (jwtUtil.validateToken(token)) {
                     String userId = jwtUtil.getUserIdFromToken(token);
                     
-                    if (userId != null) {
-                        UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
-                        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities());
-                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                    }
-                } else {
-                    // 액세스 토큰이 유효하지 않을 때 리프레시 토큰 확인
-                    Cookie[] cookies = request.getCookies();
-                    String refreshToken = null;
+                    // 디버깅 메시지 추가
+                    System.out.println("토큰 검증 - 사용자: " + userId);
                     
-                    if (cookies != null) {
-                        for (Cookie cookie : cookies) {
-                            if ("refreshToken".equals(cookie.getName())) {
-                                refreshToken = cookie.getValue();
-                                break;
-                            }
-                        }
-                    }
-
-                    // 리프레시 토큰이 있고 유효한 경우
-                    if (refreshToken != null && jwtUtil.validateToken(refreshToken) 
-                            && !refreshTokenService.isTokenBlacklisted(refreshToken)) {
-                        // 리프레시 토큰으로 새로운 액세스 토큰 발급은 /api/auth/token/refresh 엔드포인트에서 처리
-                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        response.setContentType("application/json");
-                        response.getWriter().write("{\"error\": \"TokenExpired\", \"message\": \"Access token expired\"}");
+                    // 현재 세션 확인
+                    Optional<ActiveSessionEntity> activeSession = activeSessionRepository.findByUserId(userId);
+                    
+                    // 디버깅 메시지 추가
+                    System.out.println("저장된 세션 존재 여부: " + activeSession.isPresent());
+                    
+                    if (activeSession.isEmpty() || !token.equals(activeSession.get().getAccessToken())) {
+                        handleUnauthorized(response, "다른 곳에서 로그인되어 로그아웃됩니다.");
                         return;
                     }
+                    
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
+                    UsernamePasswordAuthenticationToken authentication = 
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
             filterChain.doFilter(request, response);
-        } catch (Exception ex) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter().write("{\"error\": \"Unauthorized\", \"message\": \"" + ex.getMessage() + "\"}");
+        } catch (Exception e) {
+            handleUnauthorized(response, e.getMessage());
         }
     }
-
-    private String getJwtFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
+    
+    private void handleUnauthorized(HttpServletResponse response, String message) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "SESSION_EXPIRED");
+        error.put("message", message);
+        
+        String json = new ObjectMapper().writeValueAsString(error);
+        response.getWriter().write(json);
     }
 }

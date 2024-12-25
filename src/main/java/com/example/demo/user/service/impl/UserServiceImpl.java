@@ -32,6 +32,8 @@ import com.example.demo.user.repository.CartRepository;
 import com.example.demo.user.repository.UserRepository;
 import com.example.demo.user.repository.WishRepository;
 import com.example.demo.user.service.UserService;
+import com.example.demo.jwt.entity.ActiveSessionEntity;
+import com.example.demo.jwt.repository.ActiveSessionRepository;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -81,6 +83,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private JwtProps jwtProps;
+
+    @Autowired
+    private ActiveSessionRepository activeSessionRepository;
 
     // 24-12-16 - uj - 중복 부분 함수 처리 (수정)
     @Override
@@ -163,26 +168,31 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Map<String, Object> login(String userId, String pwd) {
-        // 1. 중복 로그인 체크
-        if (refreshTokenService.hasActiveToken(userId)) {
-            throw new RuntimeException("DuplicateLogin");
+        try {
+            UserEntity user = authenticate(userId, pwd);
+            if (user != null) {
+                Map<String, Object> tokens = loginResponseData(user);
+                String accessToken = (String) tokens.get("accessToken");
+                
+                // 기존 세션이 있다면 제거
+                activeSessionRepository.findByUserId(userId).ifPresent(session -> {
+                    activeSessionRepository.delete(session);
+                });
+                
+                // 새로운 세션 저장
+                ActiveSessionEntity newSession = new ActiveSessionEntity();
+                newSession.setUserId(userId);
+                newSession.setAccessToken(accessToken);
+                newSession.setLastLoginTime(LocalDateTime.now());
+                activeSessionRepository.save(newSession);
+                System.out.println("세션 저장 완료 - 토큰: " + accessToken);
+                
+                return tokens;
+            }
+            return null;
+        } catch (Exception e) {
+            throw new RuntimeException("로그인 처리 중 오류가 발생했습니다.", e);
         }
-
-        // 2. 사용자 인증
-        UserEntity user = authenticate(userId, pwd);
-        if (user == null) {
-            throw new RuntimeException("Invalid credentials");
-        }
-
-        // 3. 기존에 저장된 토큰이 있다면 제거 (안전장치)
-        refreshTokenService.removeActiveToken(userId);
-
-        // 4. 새로운 토큰 생성 및 저장
-        Map<String, Object> responseData = loginResponseData(user);
-        String newToken = (String) responseData.get("accessToken");
-        refreshTokenService.saveActiveToken(userId, newToken);
-
-        return responseData;
     }
 
     @Override
