@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.coupon.dto.CouponDTO;
 import com.example.demo.coupon.dto.UserCouponDTO;
 import com.example.demo.coupon.entity.CouponEntity;
+import com.example.demo.coupon.entity.UserCouponEntity;
 import com.example.demo.coupon.repository.UserCouponRepository;
 import com.example.demo.ncp.dto.NCPObjectStorageDTO;
 import com.example.demo.payment.dto.PaymentDTO;
@@ -109,25 +110,22 @@ public class MypageServiceImpl implements MypageService {
         userDTO.setGrade(userEntity.getGrade());
 
         // 쿠폰 정보 가져오기
-        List<UserCouponDTO> userCoupons = userCouponRepository.findByUserEntity_Id(userId)
-                .stream()
-                .map(item -> {
-                    UserCouponDTO userCouponDTO = new UserCouponDTO();
+        UserCouponEntity userCouponEntity = userCouponRepository.findByUserEntity_Id(userId);
 
-                    if (item.getUsed()) {
-                        userCouponDTO.setCouponName("이미 사용한 쿠폰입니다.");
-                    } else if (item.getEndDate().isBefore(LocalDateTime.now()))
-                        userCouponDTO.setCouponName("유효기간이 지난 쿠폰입니다.");
-                    else {
-                        userCouponDTO = UserCouponDTO.toGUserCouponDTO(item);
-                    }
-                    return userCouponDTO;
-                })
-                .collect(Collectors.toList());
+        // UserCouponDTO 생성 및 조건 처리
+        UserCouponDTO userCouponDTO = new UserCouponDTO();
+        if (userCouponEntity != null) {
+            if (userCouponEntity.getUsed()) {
+                userCouponDTO.setCouponName("이미 사용한 쿠폰입니다.");
+            } else if (userCouponEntity.getEndDate().isBefore(LocalDateTime.now())) {
+                userCouponDTO.setCouponName("유효기간이 지난 쿠폰입니다.");
+            } else {
+                userCouponDTO = UserCouponDTO.toGUserCouponDTO(userCouponEntity);
+            }
+        }
+            userDTO.setCoupon(userCouponDTO); // 쿠폰 정보 설정
 
-        userDTO.setCoupons(userCoupons); // 쿠폰 정보 설정
-
-        System.out.println("쿠폰 : " + userCoupons);
+        System.out.println("쿠폰 : " + userCouponDTO);
         System.out.println("누적 구매 금액: " + totalSpent);
         System.out.println("등급: " + userEntity.getGrade());
         System.out.println("다음 등급까지 남은 금액: " + nextLevelTarget);

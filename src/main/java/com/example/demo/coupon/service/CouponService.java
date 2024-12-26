@@ -6,5 +6,5 @@ import java.util.List;
 import com.example.demo.coupon.dto.CouponDTO;
 
 public interface CouponService {
-    public List<CouponDTO> getUserCoupons(int id);
+    public CouponDTO getUserCoupons(int id);
 }

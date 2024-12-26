@@ -12,11 +12,11 @@ const Payment = () => {
     handleFindPostalCode,
     handleChange,
     handlePayment,
-    renderCouponOptions,
+    renderCouponOption,
     calculateDiscountedPrice,
     getDiscountedTotal,
     loading,
-    coupons,
+    coupon,
     cartItems,
     totalPrice,
     isCartItem,
@@ -91,7 +91,7 @@ const Payment = () => {
                   onChange={handleChange}
                 >
                   <option value="">쿠폰을 선택하세요</option>
-                  {renderCouponOptions()}
+                  {renderCouponOption()}
                 </select>
               </div>
             </form>
@@ -99,7 +99,7 @@ const Payment = () => {
               <>
                 <div className={styles.productList}>
                   {cartItems.map((item) => {
-                    const discountedPrice = calculateDiscountedPrice(item.price);
+                    const discountedPrice = coupon ? calculateDiscountedPrice(item.price) : item.price; // 쿠폰이 선택된 경우에만 할인된 가격 적용
                     return (
                       <div key={item.usercartId} className={styles.productItem}>
                         <img
@@ -107,39 +107,40 @@ const Payment = () => {
                           alt={item.name}
                           className={styles.productImage}
                         />
-                       <div className={styles.productDetails}>
-                        <div className={styles.productName}>{item.name}</div>
-                        {item.size && (
-                          <div className={styles.productSize}>
-                            <span>Size: {item.size}</span>
-                          </div>
-                        )}
-                        <div className={styles.productPrice}>
-                          {discountedPrice !== item.price ? (
-                            <>
-                              <span className={styles.originalPrice}>
-                                KRW {item.price.toLocaleString()}
-                              </span>
-                              <span className={styles.itemCount}> x {item.count}</span>
-                              <br />
-                              <span className={styles.discountedPrice}>
-                                KRW {discountedPrice.toLocaleString()}
-                              </span>
-                            </>
-                          ) : (
-                            <>
-                              <span className={styles.finalPrice}>
-                                KRW {item.price.toLocaleString()}
-                              </span>
-                              <span className={styles.itemCount}> x {item.count}</span>
-                            </>
+                        <div className={styles.productDetails}>
+                          <div className={styles.productName}>{item.name}</div>
+                          {item.size && (
+                            <div className={styles.productSize}>
+                              <span>Size: {item.size}</span>
+                            </div>
                           )}
+                          <div className={styles.productPrice}>
+                            {discountedPrice !== item.price ? (
+                              <>
+                                <span className={styles.originalPrice}>
+                                  KRW {item.price.toLocaleString()}
+                                </span>
+                                <span className={styles.itemCount}> x {item.count}</span>
+                                <br />
+                                <span className={styles.discountedPrice}>
+                                  KRW {discountedPrice.toLocaleString()}
+                                </span>
+                              </>
+                            ) : (
+                              <>
+                                <span className={styles.finalPrice}>
+                                  KRW {item.price.toLocaleString()}
+                                </span>
+                                <span className={styles.itemCount}> x {item.count}</span>
+                              </>
+                            )}
+                          </div>
                         </div>
-                      </div>
                       </div>
                     );
                   })}
                 </div>
+
                 <div className={styles.paymentContainer}>
                   <div className={styles.paymentSummary}>
                     <div className={styles.summaryItem}>
