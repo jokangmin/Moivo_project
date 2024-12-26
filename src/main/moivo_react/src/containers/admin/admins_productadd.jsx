@@ -1,21 +1,21 @@
   import React, { useState, useEffect, useRef } from "react";
   import admin_product from "../../assets/css/admins_product.module.css";
-  import axios from "axios";
-  import { PATH } from "../../../scripts/path";
   import Admins_side from '../../components/admin_sidebar/admins_side';
-  import { Link } from 'react-router-dom';
   import axiosInstance from '../../utils/axiosConfig';
+  import { useNavigate } from "react-router-dom";
 
   const Admins_ProductAdd = () => {
     const [product, setProduct] = useState({
       name: "",
       price: "",
       content: "",
-      categoryId: 0,
+      categoryId: "",
       gender: ""
     });
 
+    const navigate = useNavigate();
     const [categories, setCategories] = useState([]);
+    const [selectedMainCategory, setSelectedMainCategory] = useState("");
     const [subCategories, setSubCategories] = useState([]);
     const [genders, setGenders] = useState([]);
 
@@ -62,29 +62,25 @@
 
     //2024/12/26 카테고리 변경 시 세부 카테고리 가져오기 추가 장훈
     const handleCategoryChange = (e) => {
-      const categoryId = e.target.value;
-      console.log("선택된 categoryId:", categoryId); // 선택된 카테고리 ID 확인
-      setProduct((prev) => ({ ...prev, categoryId }));
-    
-      if (categoryId) {
+      const mainCategoryId = e.target.value;
+      console.log("선택된 메인 categoryId:", mainCategoryId);
+      
+      // 메인 카테고리 저장
+      setSelectedMainCategory(mainCategoryId);
+      // 메인 카테고리 변경 시 product의 categoryId는 초기화
+      setProduct(prev => ({ ...prev, categoryId: "" }));
+  
+      if (mainCategoryId) {
         axiosInstance.get("/api/admin/store/category").then((res) => {
-          console.log("API 응답:", res); // 전체 응답 확인
-    
-          if (res.data.category && res.data[categoryId]) {
-            // 부모 카테고리 목록 확인
-            console.log("전체 카테고리 데이터:", res.data.category);
-    
-            // categoryId에 맞는 서브카테고리 가져오기
-            const subCategories = res.data[categoryId];
+          if (res.data.category && res.data[mainCategoryId]) {
+            const subCategories = res.data[mainCategoryId];
             if (Array.isArray(subCategories)) {
               console.log("필터된 세부 카테고리:", subCategories);
               setSubCategories(subCategories);
             } else {
-              console.log("해당 카테고리에 서브카테고리가 없습니다.");
               setSubCategories([]);
             }
           } else {
-            console.log("API 응답에서 해당 카테고리의 서브카테고리가 없습니다.");
             setSubCategories([]);
           }
         }).catch((error) => {
@@ -94,6 +90,18 @@
       } else {
         setSubCategories([]);
       }
+    };
+    
+    // 2024/12/26 서브카테고리 선택 시, 서브카테고리 값을 categoryId로 업데이트 장훈
+    const handleSubCategoryChange = (e) => {
+      const subCategoryId = e.target.value;
+      console.log("선택된 서브카테고리 ID:", subCategoryId);
+      
+      // 서브카테고리 ID를 최종 categoryId로 설정
+      setProduct(prev => ({
+        ...prev,
+        categoryId: subCategoryId // 서브카테고리 ID가 최종적으로 DB에 저장될 categoryId가 됨
+      }));
     };
 
     // 상품 정보 입력 핸들러
@@ -148,12 +156,13 @@
     // 업로드 핸들러
     const handleUpload = async () => {
       const formData = new FormData();
+      console.log("전송되는 데이터:", product);
 
       if (
         !product.name ||
         !product.price ||
         !product.content ||
-        !product.categoryId
+        !product.categoryId   
       ) {
         alert("모든 상품 정보를 입력해주세요.");
         return;
@@ -200,6 +209,7 @@
 
         if (response.status === 200) {
           alert("상품이 성공적으로 등록되었습니다.");
+          navigate(`/admin/admin_productList`)
           resetForm();
         }
       } catch (error) {
@@ -267,7 +277,7 @@
           <h1 className={admin_product.uploadTitle}>상품 추가</h1>
           <div className={admin_product.form}>
             
-            {/* 버튼 */}
+            {/* 버튼
             <div className={admin_product.Navi}>
               <Link to="/admins_productadd">
                 <button className={admin_product.UploadBtn}>상품 추가</button>
@@ -275,7 +285,7 @@
               <Link to="/admins_productUpdate">
                 <button className={admin_product.UpdateBtn}>상품 수정</button>
               </Link>
-            </div>
+            </div> */}
 
             <h2 className={admin_product.sectionTitle}>기본 상품 정보</h2>
             <div className={admin_product.basicsection}>
@@ -294,16 +304,20 @@
               {/* 카테고리 */}
               <div className={admin_product.inputGroup}>
                 <label className={admin_product.label}>카테고리</label>
-                <select  className={admin_product.select} name="categoryId" value={product.categoryId}  onChange={handleCategoryChange} >
+                <select className={admin_product.select} value={selectedMainCategory} onChange={handleCategoryChange} >
                   <option value="">카테고리 선택</option>
-                  {categories.map((category) => ( <option key={category.id} value={category.id}> {category.name} </option> ))}
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
                 </select>
               </div>
 
               {/* 세부 카테고리 */}
               <div className={admin_product.inputGroup}>
                 <label className={admin_product.label}>세부 카테고리</label>
-                <select className={admin_product.select} name="subcategoryId" onChange={handleInputChange} value={product.subcategoryId || ""} >
+                <select className={admin_product.select} value={product.categoryId} onChange={handleSubCategoryChange} >
                   <option value="">세부 카테고리 선택</option>
                   {subCategories && subCategories.length > 0
                     ? subCategories.map((subCategory) => (
@@ -311,11 +325,10 @@
                           {subCategory.name}
                         </option>
                       ))
-                    : <option value="">해당 카테고리에 서브카테고리가 없습니다.</option>
-                  }
+                    : null}
                 </select>
               </div>
-              
+
               {/* 성별 */}
               <div className={admin_product.inputGroup}>
                 <label className={admin_product.label}>성별</label>
