@@ -14,10 +14,11 @@ const useUserSignup = () => {
         postalCode: "",
         address: "",
         detailedAddress: "",
-        phone1: "",
+        phone1: "010",
         phone2: "",
         phone3: "",
         email: "",
+        gender:"",
     });
 
     const [errors, setErrors] = useState({
@@ -28,6 +29,7 @@ const useUserSignup = () => {
         address: "",
         phone: "",
         email: "",
+        gender:"",
     });
 
     // 동적 스크립트 로드 함수
@@ -85,10 +87,19 @@ const useUserSignup = () => {
                     phone: "전화번호를 모두 입력해주세요.",
                 }));
             } else {
-                setErrors((prevErrors) => ({
-                    ...prevErrors,
-                    phone: "",
-                }));
+                // phone2와 phone3이 정확히 4자리 숫자인지 확인
+                const phonePattern = /^\d{4}$/;
+                if (!phonePattern.test(formData.phone2) || !phonePattern.test(formData.phone3)) {
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        phone: "전화번호는 숫자 4자리씩 입력해야 합니다.",
+                    }));
+                } else {
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        phone: "",
+                    }));
+                }
             }
         } else if (name === "postalCode" || name === "address" || name === "detailedAddress") {
             // 주소 필드 검증
@@ -184,17 +195,27 @@ const useUserSignup = () => {
             case "name":
                 newError = value ? "" : "이름을 입력해주세요.";
                 break;
+                case "gender":
+                    newError = value ? "" : "성별을 선택해주세요.";
+                    break;
             case "address":
                 newError = formData.postalCode && formData.address && formData.detailedAddress ? "" : "주소를 모두 입력해주세요.";
                 break;
             case "phone1":
             case "phone2":
             case "phone3":
-                // 전화번호 3개 필드 중 하나라도 비어있으면 오류 메시지
                 if (!formData.phone1 || !formData.phone2 || !formData.phone3) {
                     newError = "전화번호를 모두 입력해주세요.";
                 } else {
-                    newError = "";
+                    const phone2Pattern = /^\d{4}$/; // phone2는 반드시 4자리
+                    const phone3Pattern = /^\d{4}$/; // phone3는 반드시 4자리
+                    if (!phone2Pattern.test(formData.phone2)) {
+                        newError = "2번째 전화번호를 숫자 4자리로 입력해주세요.";
+                    } else if (!phone3Pattern.test(formData.phone3)) {
+                        newError = "3번째 전화번호를 숫자 4자리로 입력해주세요.";
+                    } else {
+                        newError = "";
+                    }
                 }
                 break;
             case "email":
@@ -219,10 +240,19 @@ const useUserSignup = () => {
 
         // 각 필드에 대해 검증 , 오류면 isValid를 false로 설정
         Object.keys(formData).forEach((field) => {
-            const error = validateField(field);
-            if (error) {
-                newErrors[field] = error;
-                isValid = false;
+            if (field === "phone1" || field === "phone2" || field === "phone3") {
+                // 전화번호 전체를 검증
+                const phoneError = validateField("phone1") || validateField("phone2") || validateField("phone3");
+                if (phoneError) {
+                    newErrors.phone = phoneError; // phone에 대한 공통 에러 설정
+                    isValid = false;
+                }
+            } else {
+                const error = validateField(field);
+                if (error) {
+                    newErrors[field] = error;
+                    isValid = false;
+                }
             }
         });
 
@@ -269,7 +299,7 @@ const useUserSignup = () => {
         errors,
         handleChange,
         IdCheckHandleBlur,
-        handleBlur: (e) => validateField(e.target.name),
+        handleBlur,
         handleFindPostalCode,
         handleSubmit,
     };
