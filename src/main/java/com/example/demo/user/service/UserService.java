@@ -51,7 +51,5 @@ public interface UserService {
     public Map<String, Object> loginResponseData(UserEntity user);
 
 
-    public int idCheck(String userid);
-
-    public boolean isUserAlreadyLoggedIn(String userId);
+    int idCheck(String userid);
 }

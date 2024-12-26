@@ -1,6 +1,5 @@
 package com.example.demo.user.controller;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.demo.jwt.service.RefreshTokenService;
 import com.example.demo.jwt.util.JwtUtil;
 import com.example.demo.user.dto.UserDTO;
 import com.example.demo.user.service.UserService;
@@ -25,9 +23,6 @@ public class UserController {
 
     @Autowired
     private JwtUtil jwtUtil;
-
-    @Autowired
-    private RefreshTokenService refreshTokenService;
 
     // 회원가입시 ID 중복 체크
     @GetMapping("/idCheck")
@@ -78,91 +73,40 @@ public class UserController {
                                                      HttpServletResponse response) {
         String userId = loginRequest.get("userId");
         String pwd = loginRequest.get("pwd");
-        
         try {
-            Map<String, Object> userInfo = userService.login(userId, pwd);
-            if (userInfo != null) {
-                // 1. 기존 토큰이 있다면 먼저 블랙리스트에 추가
-                if (refreshTokenService.hasActiveToken(userId)) {
-                    String oldToken = refreshTokenService.getActiveToken(userId);
-                    refreshTokenService.addTokenToBlacklist(oldToken);
-                    refreshTokenService.removeActiveToken(userId);  // 기존 토큰 제거
-                }
+            System.out.println("로그인 시도 - userId: " + userId); // 디버깅
+            Map<String, Object> loginResult = userService.login(userId, pwd);
 
-                // 2. 새 토큰 생성
-                String accessToken = jwtUtil.generateAccessToken(userId, (Integer)userInfo.get("id"), (Boolean)userInfo.get("isAdmin"));
-                String refreshToken = jwtUtil.generateRefreshToken(userId, (Integer)userInfo.get("id"));
-                
-                // 3. 새 토큰을 활성 토큰으로 저장
-                refreshTokenService.saveActiveToken(userId, accessToken);
+            // Refresh Token을 쿠키에 설정
+            Cookie refreshTokenCookie = new Cookie("refreshToken",
+                    (String) loginResult.get("refreshToken"));
+            refreshTokenCookie.setHttpOnly(true);
+            refreshTokenCookie.setPath("/");
+            refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60); // 7일
+            response.addCookie(refreshTokenCookie);
 
-                // 4. 쿠키 설정
-                Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
-                refreshTokenCookie.setHttpOnly(true);
-                refreshTokenCookie.setPath("/");
-                response.addCookie(refreshTokenCookie);
+            // isAdmin 값을 응답에 포함
+            // UserDTO userInfo = userService.findUserById(userId);
+            // loginResult.put("isAdmin", userInfo.isAdmin());
 
-                Map<String, Object> loginResult = new HashMap<>();
-                loginResult.put("accessToken", accessToken);
-                loginResult.put("isAdmin", userInfo.get("isAdmin"));
-                loginResult.put("userId", userId);
-                
-                return ResponseEntity.ok(loginResult);
-            } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(Map.of("error", "Invalid credentials"));
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            // Refresh Token은 응답 바디에서 제거
+            loginResult.remove("refreshToken");
+            System.out.println("로그인 성공!!");
+
+            return ResponseEntity.ok(loginResult);
+        } catch (RuntimeException e) {
+            System.out.println("로그인 실패: " + e.getMessage()); // 디버깅
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", e.getMessage()));
         }
     }
 
     // 로그아웃
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestHeader("Authorization") String accessToken,
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String accesstoken,
                                          @CookieValue("refreshToken") String refreshToken) {
-        try {
-            String token = accessToken.substring(7);
-            String userId = jwtUtil.getUserIdFromToken(token);
-            
-            // 현재 토큰을 블랙리스트에 추가
-            refreshTokenService.addTokenToBlacklist(token);
-            if (refreshToken != null) {
-                refreshTokenService.addTokenToBlacklist(refreshToken);
-            }
-            
-            // 활성 토큰 제거
-            refreshTokenService.removeActiveToken(userId);
-            
-            return ResponseEntity.ok("로그아웃 성공");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("로그아웃 실패");
-        }
-    }
-
-    // 중복 로그인 방지를 위한 세션 무효화 엔드포인트 추가
-    @PostMapping("/invalidate-sessions")
-    public ResponseEntity<?> invalidateSessions(@RequestBody Map<String, String> request) {
-        String userId = request.get("userId");
-        String currentToken = request.get("currentToken");
-
-        try {
-            // 기존 활성 토큰이 있다면 블랙리스트에 추가
-            if (refreshTokenService.hasActiveToken(userId)) {
-                String oldToken = refreshTokenService.getActiveToken(userId);
-                if (!oldToken.equals(currentToken)) {
-                    refreshTokenService.addTokenToBlacklist(oldToken);
-                }
-            }
-
-            // 새로운 토큰을 활성 토큰으로 설정
-            refreshTokenService.saveActiveToken(userId, currentToken);
-
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        userService.logout(accesstoken, refreshToken);
+        return ResponseEntity.ok("로그아웃 성공");
     }
 
     // 사용자 정보 조회 엔드포인트 추가
@@ -201,7 +145,9 @@ public class UserController {
             String actualToken = token.substring(7); // "Bearer " 제거
             Map<String, Object> userData = jwtUtil.getUserDataFromToken(actualToken);
             String userIdFromToken = (String) userData.get("userId");
-
+            System.out.println(userIdFromToken);
+            System.out.println(userDTO.getUserId());
+            
             // 사용자 ID 일치 여부 확인 (보안 검증)
             if (!userIdFromToken.equals(userDTO.getUserId())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

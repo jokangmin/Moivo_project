@@ -20,6 +20,7 @@ import com.example.demo.jwt.service.BlacklistService;
 import com.example.demo.jwt.service.RefreshTokenService;
 import com.example.demo.jwt.util.JwtUtil;
 import com.example.demo.payment.entity.PaymentEntity;
+import com.example.demo.payment.repository.PaymentDetailRepository;
 import com.example.demo.payment.repository.PaymentRepository;
 import com.example.demo.qna.repository.QuestionRepository;
 import com.example.demo.store.repository.ReviewRepository;
@@ -29,11 +30,11 @@ import com.example.demo.user.entity.UserEntity;
 import com.example.demo.user.entity.WishEntity;
 import com.example.demo.user.entity.UserEntity.LoginType;
 import com.example.demo.user.repository.CartRepository;
+import com.example.demo.user.repository.UserCartRepository;
 import com.example.demo.user.repository.UserRepository;
+import com.example.demo.user.repository.UserWishRepository;
 import com.example.demo.user.repository.WishRepository;
 import com.example.demo.user.service.UserService;
-import com.example.demo.jwt.entity.ActiveSessionEntity;
-import com.example.demo.jwt.repository.ActiveSessionRepository;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -67,7 +68,7 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private CartRepository cartRepository;
-
+    
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -83,9 +84,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private JwtProps jwtProps;
-
-    @Autowired
-    private ActiveSessionRepository activeSessionRepository;
 
     // 24-12-16 - uj - 중복 부분 함수 처리 (수정)
     @Override
@@ -138,6 +136,55 @@ public class UserServiceImpl implements UserService {
 
         return userEntity;
     }
+    /*
+     * @Override
+     * public Map<String, Object> login(String userId, String pwd) {
+     * // 사용자 인증
+     * UserEntity userEntity = authenticate(userId, pwd);
+     *
+     * // Wish와 Cart 정보 조회
+     * WishEntity wishEntity =
+     * wishRepository.findByUserEntity_Id(userEntity.getId())
+     * .stream()
+     * .findFirst()
+     * .orElseGet(() -> {
+     * WishEntity newWish = new WishEntity();
+     * newWish.setUserEntity(userEntity);
+     * return wishRepository.save(newWish);
+     * });
+     *
+     * CartEntity cartEntity =
+     * cartRepository.findByUserEntity_Id(userEntity.getId())
+     * .orElseGet(() -> {
+     * CartEntity newCart = new CartEntity();
+     * newCart.setUserEntity(userEntity);
+     * return cartRepository.save(newCart);
+     * });
+     *
+     * // JWT 토큰 생성 (JwtUtil 사용)
+     * String accessToken = jwtUtil.generateAccessToken(
+     * userEntity.getUserId(),
+     * userEntity.getId(),
+     * wishEntity.getId(),
+     * cartEntity.getId()
+     * );
+     *
+     * String refreshToken = jwtUtil.generateRefreshToken(
+     * userEntity.getUserId(),
+     * userEntity.getId()
+     * );
+     *
+     * // 결과 맵 생성
+     * Map<String, Object> result = new HashMap<>();
+     * result.put("accessToken", accessToken);
+     * result.put("refreshToken", refreshToken);
+     * result.put("id", userEntity.getId());
+     * result.put("wishId", wishEntity.getId());
+     * result.put("cartId", cartEntity.getId());
+     *
+     * return result;
+     * }
+     */
 
     // 24.12.16 - uj (소셜 & Moivo 로그인 공통 사용, 함수처리)
     // JWT 토큰 생성 & 응답 데이터
@@ -168,31 +215,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Map<String, Object> login(String userId, String pwd) {
-        try {
-            UserEntity user = authenticate(userId, pwd);
-            if (user != null) {
-                Map<String, Object> tokens = loginResponseData(user);
-                String accessToken = (String) tokens.get("accessToken");
-                
-                // 기존 세션이 있다면 제거
-                activeSessionRepository.findByUserId(userId).ifPresent(session -> {
-                    activeSessionRepository.delete(session);
-                });
-                
-                // 새로운 세션 저장
-                ActiveSessionEntity newSession = new ActiveSessionEntity();
-                newSession.setUserId(userId);
-                newSession.setAccessToken(accessToken);
-                newSession.setLastLoginTime(LocalDateTime.now());
-                activeSessionRepository.save(newSession);
-                System.out.println("세션 저장 완료 - 토큰: " + accessToken);
-                
-                return tokens;
-            }
-            return null;
-        } catch (Exception e) {
-            throw new RuntimeException("로그인 처리 중 오류가 발생했습니다.", e);
+        // 사용자 인증 로직
+        UserEntity user = authenticate(userId, pwd);
+
+        if (user == null) {
+            throw new RuntimeException("Invalid credentials");
         }
+
+        // 24.12.16 - uj (수정, 함수 처리)
+        // JWT 토큰 생성 & 응답 데이터
+        Map<String, Object> result = loginResponseData(user);
+        return result;
     }
 
     @Override
@@ -438,7 +471,7 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(userEntity);
          
     }
-    
+
 
     // 결제 정보에서 사용자와의 연관 관계 끊기 
     @Transactional
@@ -458,10 +491,6 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
         return userEntity.isAdmin();
-    }
-
-    public boolean isUserAlreadyLoggedIn(String userId) {
-        return refreshTokenService.hasActiveToken(userId);
     }
 
 }

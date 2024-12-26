@@ -68,13 +68,17 @@ export const AuthProvider = ({ children }) => {
             const accessToken = getAccessToken();
             const refreshToken = getRefreshToken();
             
+            // 토큰이 있는 경우에만 로그아웃 요청
             if (accessToken) {
-                await axiosInstance.post(`/api/user/logout`, null, {
-                    withCredentials: true,
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`
+                await axiosInstance.post(`/api/user/logout`, 
+                    { refreshToken },
+                    {
+                        withCredentials: true,
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`
+                        }
                     }
-                });
+                );
             }
             removeTokens();
             setIsAuthenticated(false);
@@ -83,11 +87,16 @@ export const AuthProvider = ({ children }) => {
             // 사용자 정보 제거
             localStorage.removeItem('userId');
             localStorage.removeItem('id');
+
+            // 로컬 스토리지 토큰 제거
+            localStorage.removeItem('accessToken');
+            setIsAuthenticated(false);
             navigate('/');
         } catch (error) {
             console.error('로그아웃 요청 실패:', error);
+
             // 에러가 발생하더라도 로컬의 토큰은 제거
-            removeTokens();
+            localStorage.removeItem("accessToken");
             setIsAuthenticated(false);
             setIsAdmin(false); // 2024-12-11 로그아웃 시 isAdmin 상태 초기화 장훈
             navigate('/');
@@ -133,19 +142,9 @@ export const AuthProvider = ({ children }) => {
 
     // 일반, 카카오 로그인 성공 시 공통 함수
     const handleLoginSuccess = async (response) => {
-        const { accessToken, isAdmin, userId } = response.data;
+        const { accessToken, isAdmin } = response.data; //2024-12-11 idAdmin 추가 장훈
         if (!accessToken) {
             throw new Error('로그인에 실패했습니다.');
-        }
-        
-        // 기존 세션 무효화 요청 (다른 브라우저의 로그인 세션 종료)
-        try {
-            await axiosInstance.post('/api/auth/invalidate-sessions', { 
-                userId,
-                currentToken: accessToken // 현재 세션의 토큰 전달
-            });
-        } catch (error) {
-            console.error('기존 세션 무효화 실패:', error);
         }
         
         // 토큰 만료 시간 설정 12.16 성찬
@@ -194,51 +193,6 @@ export const AuthProvider = ({ children }) => {
             return null;
         }
     };
-
-    useEffect(() => {
-        const checkAuthStatus = async () => {
-            try {
-                await axiosInstance.get('/api/auth/validate');
-            } catch (error) {
-                if (error.response?.data?.error === 'TokenInvalidated') {
-                    // 다른 세션에서 로그인됨
-                    logout();
-                    navigate('/login');
-                }
-            }
-        };
-
-        if (isAuthenticated) {
-            const interval = setInterval(checkAuthStatus, 30000); // 30초마다 체크
-            return () => clearInterval(interval);
-        }
-    }, [isAuthenticated]);
-
-    // axios 인터셉터 설정
-    axiosInstance.interceptors.response.use(
-        (response) => response,
-        (error) => {
-            if (error.response) {
-                // 서버에서 SESSION_EXPIRED 에러를 받으면
-                if (error.response.data.error === 'SESSION_EXPIRED') {
-                    // 로컬 스토리지 클리어
-                    localStorage.removeItem('accessToken');
-                    localStorage.removeItem('userId');
-                    
-                    // 인증 상태 초기화
-                    setIsAuthenticated(false);
-                    setIsAdmin(false);
-                    
-                    // 로그인 페이지로 리다이렉트
-                    window.location.href = '/login';
-                    
-                    // 사용자에게 알림
-                    alert(error.response.data.message);
-                }
-            }
-            return Promise.reject(error);
-        }
-    );
 
     const value = {
         isAuthenticated,

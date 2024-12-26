@@ -2,7 +2,6 @@ package com.example.demo.jwt.controller;
 
 import com.example.demo.jwt.service.RefreshTokenService;
 import com.example.demo.jwt.util.JwtUtil;
-import com.example.demo.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +19,6 @@ public class LoginController {
 
     @Autowired
     private RefreshTokenService refreshTokenService;
-
-    @Autowired 
-    private UserService userService;
 
     // Access 토큰 재발급 API
     @PostMapping("/token/refresh")
