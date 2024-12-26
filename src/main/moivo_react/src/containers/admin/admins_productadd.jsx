@@ -16,6 +16,7 @@
     });
 
     const [categories, setCategories] = useState([]);
+    const [subCategories, setSubCategories] = useState([]);
     const [genders, setGenders] = useState([]);
 
     const [stock, setStock] = useState({
@@ -44,8 +45,8 @@
     useEffect(() => {
       // 카테고리 정보 가져오기
       axiosInstance.get(`/api/admin/store/category`).then((res) => {
-        if (Array.isArray(res.data)) {
-          setCategories(res.data);
+        if (Array.isArray(res.data.category)) {
+          setCategories(res.data.category);
         } else {
           console.error("카테고리 데이터는 배열이 아닙니다 ? :", res.data);
         }
@@ -58,6 +59,42 @@
         }
       });
     }, []);
+
+    //2024/12/26 카테고리 변경 시 세부 카테고리 가져오기 추가 장훈
+    const handleCategoryChange = (e) => {
+      const categoryId = e.target.value;
+      console.log("선택된 categoryId:", categoryId); // 선택된 카테고리 ID 확인
+      setProduct((prev) => ({ ...prev, categoryId }));
+    
+      if (categoryId) {
+        axiosInstance.get("/api/admin/store/category").then((res) => {
+          console.log("API 응답:", res); // 전체 응답 확인
+    
+          if (res.data.category && res.data[categoryId]) {
+            // 부모 카테고리 목록 확인
+            console.log("전체 카테고리 데이터:", res.data.category);
+    
+            // categoryId에 맞는 서브카테고리 가져오기
+            const subCategories = res.data[categoryId];
+            if (Array.isArray(subCategories)) {
+              console.log("필터된 세부 카테고리:", subCategories);
+              setSubCategories(subCategories);
+            } else {
+              console.log("해당 카테고리에 서브카테고리가 없습니다.");
+              setSubCategories([]);
+            }
+          } else {
+            console.log("API 응답에서 해당 카테고리의 서브카테고리가 없습니다.");
+            setSubCategories([]);
+          }
+        }).catch((error) => {
+          console.error("API 요청 실패:", error);
+          setSubCategories([]);
+        });
+      } else {
+        setSubCategories([]);
+      }
+    };
 
     // 상품 정보 입력 핸들러
     const handleInputChange = (e) => {
@@ -239,7 +276,8 @@
                 <button className={admin_product.UpdateBtn}>상품 수정</button>
               </Link>
             </div>
-            
+
+            <h2 className={admin_product.sectionTitle}>기본 상품 정보</h2>
             <div className={admin_product.basicsection}>
               {/* 상품명 */}
               <div className={admin_product.inputGroup}>
@@ -256,13 +294,25 @@
               {/* 카테고리 */}
               <div className={admin_product.inputGroup}>
                 <label className={admin_product.label}>카테고리</label>
-                <select className={admin_product.select} name="categoryId" value={product.categoryId} onChange={handleInputChange} >
+                <select  className={admin_product.select} name="categoryId" value={product.categoryId}  onChange={handleCategoryChange} >
                   <option value="">카테고리 선택</option>
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
+                  {categories.map((category) => ( <option key={category.id} value={category.id}> {category.name} </option> ))}
+                </select>
+              </div>
+
+              {/* 세부 카테고리 */}
+              <div className={admin_product.inputGroup}>
+                <label className={admin_product.label}>세부 카테고리</label>
+                <select className={admin_product.select} name="subcategoryId" onChange={handleInputChange} value={product.subcategoryId || ""} >
+                  <option value="">세부 카테고리 선택</option>
+                  {subCategories && subCategories.length > 0
+                    ? subCategories.map((subCategory) => (
+                        <option key={subCategory.id} value={subCategory.id}>
+                          {subCategory.name}
+                        </option>
+                      ))
+                    : <option value="">해당 카테고리에 서브카테고리가 없습니다.</option>
+                  }
                 </select>
               </div>
               
