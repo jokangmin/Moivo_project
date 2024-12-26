@@ -177,6 +177,7 @@ const MypageBoardProvider = ({ children }) => {
         editModalVisible,
         editedPost,
         setEditedPost, 
+        setEditModalVisible,
     };
 
     return (
