@@ -145,7 +145,9 @@ public class UserController {
             String actualToken = token.substring(7); // "Bearer " 제거
             Map<String, Object> userData = jwtUtil.getUserDataFromToken(actualToken);
             String userIdFromToken = (String) userData.get("userId");
-
+            System.out.println(userIdFromToken);
+            System.out.println(userDTO.getUserId());
+            
             // 사용자 ID 일치 여부 확인 (보안 검증)
             if (!userIdFromToken.equals(userDTO.getUserId())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

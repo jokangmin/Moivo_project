@@ -4,7 +4,6 @@ import axiosInstance from "../../utils/axiosConfig";
 import styles from "../../assets/css/Mypage_wish.module.css"; 
 import Banner from "../../components/Banner/banner";
 import Footer from "../../components/Footer/Footer";
-import { PATH } from '../../../scripts/path';
 
 const AdminProductTrash = () => {
   const [deletedProducts, setDeletedProducts] = useState([]); // 삭제된 상품 목록 상태 관리

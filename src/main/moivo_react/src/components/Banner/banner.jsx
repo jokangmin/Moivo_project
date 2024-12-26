@@ -21,7 +21,7 @@ const Banner = () => {
       title: 'SHOP', navigateTo : '/product-list',
       submenu: [
         { name: 'ALL', navigateTo: '/product-list' },
-        { name: 'Dashboard', navigateTo: '/product-board' }
+        { name: 'Today Style', navigateTo: '/product-board' }
       ]
     },
     {
