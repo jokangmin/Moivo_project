@@ -223,7 +223,7 @@ const MypageProfile = () => {
                     <hr className={styles.signupline} />
                     {/* HEIGHT */}
                     <div className={styles.formRow}>
-                        <span>WEIGHT (cm):</span>
+                        <span>HEIGHT (cm):</span>
                         <div className={styles.weightRow}>
                             <input
                                 className={styles.inputtext2}
@@ -239,7 +239,7 @@ const MypageProfile = () => {
                      <hr className={styles.signupline} />
                      {/* WEIGHT */}
                      <div className={styles.formRow}>
-                        <span>WEIGHT (cm):</span>
+                        <span>WEIGHT (kg):</span>
                         <div className={styles.weightRow}>
                             <input
                                 className={styles.inputtext2}

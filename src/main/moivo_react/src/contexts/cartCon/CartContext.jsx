@@ -7,7 +7,7 @@ const CartContext = createContext();
 
 export const useCartContext = () => useContext(CartContext);
 
-export const CartProvider = ({ children }) => {
+const CartProvider = ({ children }) => {
     const navigate = useNavigate();
     const { isAuthenticated, getAccessToken } = useAuth();
     const [cartItems, setCartItems] = useState([]);
@@ -159,3 +159,5 @@ export const CartProvider = ({ children }) => {
         </CartContext.Provider>
     );
 };
+
+export default CartProvider;
