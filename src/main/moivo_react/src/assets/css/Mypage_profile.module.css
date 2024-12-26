@@ -295,13 +295,14 @@
   
   .radioContainer {
     display: flex;
-    gap: 20px;
-    align-items: center;
-    height: 40px;
+    gap: 20px; /* 요소 간격 */
+    align-items: left;
+    width: 13%; /* 부모 요소 너비에 맞춤 */
+    height: auto; /* 높이를 자동 조정 */
   }
   
   .radioContainer input[type="radio"] {
-    margin-right: 5px;
+    margin-right: 2px; /* 라디오 버튼과 텍스트 간 간격 */
   }
   
   .exception {
@@ -775,4 +776,23 @@
         margin-left: 0; 
         font-size: 12px; 
     }
+}
+
+@media (max-width: 768px) {
+  .radioContainer {
+    gap: 20px; 
+  }
+
+  .radioContainer input[type="radio"] {
+    margin-right: 0px; 
+  }
+}
+
+@media (max-width: 700px) {
+  .radioContainer {
+    gap: 25px; 
+  }
+  .radioContainer input[type="radio"] {
+    margin-right: 0px; 
+  }
 }

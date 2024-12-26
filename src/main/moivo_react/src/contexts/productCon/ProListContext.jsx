@@ -22,7 +22,7 @@ export function ProListProvider({ children }) {
         "endPage": 0
     });
     const pageBlock = 3; // 페이지 블록 크기
-    const itemsPerPage = 15; // 페이지당 상품 수
+    const itemsPerPage = 16; // 페이지당 상품 수
     const [sortBy, setSortBy] = useState("newest"); // 정렬 기준
     const [categories, setCategories] = useState([{ id: 0, name: '전체' }]); // 카테고리 목록
     const [activeCategory, setActiveCategory] = useState({ id: 0, name: '전체' });

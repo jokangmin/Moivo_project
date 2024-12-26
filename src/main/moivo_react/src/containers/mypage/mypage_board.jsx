@@ -20,6 +20,7 @@ const mypage_board = () => {
         editModalVisible,
         editedPost,
         setEditedPost, 
+        setEditModalVisible,
     } = useMypageBoardContext();
 
     return (
