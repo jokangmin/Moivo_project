@@ -3,6 +3,7 @@ import axiosInstance from "../../utils/axiosConfig";
 import { useNavigate, useLocation } from "react-router-dom";
 import styles from "../../assets/css/admin_productList.module.css";
 import Admins_side from "../../components/admin_sidebar/admins_side";
+import { PATH } from '../../../scripts/path';
 
 const ProductList = () => {
   const [sortBy, setSortBy] = useState(1); // 기본 정렬값: 전체
