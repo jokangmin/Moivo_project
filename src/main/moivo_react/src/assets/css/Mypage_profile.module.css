@@ -295,7 +295,7 @@
   
   .radioContainer {
     display: flex;
-    gap: 20px;
+    gap: 10px; 
     align-items: center;
     height: 40px;
   }
@@ -775,4 +775,11 @@
         margin-left: 0; 
         font-size: 12px; 
     }
+}
+
+@media (max-width: 768px) { 
+  .radioContainer {
+    gap: 5px; 
+    height: auto; 
+  }
 }
