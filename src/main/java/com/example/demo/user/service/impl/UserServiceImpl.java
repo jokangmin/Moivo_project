@@ -17,7 +17,7 @@ import com.example.demo.coupon.repository.UserCouponRepository;
 import com.example.demo.coupon.service.UserCouponService;
 import com.example.demo.jwt.prop.JwtProps;
 import com.example.demo.jwt.service.BlacklistService;
-import com.example.demo.jwt.service.RefreshTokenService;
+// import com.example.demo.jwt.service.RefreshTokenService;
 import com.example.demo.jwt.util.JwtUtil;
 import com.example.demo.payment.entity.PaymentEntity;
 import com.example.demo.payment.repository.PaymentDetailRepository;
@@ -75,8 +75,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserCouponService userCouponService;
 
-    @Autowired
-    private RefreshTokenService refreshTokenService;
+    // @Autowired
+    // private RefreshTokenService refreshTokenService;
     @Autowired
     private BlacklistService blacklistService;
     @Autowired
@@ -230,17 +230,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void logout(String accessToken, String refreshToken) {
-        // 토큰에서 Bearer 제거
-        if (accessToken.startsWith("Bearer ")) {
-            accessToken = accessToken.substring(7);
+        if (refreshToken != null) {
+            // 토큰 유효성 검증 후 저장
+            if (jwtUtil.validateToken(refreshToken)) {
+                Date expiryDate = jwtUtil.getExpirationDateFromToken(refreshToken);
+                blacklistService.addToBlacklist(refreshToken, expiryDate);
+            }
         }
-
-        // RefreshTokenService를 통해 refresh 토큰을 블랙리스트에 추가
-        refreshTokenService.addTokenToBlacklist(refreshToken);
-
-        // BlacklistService를 통해 access 토큰을 블랙리스트에 추가
-        Date expiryDate = jwtUtil.getExpirationDateFromToken(accessToken);
-        blacklistService.addToBlacklist(accessToken, expiryDate);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.example.demo.jwt.filter;
 
-import com.example.demo.jwt.service.RefreshTokenService;
+import com.example.demo.jwt.service.BlacklistService;
 import com.example.demo.jwt.util.JwtUtil;
 
 import jakarta.servlet.FilterChain;
@@ -25,12 +25,12 @@ import org.springframework.stereotype.Component;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final RefreshTokenService refreshTokenService;
+    private final BlacklistService blacklistService;
     private final UserDetailsService userDetailsService;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, RefreshTokenService refreshTokenService, UserDetailsService userDetailsService) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, BlacklistService blacklistService, UserDetailsService userDetailsService) {
         this.jwtUtil = jwtUtil;
-        this.refreshTokenService = refreshTokenService;
+        this.blacklistService = blacklistService;
         this.userDetailsService = userDetailsService;
     }
 
@@ -76,7 +76,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                     // 리프레시 토큰이 있고 유효한 경우
                     if (refreshToken != null && jwtUtil.validateToken(refreshToken) 
-                            && !refreshTokenService.isTokenBlacklisted(refreshToken)) {
+                            && !blacklistService.isTokenBlacklisted(refreshToken)) {
                         // 리프레시 토큰으로 새로운 액세스 토큰 발급은 /api/auth/token/refresh 엔드포인트에서 처리
                         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         response.setContentType("application/json");
