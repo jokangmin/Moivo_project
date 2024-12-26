@@ -106,3 +106,9 @@
   composes: carouselControlBtn;
   right: 1rem;
 } 
+
+@media (max-width: 768px) {
+  .carouselImage {
+    height: 400px;
+  }
+}
