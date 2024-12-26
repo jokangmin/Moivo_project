@@ -18,6 +18,7 @@ const ProductBoard = () => {
     handleLeftArrowClick,
     handleRightArrowClick,
     productList,
+    startIndex,
   } = useDashBoard();
 
   return (
@@ -79,8 +80,8 @@ const ProductBoard = () => {
         
       </motion.div>
           {/* ONLY FOR YOU */}
-          <div className={styles.onlyForYouBox}>
-            <div className={styles.onlyForYou}>ONLY FOR YOU</div>
+          <div className={styles.today_styleBox}>
+            <div className={styles.today_style}>Today Style</div>
             {/* 좌우 화살표 버튼 */}
             <button className={`${styles.arrow} ${styles.arrowLeft}`} onClick={handleLeftArrowClick}>
               <img src="../image/arrow.png" alt="Left Arrow" />
@@ -89,7 +90,7 @@ const ProductBoard = () => {
               <img src="../image/arrow.png" alt="Right Arrow" />
             </button>
 
-            {/* <div className={styles.productList}>
+            <div className={styles.productList}>
               {productList.slice(startIndex, startIndex + 3).map((product, index) => (
                 <div key={index} className={styles.product}>
                   <div className={styles.productImage}>
@@ -97,11 +98,11 @@ const ProductBoard = () => {
                   </div>
                   <div className={styles.productText}>
                     {product.name} <br />
-                    <span className={styles.price}>{product.price}</span>
+                    <span className={styles.price}>{product.price} 원</span>
                   </div>
                 </div>
               ))}
-            </div> */}
+            </div>
 
             {/* 하단 바 */}
             <div className={styles.bottomBar}></div>

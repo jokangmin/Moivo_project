@@ -8,6 +8,7 @@ const DashBoardContext = createContext();
 export const useDashBoard = () => useContext(DashBoardContext);
 
 const DashBoardProvider = ({ children }) => {
+      const [startIndex, setStartIndex] = useState(0);
       const [weather, setWeather] = useState({
         temp: 0,
         temp_max: 0,
@@ -18,7 +19,15 @@ const DashBoardProvider = ({ children }) => {
         loading: true,
       });
       const navigate = useNavigate();
-      const [productList, setProductList] = useState([]);
+      const [productList, setProductList] = useState([
+        { name: "Warm Jacket", img: 'https://images.unsplash.com/photo-1648787984772-458ce678bdf3?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', price: 80000 },
+        { name: "Raincoat", img: 'https://images.unsplash.com/photo-1648787984772-458ce678bdf3?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', price: 45000 },
+        { name: "Light Shirt", img: 'https://images.unsplash.com/photo-1648787984772-458ce678bdf3?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', price: 25000 },
+        { name: "Sneakers", img: 'https://images.unsplash.com/photo-1648787984772-458ce678bdf3?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', price: 60000 },
+        { name: "Wool Hat", img: 'https://images.unsplash.com/photo-1648787984772-458ce678bdf3?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', price: 20000 },
+        { name: "Denim Jeans", img: 'https://images.unsplash.com/photo-1648787984772-458ce678bdf3?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', price: 55000 },
+      ]);
+      const maxIndex = productList.length - 3;
       const [WeatherCategory, setWeatherCategory] = useState(null);
       const [SortBy, setSortBy] = useState("newest");
 
@@ -30,25 +39,25 @@ const DashBoardProvider = ({ children }) => {
           setStartIndex((prevIndex) => (prevIndex < maxIndex ? prevIndex + 1 : 0));
       };
 
-      useEffect(() => {
-        const fetchData = async () => {
-          try {
-            const WeatherCategoryResponse = await axiosInstance.get(`/api/store`,{
-              params: {
-                sortby: SortBy,
-                categoryid: WeatherCategory
-              }
-            });
-            setProductList(WeatherCategoryResponse.data);
+      // useEffect(() => {
+      //   const fetchData = async () => {
+      //     try {
+      //       const WeatherCategoryResponse = await axiosInstance.get(`/api/store`,{
+      //         params: {
+      //           sortby: SortBy,
+      //           categoryid: WeatherCategory
+      //         }
+      //       });
+      //       setProductList(WeatherCategoryResponse.data);
             
-          } catch (error) {
-            console.error("Error fetching data:", error);
-          }
-        };
+      //     } catch (error) {
+      //       console.error("Error fetching data:", error);
+      //     }
+      //   };
       
-        fetchData();
+      //   fetchData();
       
-      }, [SortBy, WeatherCategory, weather]);
+      // }, [SortBy, WeatherCategory, weather]);
 
       useEffect(() => {
         const tempC = Math.round(weather.temp - 273.15);
@@ -217,6 +226,7 @@ const DashBoardProvider = ({ children }) => {
                 handleLeftArrowClick,
                 handleRightArrowClick,
                 productList,
+                startIndex,
             }}
         >
             {children}

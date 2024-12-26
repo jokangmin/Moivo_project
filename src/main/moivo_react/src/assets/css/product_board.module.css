@@ -12,7 +12,7 @@
 .productBoardContainer {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+  background-color: #f6f2ee;
   min-height: 100vh;
 }
 
@@ -581,8 +581,8 @@
   box-sizing: border-box;
 }
 
-/* ONLY FOR YOU */
-.onlyForYouBox {
+/* today_style */
+.today_styleBox {
   position: relative;
   padding: 20px;
   border: 1px solid #988C73;
@@ -594,12 +594,13 @@
   flex-grow: 1;
 }
 
-.onlyForYou {
-  font-family: 'Italiana', serif;
-  font-size: 18px;
+.today_style {
+  font-family: 'Segoe UI', serif;
+  font-size: 30px;
   text-align: center;
   color: #2f2e2c;
-  margin-bottom: 10px;
+  margin-bottom: 30px;
+  margin-top: 10px;
 }
 
 /* 제품 리스트 사이 간격 줄이기 */
@@ -620,30 +621,30 @@
   flex: 0 0 25%; /* 3개의 항목이 한 줄에 나오도록 설정 */
 }
 .productImage {
-  width: 140px;
-  height: 200px;
+  width: 300px;
+  height: 400px;
   background: #F6F2EE;
   border: 1px solid #ccc;
   margin-bottom: 10px;
 }
 
 .productImage img{
-  width: 140px;
-  height: 200px;
+  width: 100%;
+  height: 100%;
   background: #F6F2EE;
   border: 1px solid #ccc;
   margin-bottom: 10px;
 }
 
 .productText {
-  font-family: 'Italiana', serif;
-  font-size: 14px;
+  font-family: 'Segoe UI', serif;
+  font-size: 20px;
   color: #2f2e2c;
 }
 
 .productText .price {
-  font-family: 'GmarketSans', serif;
-  font-size: 12px;
+  font-family: 'Segoe UI', serif;
+  font-size: 16px;
   font-weight: 500;
 }
 
@@ -730,7 +731,7 @@
     font-size: 13pt;
   }
 
-  .onlyForYou{
+  .today_style{
     font-size: 23px;
     margin-bottom: 40px;
   }
@@ -747,10 +748,5 @@
   .arrowRight {
       right: 40px;
   }
-
-  /* .onlyForYouBox, .menuWrapper {
-    width: 100%; 
-    max-width: 800px;
-  } */
 
 }
