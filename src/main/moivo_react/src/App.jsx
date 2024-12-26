@@ -52,6 +52,7 @@ import MypageOrderDetailProvider from './contexts/mypageCon/MypageOrderDetailCon
 import CartProvider from './contexts/cartCon/CartContext';
 
 
+
 const routeConfig = [
   { path: "/", element: <Main_index /> },
   { path: "/user", element: <User_login /> },
