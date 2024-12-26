@@ -21,7 +21,14 @@ const Main_index = () => {
             <Banner />
 
             <div className={styles.videoContainer}>
-                <video className={styles.video} autoPlay muted loop>
+                <video
+                    className={styles.video}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    defaultMuted
+                >
                     <source src={video} type="video/mp4" />
                 </video>
             </div>
