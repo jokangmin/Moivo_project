@@ -295,13 +295,14 @@
   
   .radioContainer {
     display: flex;
-    gap: 10px; 
-    align-items: center;
-    height: 40px;
+    gap: 20px; /* 요소 간격 */
+    align-items: left;
+    width: 13%; /* 부모 요소 너비에 맞춤 */
+    height: auto; /* 높이를 자동 조정 */
   }
   
   .radioContainer input[type="radio"] {
-    margin-right: 5px;
+    margin-right: 5px; /* 라디오 버튼과 텍스트 간 간격 */
   }
   
   .exception {
@@ -777,9 +778,8 @@
     }
 }
 
-@media (max-width: 768px) { 
+@media (max-width: 768px) {
   .radioContainer {
-    gap: 5px; 
-    height: auto; 
+    gap: 3px; 
   }
 }
