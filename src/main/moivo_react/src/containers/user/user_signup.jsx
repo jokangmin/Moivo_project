@@ -53,7 +53,7 @@ function UserSignup() {
                     <div className={singup.formRow}>
                         <span>NAME</span>
                         <input type="text" name="name" value={formData.name} onChange={handleChange} onBlur={handleBlur} />
-                        <div className={singup.exception}>{errors.name}</div>
+                        <div className={singup.exception} >{errors.name}</div>
                     </div>
                     <hr className={singup.signupline} />
 
