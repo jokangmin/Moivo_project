@@ -93,7 +93,7 @@ const MypageProfile = () => {
                             <p>회원 탈퇴를 위해 비밀번호를 입력해 주세요.</p>
                             <input 
                                 type="password" 
-                                value={deletePassword} 
+                                value={deletePassword || ""} 
                                 onChange={handleDeletePasswordChange} 
                                 placeholder="비밀번호" 
                                 className={styles.inputtext}
@@ -133,14 +133,14 @@ const MypageProfile = () => {
                     {/* ID */}
                     <div className={styles.formRow}>
                         <span>ID</span>
-                        <input type="text" name="userId" value={formData.userId} readOnly/>
+                        <input type="text" name="userId" value={formData.userId || ""} readOnly/>
                     </div>
                     <hr className={styles.signupline} />
 
                     {/* Password */}
                     <div className={styles.formRow}>
                         <span>PASSWORD</span>
-                        <input type="password" name="pwd" value={formData.pwd} onChange={handleChange} />
+                        <input type="password" name="pwd" value={formData.pwd || ""} onChange={handleChange} />
                     </div>
                     {errors.pwd && <p className={styles.errorText}>{errors.pwd}</p>}
                     <hr className={styles.signupline} />
@@ -148,7 +148,7 @@ const MypageProfile = () => {
                     {/* Confirm Password */}
                     <div className={styles.formRow}>
                         <span>CONFIRM PASSWORD</span>
-                        <input type="password" name="confirmPwd" value={formData.confirmPwd} onChange={handleChange} />
+                        <input type="password" name="confirmPwd" value={formData.confirmPwd || ""} onChange={handleChange} />
                     </div>
                     {errors.confirmPwd && <p className={styles.errorText}>{errors.confirmPwd}</p>}
                     <hr className={styles.signupline} />
@@ -156,7 +156,7 @@ const MypageProfile = () => {
                     {/* Name */}
                     <div className={styles.formRow}>
                         <span>NAME</span>
-                        <input type="text" name="name" value={formData.name} onChange={handleChange} />
+                        <input type="text" name="name" value={formData.name || ""} onChange={handleChange} />
                     </div>
                     {errors.name && <p className={styles.errorText}>{errors.name}</p>}
                     <hr className={styles.signupline} />
@@ -176,11 +176,11 @@ const MypageProfile = () => {
                         <span>ADDRESS</span>
                         <div className={styles.addressContainer}>
                             <div className={styles.postalRow}>
-                                <input type="text" name="zipcode" placeholder="우편번호" value={formData.zipcode} onChange={handleChange} required/>
+                                <input type="text" name="zipcode" placeholder="우편번호" value={formData.zipcode || ""} onChange={handleChange} required/>
                                 <button type="button" onClick={handleFindPostalCode} className={styles.findButton}>우편번호 찾기</button>
                             </div>
-                            <input type="text" name="addr1" placeholder="기본 주소" value={formData.addr1} onChange={handleChange} required/>
-                            <input type="text" name="addr2" placeholder="상세 주소" value={formData.addr2} onChange={handleChange} />
+                            <input type="text" name="addr1" placeholder="기본 주소" value={formData.addr1 || ""} onChange={handleChange} required/>
+                            <input type="text" name="addr2" placeholder="상세 주소" value={formData.addr2 || ""} onChange={handleChange} />
                         </div>
                     </div>
                     <hr className={styles.signupline} />
@@ -189,11 +189,11 @@ const MypageProfile = () => {
                     <div className={styles.formRow}>
                         <span>PHONE</span>
                         <div className={styles.phoneRow}>
-                            <input type="text" name="phone1" maxLength="3" value={formData.phone1} onChange={handleChange} />
+                            <input type="text" name="phone1" maxLength="3" value={formData.phone1 || ""} onChange={handleChange} />
                             <p>-</p>
-                            <input type="text" name="phone2" maxLength="4" value={formData.phone2} onChange={handleChange} />
+                            <input type="text" name="phone2" maxLength="4" value={formData.phone2 || ""} onChange={handleChange} />
                             <p>-</p>
-                            <input type="text" name="phone3" maxLength="4" value={formData.phone3} onChange={handleChange} />
+                            <input type="text" name="phone3" maxLength="4" value={formData.phone3 || ""} onChange={handleChange} />
                         </div>
                     </div>
                     {errors.phone && <p className={styles.errorText}>{errors.phone}</p>}
@@ -202,7 +202,7 @@ const MypageProfile = () => {
                     {/* Email */}
                     <div className={styles.formRow}>
                         <span>EMAIL</span>
-                        <input type="email" name="email" value={formData.email} onChange={handleChange} />
+                        <input type="email" name="email" value={formData.email || ""} onChange={handleChange} />
                     </div>
                     {errors.email && <p className={styles.errorText}>{errors.email}</p>}
                     <hr className={styles.signupline} />
@@ -215,7 +215,7 @@ const MypageProfile = () => {
                                 className={styles.inputtext}
                                 type="date"
                                 name="birth"
-                                value={formData.birth}
+                                value={formData.birth || ""}
                                 onChange={handleChange}
                             />  
                         </div>               
@@ -230,7 +230,7 @@ const MypageProfile = () => {
                                 type="number"
                                 id="height"
                                 name="height"
-                                value={formData.height}
+                                value={formData.height || ""}
                                 placeholder="예: 170"
                                 onChange={handleChange}
                             />
@@ -246,7 +246,7 @@ const MypageProfile = () => {
                                 type="number"
                                 id="weight"
                                 name="weight"
-                                value={formData.weight}
+                                value={formData.weight || ""}
                                 placeholder="예: 100"
                                 onChange={handleChange}
                             />

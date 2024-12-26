@@ -8,6 +8,7 @@ const MypageProfileContext = createContext();
 export const useMypageProfileContext = () => useContext(MypageProfileContext);
 
 const MypageProfileProvider = ({ children }) => {
+    
     const [userInfo, setUserInfo] = useState(null); // 사용자 정보 상태
     const [formData, setFormData] = useState({
         userId: "",
@@ -30,7 +31,8 @@ const MypageProfileProvider = ({ children }) => {
     const [errors, setErrors] = useState({});
     const [showTooltip, setShowTooltip] = useState(false);
     const [showModal, setShowModal] = useState(false);
-    const [deletePassword, setDeletePassword] = useState("");
+    const [deletePassword, setDeletePassword] = useState(""); // 빈 문자열로 초기화
+
 
     const { refreshAccessToken } = useAuth();  // useAuth에서 refreshAccessToken 가져오기
 
@@ -74,7 +76,10 @@ const MypageProfileProvider = ({ children }) => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        updateFormData(name, value);
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value || "", // 기본값을 빈 문자열로 설정
+        }));
     };
 
     const handleBlur = () => {
@@ -236,7 +241,7 @@ const MypageProfileProvider = ({ children }) => {
             phone2,
             phone3,
             email: userInfo?.email || "",
-            bitrh: userInfo?.bitrh || "",
+            birth: userInfo?.birth || "",
             height: userInfo?.height || "",
             weight: userInfo?.weight || "",
         });
@@ -269,20 +274,19 @@ const MypageProfileProvider = ({ children }) => {
 
                 setUserInfo(data);
                 setFormData({
-                    userId: data.userId,
-                    name: data.name,
-                    gender: data.gender,
-                    zipcode: data.zipcode,
-                    addr1: data.addr1,
-                    addr2: data.addr2,
-                    phone1,
-                    phone2,
-                    phone3,
-                    email: data.email,
-                    height: data.height,
-                    weight: data.weight,
-                    coupon: data.coupons,
-                    birth: data.birth,
+                    userId: data.userId || "",
+                    name: data.name || "",
+                    gender: data.gender || "",
+                    zipcode: data.zipcode || "",
+                    addr1: data.addr1 || "",
+                    addr2: data.addr2 || "",
+                    phone1: phone1 || "",
+                    phone2: phone2 || "",
+                    phone3: phone3 || "",
+                    email: data.email || "",
+                    height: data.height || "",
+                    weight: data.weight || "",
+                    birth: data.birth || "",
                 });
             } catch (error) {
                 console.error("에러 메시지:" + error);

@@ -149,7 +149,7 @@ export const ProDetailProvider = ({ children }) => {
     } catch (error) {
       console.error('장바구니 추가 실패:', error);
       if (error.response?.status === 401) {
-        alert('로그인이 필요합니다.');
+        alert('로그인이 필요합니다.ㅇㄴㅁㅇㅁ');
       } else {
         alert('장바구니 추가에 실패했습니다.');
       }
