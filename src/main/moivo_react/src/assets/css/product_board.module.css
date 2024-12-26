@@ -696,3 +696,61 @@
 .bottomBar:hover {
   background-color: #2f2e2c; /* 마우스 오버 시 색상 변경 */
 }
+
+@media (max-width: 768px) {
+  .contentWrapper1 {
+    max-width: 100%;
+    padding: 0rem;
+  }
+
+  .animatedSection{
+    width: 90%;
+  }
+
+  .weatherstate {
+    font-size: 22pt;
+  }
+
+  .weatherDesc {
+    font-size: 21px;
+  }
+
+  .weatherInfo p:nth-child(3),
+  .weatherInfo p:nth-child(4),
+  .weatherInfo p:nth-child(5),
+  .weatherInfo p:nth-child(6) {
+    font-size: 18px;
+  }
+
+  .weatherFashionTips p{
+    font-size: 14pt;
+  }
+
+  .weatherFashionTips li {
+    font-size: 13pt;
+  }
+
+  .onlyForYou{
+    font-size: 23px;
+    margin-bottom: 40px;
+  }
+
+  .arrow {
+    width: 25px; 
+    height: 25px;
+  }
+
+  .arrowLeft {
+      left: 40px;
+  }
+
+  .arrowRight {
+      right: 40px;
+  }
+
+  /* .onlyForYouBox, .menuWrapper {
+    width: 100%; 
+    max-width: 800px;
+  } */
+
+}
