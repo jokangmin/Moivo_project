@@ -10,14 +10,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.store.entity.ProductCategoryEntity;
 import com.example.demo.store.entity.ProductEntity;
 
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, Integer> {
 
   // 카테고리id로 검색 (delete가 false인 것만)
-  @Query("SELECT p FROM ProductEntity p WHERE p.categoryEntity.id =:categoryid AND p.delete = false")
-  public Page<ProductEntity> findBycategoryid(@Param("categoryid") int categoryid, Pageable pageable);
+  @Query("SELECT p FROM ProductEntity p WHERE p.categoryEntity.parentId =:categoryid AND p.delete = false")
+  public Page<ProductEntity> findBycategoryParentId(@Param("categoryid") int categoryid, Pageable pageable);
 
   // 상품 검색 (keyword) (delete가 false인 것만)
   @Query("SELECT p FROM ProductEntity p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) AND p.delete = false")
@@ -26,8 +27,8 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
   public int countByNameContaining(String keyword);
 
   // 상품 검색 (keyword + categoryid) (delete가 false인 것만)
-  @Query("SELECT p FROM ProductEntity p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) AND p.categoryEntity.id = :categoryid AND p.delete = false")
-  Page<ProductEntity> findByNameContainingIgnoreCaseAndCategoryEntity_id(@Param("keyword") String name,
+  @Query("SELECT p FROM ProductEntity p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) AND p.categoryEntity.parentId = :categoryid AND p.delete = false")
+  Page<ProductEntity> findByNameContainingIgnoreCaseAndCategoryEntity_parentId(@Param("keyword") String name,
       @Param("categoryid") int categoryid, Pageable pageable);
 
   public int countByNameContainingIgnoreCaseAndCategoryEntity_id(String keyword, int categoryid);
@@ -91,5 +92,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
 
     // 삭제된 상품 수 조회 - 24.12.18 - sumin
     public long countByDeleteTrue();
+
+    public List<ProductEntity> findByCategoryEntity(ProductCategoryEntity categoryEntity);
 
 }

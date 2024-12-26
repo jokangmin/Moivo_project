@@ -171,3 +171,14 @@
     background-color: #988c73; 
     color: #fff;
 }
+
+.reviewupdate button{
+    font-weight: normal;
+    font-size: 14px;
+    background-color: transparent;
+    border: none;
+    color: slategray;
+    cursor: pointer;
+    transition: color 0.3s ease;
+
+}

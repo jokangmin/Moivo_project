@@ -12,4 +12,5 @@ public interface BlacklistRepository extends JpaRepository<BlacklistEntity, Long
     Optional<BlacklistEntity> findByToken(String token);
     boolean existsByToken(String token);
     void deleteByExpiryDateLessThan(Date expiryDate);
+
 }

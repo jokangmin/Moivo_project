@@ -1,157 +1,38 @@
-import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { AuthContext } from "../../contexts/AuthContext";
-// import { PATH } from "../../../scripts/path";
 import styles from "../../assets/css/product_list.module.css";
 import Banner from "../../components/Banner/banner";
 import Footer from "../../components/Footer/Footer";
 import LoadingModal from "./LoadingModal";
-import axiosInstance from '../../utils/axiosConfig';
+import { ProListContext } from "../../contexts/productCon/ProListContext";
 
 const ProductList = () => {
-  const { token } = useContext(AuthContext);
-  const accessToken = localStorage.getItem('accessToken');
-  // const id = localStorage.getItem("id"); // 사용자 pk
-  const [products, setProducts] = useState([]); // 상품 List
-  const [currentPage, setCurrentPage] = useState(0);
-  const [pageInfo, setPageInfo] = useState({ // 페이징 정보
-    "isFirst" : false,  // 1 페이지 여부
-    "isLast" : false, // 마지막 페이지 여부
-    "hasPrevious" : false, // 이전 페이지 여부
-    "hasNext" : false, // 다음 페이지 여부
-    "totalPages" : 0, // 페이지 개수
-    "startPage" : 0, // 블락 첫번째 페이지 수
-    "endPage" : 0 // 블락 마지막 페이지 수
-  });
-  const pageBlock = 3;
-  const itemsPerPage = 15; // 화면에 보여지는 상품 개수 
-  const [sortBy, setSortBy] = useState("newest"); 
-  const [categories, setCategories] = useState([{ id: 0, name: '전체' }]); // 카테고리 List
-  const [activeCategory, setActiveCategory] = useState({ id: 0, name: '전체' });
-  const [cartItem, setCartItem] = useState(0);
-  const [wishItem, setWishItem] = useState(0);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
-  
-  // 24.11.28 - uj (수정)
-  // 필요 Data 요청 & 저장
-  const fetchProducts = async (page) => {
-    setIsLoading(true);
-    try {
-      const response = await axiosInstance.get('/api/store', {
-        params: {
-          page: page,
-          size: itemsPerPage,
-          sortby: sortBy,
-          keyword: searchTerm,
-          block: pageBlock,
-          categoryid: activeCategory.id
-        }
-      });
-      
-      if (response.data) {
-        // 2. 상품 Data 저장
-        setProducts(response.data.productList || []);
-        setPageInfo({
-          isFirst: response.data.isFirst,
-          isLast: response.data.isLast,
-          hasPrevious: response.data.hasPrevious,
-          hasNext: response.data.hasNext,
-          totalPages: response.data.totalPages,
-          startPage: response.data.startPage,
-          endPage: response.data.endPage
-        });
+    const {
+        products,
+        currentPage,
+        pageInfo,
+        sortBy,
+        setSortBy,
+        categories,
+        activeCategory,
+        setActiveCategory,
+        cartItem,
+        wishItem,
+        searchOpen,
+        setSearchOpen,
+        searchTerm,
+        setSearchTerm,
+        isLoading,
+        fetchProducts,
+        handleProductClick,
+        handleWishClick,
+        handleCartClick
+    } = useContext(ProListContext);
 
-        // 3. 카테고리 Data 저장
-        setCategories([{ id: 0, name: '전체' }, ...response.data.category]);
-
-        if (accessToken) {
-          getWishCartCount('wish');
-          getWishCartCount('cart');
-        }
-        
-        // 5. 현재 페이지 설정
-        setCurrentPage(page);
-      }
-    } catch (error) {
-      if (error.response?.status === 401) {
-        console.error("인증 오류:", error);
-      } else {
-        console.error("상품 목록을 가져오는 중 오류가 발생했습니다:", error);
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // 페이지 렌더링
-  useEffect(() => {
-    fetchProducts(0);
-  }, [accessToken]);
-
-  // 24.11.28 - uj
-  // 사용자 Wish or Cart Data 요청
-  const getWishCartCount = async (type) => {
-    try {
-      const response = await axiosInstance.get(`/api/user/${type}/list`);
-  
-      // 2. wish Data 저장
-      switch (type) {
-        case 'wish':
-          setWishItem(response.data.wishlist.length);
-        break;
-        case 'cart':
-          setCartItem(response.data.totalItems);
-        break;
-        default:
-          break;
-      }
-      console.log(type, " 상품 개수: " + wishItem);
-    } catch (error) {
-      console.error("Error:", error.message);
-      if (error.response?.status === 401) {
-        console.error("인증 오류: ", error);
-      } else {
-        console.error(`사용자 ${type} 정보를 가져오는 중 오류가 발생했습니다:`, error);
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // 24.11.28 - uj
-  // 카테고리, 정렬, 검색에 따른 상품 목록 렌더링
-  useEffect(() => {
-    fetchProducts(0);
-  }, [sortBy, searchTerm, activeCategory, accessToken]);
-
-  // 상품 상세 화면 이동
-  const handleProductClick = (productId) => {
-    navigate(`/product-detail/${productId}`);
-  };
-
-  // 11.28 - uj
-  // wish 목록 이동
-  const handleWishClick = () => {
-    if(accessToken) {
-      navigate(`/mypage/wish`);
-    } else {
-      alert("로그인 후에 이용해주세요.");
-    }
-  }
-
-  // 11.28 - uj
-  // wish 목록 이동
-  const handleCartClick = () => {
-    if(accessToken) {
-      navigate(`/cart`);
-    } else {
-      alert("로그인 후에 이용해주세요.");
-    }
-  }
+    useEffect(() => {
+        fetchProducts(0);
+    }, [sortBy, searchTerm, activeCategory, fetchProducts]);
 
   return (
     <div className={styles.container}>

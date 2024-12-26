@@ -72,9 +72,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     // 상품 리스트, 카테고리별 검색 or 키워드별 검색 후 페이징처리-11/25-tang & 11/27 - 페이징 처리 수정 - uj
+    // 24.12.23 - 카테고리 DB 변경으로 수정 - uj
     @Override
     public Map<String, Object> getProductList(Map<String, Object> dataMap) {
         Map<String, Object> map = new HashMap<>();
+
         // 1. 정보 세팅
         Pageable pageable = (Pageable) dataMap.get("pageable"); // 페이지 처리
         int block = Integer.parseInt(dataMap.get("block").toString()); // 한 페이지에 보여줄 숫자
@@ -83,6 +85,7 @@ public class ProductServiceImpl implements ProductService {
         String keyword = null; // 검색어
         if (dataMap.get("keyword") != null)
             keyword = dataMap.get("keyword").toString();
+
         // 2. 기본 최신순 정렬 설정
         Sort sort = pageable.getSort();
         if (sortby.equals("priceHigh")) {
@@ -101,13 +104,14 @@ public class ProductServiceImpl implements ProductService {
             pageProductList = productRepository.findByDeleteFalse(pageable);
         } else if (categoryid != 0 && keyword == null) {
             // 특정 카테고리에서 delete = false
-            pageProductList = productRepository.findBycategoryid(categoryid, pageable);
+            pageProductList = productRepository.findBycategoryParentId(categoryid, pageable);
         } else if (categoryid == 0 && keyword != null) {
             // 키워드 검색에서 delete = false
             pageProductList = productRepository.findByNameContainingIgnoreCase(keyword, pageable);
         } else if (categoryid != 0 && keyword != null) {
             // 키워드 + 카테고리 검색에서 delete = false
-            pageProductList = productRepository.findByNameContainingIgnoreCaseAndCategoryEntity_id(keyword, categoryid,
+            pageProductList = productRepository.findByNameContainingIgnoreCaseAndCategoryEntity_parentId(keyword,
+                    categoryid,
                     pageable);
         }
 
@@ -138,16 +142,17 @@ public class ProductServiceImpl implements ProductService {
 
         // 상품 관련 정보
         map.put("productList", dtoList);
-        map.put("category", getCategory());
+        map.put("category", getParentCategory());
         System.out.println("getProductList: " + dtoList);
         return map;
     }
 
+    // 24.12.23 - uj(수정)
     // 상품 카테고리 추출 - uj
     @Override
-    public List<ProductCategoryDTO> getCategory() {
+    public List<ProductCategoryDTO> getParentCategory() {
         List<ProductCategoryDTO> list = new ArrayList<>();
-        Iterable<ProductCategoryEntity> categoryEntityList = categoryRepository.findAll();
+        Iterable<ProductCategoryEntity> categoryEntityList = categoryRepository.findByParentId(null);
 
         for (ProductCategoryEntity categoryEntity : categoryEntityList) {
             ProductCategoryDTO categoryDTO = ProductCategoryDTO.getCategoryDTO(categoryEntity);
@@ -163,6 +168,62 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Gender> getGenders() {
         return Arrays.asList(Gender.values());
+    }
+
+    // 24.12.26 - uj
+    // 날씨에 따른 옷 추천
+    @Override
+    public Map<String, List<ProductDTO>> getWeatherMatchProduct(int sortby) {
+        /*
+         * [ sortby ]
+         * 1. 5도 이하
+         * 패딩, 긴팔, 긴바지
+         * 
+         * 2. 5~20도
+         * 자켓, 긴팔, 긴바지
+         * 
+         * 3. 20도 이상
+         * 반팔, 반바지
+         */
+        Map<String, List<ProductDTO>> map = new HashMap<>();
+        Map<String, Integer> sortByMap = new HashMap<>();
+        // List<String> categoryNameList = List.of("outer", "top", "bottom");
+        // List<Integer> sortByList = new ArrayList<>();
+
+        // 카테고리 정렬
+        switch (sortby) {
+            case 1:
+                sortByMap.put("outer", 4); // 패딩
+                sortByMap.put("top", 7); // 긴팔
+                sortByMap.put("bottom", 9); // 긴바지
+                break;
+            case 2:
+                sortByMap.put("outer", 5); // 자켓
+                sortByMap.put("top", 7); // 긴팔
+                sortByMap.put("bottom", 9); // 긴바지
+                break;
+            case 3:
+                sortByMap.put("top", 6); // 반팔
+                sortByMap.put("bottom", 8); // 반바지
+                break;
+            default:
+                break;
+        }
+
+        // 상품 추출
+        for (String key : sortByMap.keySet()) {
+            ProductCategoryEntity categoryEntity = categoryRepository.findById(sortByMap.get(key)).orElseThrow();
+            List<ProductEntity> productList = productRepository.findByCategoryEntity(categoryEntity);
+
+            // Entity -> DTO
+            List<ProductDTO> dtoList = new ArrayList<>();
+            for (ProductEntity entity : productList) {
+                dtoList.add(ProductDTO.toGetProductDTO(entity));
+            }
+            map.put(key, dtoList);
+        }
+
+        return map;
     }
 
 }

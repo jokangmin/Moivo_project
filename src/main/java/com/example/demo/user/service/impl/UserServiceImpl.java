@@ -2,7 +2,6 @@ package com.example.demo.user.service.impl;
 
 import java.time.LocalDateTime;
 import java.time.YearMonth;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -18,13 +17,11 @@ import com.example.demo.coupon.repository.UserCouponRepository;
 import com.example.demo.coupon.service.UserCouponService;
 import com.example.demo.jwt.prop.JwtProps;
 import com.example.demo.jwt.service.BlacklistService;
-import com.example.demo.jwt.service.RefreshTokenService;
+// import com.example.demo.jwt.service.RefreshTokenService;
 import com.example.demo.jwt.util.JwtUtil;
-import com.example.demo.payment.entity.PaymentDetailEntity;
 import com.example.demo.payment.entity.PaymentEntity;
 import com.example.demo.payment.repository.PaymentDetailRepository;
 import com.example.demo.payment.repository.PaymentRepository;
-import com.example.demo.qna.entity.QuestionEntity;
 import com.example.demo.qna.repository.QuestionRepository;
 import com.example.demo.store.repository.ReviewRepository;
 import com.example.demo.user.dto.UserDTO;
@@ -62,32 +59,24 @@ public class UserServiceImpl implements UserService {
     private PaymentRepository paymentRepository;
 
     @Autowired
-    private PaymentDetailRepository paymentDetailRepository;
-
-    @Autowired
     private UserCouponRepository userCouponRepository;
     @Autowired
     private WishRepository wishRepository;
-
-    @Autowired
-    private UserWishRepository userWishRepository;
 
     @Autowired
     private QuestionRepository questionRepository;
 
     @Autowired
     private CartRepository cartRepository;
-
-    @Autowired
-    private UserCartRepository userCartRepository;
+    
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserCouponService userCouponService;
 
-    @Autowired
-    private RefreshTokenService refreshTokenService;
+    // @Autowired
+    // private RefreshTokenService refreshTokenService;
     @Autowired
     private BlacklistService blacklistService;
     @Autowired
@@ -241,17 +230,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void logout(String accessToken, String refreshToken) {
-        // 토큰에서 Bearer 제거
-        if (accessToken.startsWith("Bearer ")) {
-            accessToken = accessToken.substring(7);
+        if (refreshToken != null) {
+            // 토큰 유효성 검증 후 저장
+            if (jwtUtil.validateToken(refreshToken)) {
+                Date expiryDate = jwtUtil.getExpirationDateFromToken(refreshToken);
+                blacklistService.addToBlacklist(refreshToken, expiryDate);
+            }
         }
-
-        // RefreshTokenService를 통해 refresh 토큰을 블랙리스트에 추가
-        refreshTokenService.addTokenToBlacklist(refreshToken);
-
-        // BlacklistService를 통해 access 토큰을 블랙리스트에 추가
-        Date expiryDate = jwtUtil.getExpirationDateFromToken(accessToken);
-        blacklistService.addToBlacklist(accessToken, expiryDate);
     }
 
     @Override
@@ -482,7 +467,7 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(userEntity);
          
     }
-    
+
 
     // 결제 정보에서 사용자와의 연관 관계 끊기 
     @Transactional

@@ -16,10 +16,13 @@ public class BlacklistService {
     private BlacklistRepository blacklistRepository;
     
     public void addToBlacklist(String token, Date expiryDate) {
-        BlacklistEntity blacklistEntity = new BlacklistEntity();
-        blacklistEntity.setToken(token);
-        blacklistEntity.setExpiryDate(expiryDate);
-        blacklistRepository.save(blacklistEntity);
+        // 토큰이 이미 블랙리스트에 있는지 확인
+        if (!isTokenBlacklisted(token)) {
+            BlacklistEntity blacklistEntity = new BlacklistEntity();
+            blacklistEntity.setToken(token);
+            blacklistEntity.setExpiryDate(expiryDate);
+            blacklistRepository.save(blacklistEntity);
+        }
     }
     
     public boolean isTokenBlacklisted(String token) {

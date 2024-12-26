@@ -9,6 +9,7 @@
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.1);
   font-family: 'Noto Sans KR', sans-serif;
   animation: slideInFromTop 0.8s ease-out;
+  
 }
 
 @keyframes slideInFromTop {
@@ -71,6 +72,7 @@
   transition: background-color 0.3s ease;
   position: relative;
   z-index: 1;
+  font-size: 12pt;
 }
 
 .reviewWriteContainer .contentInput::placeholder {
@@ -93,6 +95,7 @@
   background: linear-gradient(145deg, #ffffff, #f0f0f0);
   padding: 20px;
   border-radius: 15px;
+  height: 270px;
 }
 
 .reviewWriteContainer .contentIcon {
@@ -181,13 +184,13 @@
   padding: 4px 8px;
   background: #ff385c;
   color: white;
-  font-size: 0.8rem;
+  font-size: 1.4rem;
   border-radius: 20px;
   opacity: 0.8;
 }
 
 .reviewWriteContainer .preview h3 {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   color: #333;
   margin-bottom: 10px;
 }
@@ -516,7 +519,7 @@
   .reviewWriteContainer .contentInput {
     min-height: 120px;
     padding: 12px;
-    font-size: 0.9rem;
+    font-size: 1.8rem;
   }
 
   .reviewWriteContainer .contentIcon {
@@ -526,12 +529,12 @@
   }
 
   .reviewWriteContainer .characterCount {
-    font-size: 0.8rem;
+    font-size: 1.5rem;
   }
 
   .reviewWriteContainer button {
-    padding: 10px 20px;
-    font-size: 1rem;
+    padding: 14px 22px;
+    font-size: 1.5rem;
   }
 
   .ratingStar {
@@ -650,7 +653,7 @@
 }
 
 .previewProductName {
-  font-size: 1.3rem;
+  font-size: 1.9rem;
   font-weight: bold;
   color: #333;
   margin-bottom: 10px;
@@ -658,7 +661,7 @@
 
 .previewDate {
   color: #666;
-  font-size: 0.9rem;
+  font-size: 1.4rem;
   margin-bottom: 15px;
 }
 
@@ -753,7 +756,7 @@
 /* 반응형 조정 */
 @media screen and (max-width: 768px) {
   .productInfo h2 {
-    font-size: 1.5rem;
+    font-size: 2.1rem;
   }
   
   .previewContent {
@@ -761,7 +764,7 @@
   }
   
   .previewProductName {
-    font-size: 1.1rem;
+    font-size: 2.0rem;
   }
 }
 
@@ -803,7 +806,6 @@
     rgba(255, 56, 92, 0.03) 50%,
     transparent 100%
   );
-  animation: shimmer 3s infinite linear;
 }
 
 @keyframes shimmer {
@@ -863,7 +865,7 @@
 }
 
 .characterCount::before {
-  content: '��️';
+  content: '✏️';
   font-size: 0.9em;
 }
 

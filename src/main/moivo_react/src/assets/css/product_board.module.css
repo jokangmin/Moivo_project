@@ -1,7 +1,3 @@
-/* product_board.module.css */
-
-@import url("https://cdn.jsdelivr.net/gh/webfontworld/gmarket/GmarketSans.css");
-
 /* =========================================
    1. 기본 레이아웃 & 공통 스타일
 ========================================= */
@@ -10,28 +6,30 @@
   max-width: 100vw;
   margin: 0 auto;
   padding: 20px;
-  font-family: "GmarketSans", sans-serif;
   box-sizing: border-box;
 }
 
 .productBoardContainer {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+  background-color: #f6f2ee;
   min-height: 100vh;
-  font-family: "GmarketSans", sans-serif;
 }
 
-.contentWrapper {
+.contentWrapper1 {
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
+  background-color: #f6f2ee;
 }
 
 .sectionTitle {
+  position: relative;
+  z-index: 1; 
+  color: white;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7); 
   font-size: clamp(2.5rem, 4vw, 3.5rem);
   font-weight: 600;
-  color: #2d3748;
   margin-bottom: 2rem;
   position: relative;
   display: inline-block;
@@ -154,11 +152,8 @@
 ========================================= */
 /* 3.1 트렌딩 섹션 */
 .trendingSection {
-  margin: 4rem 0;
+  margin: 6rem 0;
   padding: 2rem;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
 /* 슬라이더 오버레이 텍스트 */
@@ -380,136 +375,6 @@
   margin-top: 1rem;
 }
 
-/* =========================================
-   4. 정보 섹션
-========================================= */
-/* 4.1 FAQ 섹션 */
-.faqSection {
-  margin-top: 50px;
-  padding: 40px;
-  border-radius: 12px;
-  background-color: #fffaf5; 
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* 깊이감 있는 그림자 */
-  font-family: 'Georgia', serif; 
-}
-
-.faqSection h3 {
-  font-size: clamp(2rem, 3vw, 2.8rem);
-  font-weight: 700;
-  color: #5c4328; 
-  margin-bottom: 20px;
-  border-bottom: 3px solid #d97706; /* 하단 강조 라인 */
-  display: inline-block;
-  padding-bottom: 10px;
-  font-family: "GmarketSans", sans-serif;
-}
-
-.faqSection details {
-  margin: 20px 0;
-}
-
-.faqSection summary {
-  font-weight: bold;
-  font-size: clamp(1.4rem, 2vw, 1.8rem);
-  cursor: pointer;
-  color: #7a563c;
-  transition: color 0.3s ease;
-  font-family: "GmarketSans", sans-serif;
-}
-
-.faqSection summary:hover {
-  color: #d97706; /* 호버 시 오렌지 브라운 */
-}
-
-.faqSection p {
-  margin-left: 25px;
-  font-size: clamp(1.2rem, 1.8vw, 1.6rem);
-  line-height: 1.8;
-  color: #666; /* 부드러운 회색 */
-  font-family: "GmarketSans", sans-serif;
-}
-
-/* 4.2 브랜드 소개 섹션 */
-.brandInfo {
-  margin-top: 50px;
-  padding: 40px;
-  border-radius: 12px;
-  background-color: #f9f9f9; /* 깨끗한 화이트 배경 */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-}
-
-.brandInfo h3 {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #5c4328;
-  margin-bottom: 15px;
-  font-family: 'Georgia', serif;
-}
-
-.brandInfo p {
-  font-size: 1.2rem;
-  line-height: 1.8;
-  color: #555;
-}
-
-/* 4.3 SNS 공유 섹션 */
-.snsShare {
-  margin-top: 50px;
-  text-align: center;
-  background-color: #fffaf5;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-}
-
-.snsShare h3 {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 20px;
-  color: #5c4328;
-  font-family: 'Georgia', serif;
-}
-
-.snsIcons {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-}
-
-.snsIcons a {
-  font-size: 2.5rem; /* 아이콘 크기 증가 */
-  color: #7a563c;
-  transition: color 0.3s ease, transform 0.3s ease;
-}
-
-.snsIcons a:hover {
-  color: #d97706; /* 호버 시 포인트 색상 */
-  transform: scale(1.3); /* 호버 시 확대 */
-}
-
-/* 4.4 배송 및 환불 정책 섹션 */
-.policySection {
-  margin-top: 50px;
-  padding: 40px;
-  border-radius: 12px;
-  background-color: #fffefb; /* 따뜻한 화이트 배경 */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-}
-
-.policySection h3 {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #5c4328;
-  margin-bottom: 15px;
-  font-family: 'Georgia', serif;
-}
-
-.policySection p {
-  font-size: 1.2rem;
-  line-height: 1.8;
-  color: #555;
-  margin-bottom: 15px;
-}
 
 /* =========================================
    5. 유틸리티 컴포넌트
@@ -573,142 +438,338 @@
   transform: translateY(-5px);
 }
 
-/* =========================================
-   6. 푸터
-========================================= */
-.mainFooter {
-  background: rgb(170, 166, 162);
-  padding: 2rem 0;
-}
 
-.footerGridContainer {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 1.5rem;
-}
+/* CSS 스타일 */
 
-.anchorLinks {
-  list-style-type: none;
-}
-
-/* =========================================
-   7. 반응형 스타일
-========================================= */
-@media (max-width: 768px) {
-  .seasonGrid {
-    grid-template-columns: 1fr;
-  }
-  
-  .styleGrid {
-    grid-template-columns: 1fr;
-  }
-  
-  .reviewGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* 디자인 철학 섹션 */
-.philosophySection {
-  padding: 6rem 2rem;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-}
-
-.philosophyGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.philosophyCard {
-  background: white;
-  padding: 3rem 2rem;
-  border-radius: 20px;
-  text-align: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease;
-}
-
-.philosophyIcon {
-  font-size: 3rem;
-  margin-bottom: 1.5rem;
-}
-
-/* 컬렉션 하이���이트 */
-.collectionHighlight {
-  padding: 4rem 2rem;
-  background: #fff;
-}
-
-.highlightGrid {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.highlightMain {
-  position: relative;
-  height: 600px;
-  overflow: hidden;
-  border-radius: 20px;
-}
-
-.highlightImage {
+/* 날씨 패션 섹션 기본 스타일 */
+.weatherFashionSection {
   width: 100%;
   height: 100%;
-  background-image: url('/path/to/your/image.jpg');
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  overflow: hidden; 
+}
+
+.weatherFashionSection::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background-size: cover;
   background-position: center;
-  position: relative;
+  z-index: -1;
+  filter: blur(10px); 
 }
 
-.highlightOverlay {
+.weatherFashionSection::before {
+  content: "";
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
-  right: 0;
-  padding: 2rem;
-  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
-  color: white;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3); 
+  z-index: 0;
 }
 
-.highlightSub {
-  display: grid;
-  grid-template-rows: 1fr 1fr;
-  gap: 2rem;
-}
-
-.highlightCard {
-  background: #f8f9fa;
-  border-radius: 15px;
+.weatherDetails {
   display: flex;
+  justify-content: space-between;
+  align-items: flex-start; 
+  gap: 20px; 
+}
+
+.weatherInfo {
+  flex: 1;
+  font-weight: bold;
+  z-index: 3;
+  color: #f6f2ee;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7); 
+}
+
+.weatherFashionTips {
+  flex: 1; 
+  text-align: left; 
+  background-color: rgba(255, 255, 255, 0.8); 
+  padding: 15px; 
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  margin: auto 0;
+  z-index: 3;
+}
+
+
+
+.weatherFashionSection:hover {
+  transform: translateY(-5px); 
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.animatedSection {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #2d3748;
+  text-align: center;
+  width: 40%;
+  margin: 0 auto;
+  margin-bottom: 50px;
+  height: 450px;
+  position: relative; 
+  z-index: 2;
+}
+
+.weatherInfo img.weatherIcon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
+.weatherDesc {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  font-weight: 900;
+  color: #f6f2ee;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7); 
+}
+
+
+.weatherFashionTips p {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.weatherFashionTips ul {
+  list-style: none;
+  padding: 0;
+}
+
+.weatherFashionTips li {
+  font-size: 15px;
+  background-color: #bfbfbf;
+  border-radius: 4px;
+  padding: 5px 10px;
+  margin: 5px 5px;
+  display: inline-block;
+}
+
+.weatherFashionTips li:hover {
+  background-color: #727272;
   cursor: pointer;
-  transition: all 0.3s ease;
+}
+
+.weatherstate {
+  font-size: 19pt;
+  margin-bottom: 15px;
+  color: #f6f2ee;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7); 
+  font-weight: bold;
+  z-index: 3;
+}
+
+.contentWrapper {
+  display: flex; /* 가로 배치 */
+  justify-content: space-between; /* 좌우 배치 */
+  align-items: stretch; /* 자식 요소 높이 동일 */
+  width: 98%;
+  margin: 20px auto;
+  gap: 20px; /* 두 박스 간 간격 */
+  box-sizing: border-box;
+}
+
+/* today_style */
+.today_styleBox, .today_styleBox2, .today_styleBox3 {
+  position: relative;
+  padding: 20px;
+  border: 1px solid #988C73;
+  background: #F6F2EE;
+  width: 100%; /* 멤버십 박스와 동일한 너비 */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.today_style, .today_style2, .today_style3 {
+  font-family: 'Segoe UI', serif;
+  font-size: 30px;
+  text-align: center;
+  color: #2f2e2c;
+  margin-bottom: 30px;
+  margin-top: 40px;
+}
+
+/* 제품 리스트 사이 간격 줄이기 */
+.productList {
+  display: flex;
+  transition: transform 0.5s ease-in-out; /* 부드러운 전환 효과 추가 */
+  gap: 2px; 
+  overflow: hidden;
+  justify-content: center;
+}
+
+.product {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 150px;
+  flex: 0 0 18%; /* 3개의 항목이 한 줄에 나오도록 설정 */
+}
+.productImage {
+  width: 300px;
+  height: 400px;
+  background: #F6F2EE;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.productImage img{
+  width: 100%;
+  height: 100%;
+  background: #F6F2EE;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.productText {
+  font-family: 'Segoe UI', serif;
+  font-size: 20px;
+  color: #2f2e2c;
+  white-space: nowrap;
+  overflow: hidden;  
+  text-overflow: ellipsis; 
+  width: 260px;
+}
+
+.productText .price {
+  font-family: 'Segoe UI', serif;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* 화살표 버튼 위치 조정 및 반전 스타일 추가 */
+.arrow, .arrow2, .arrow3 {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 80px; /* 기본 이미지 크기 */
+  height: 30px;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  z-index: 10; /* 다른 요소보다 위에 표시되도록 설정 */
+}
+
+
+.arrowLeft, .arrowLeft2, .arrowLeft3{
+  left: 40px; /* 좌측 위치 조정 */
+}
+
+.arrowRight, .arrowRight2 , .arrowRight3{
+  right: 40PX; /* 우측 위치 조정 */
+}
+
+.arrow img, .arrow2 img , .arrow3 img{
+  width: 100%;
+  height: 100;
+  object-fit: cover;
+}
+
+/* 왼쪽 화살표 이미지 뒤집기 */
+.arrowLeft img, .arrowLeft2 img , .arrowLeft3 img {
+  transform: scaleX(-1); /* 이미지 좌우 반전 */
+}
+
+/* 하단 바 */
+.bottomBar, .bottomBar2 , .bottomBar3 {
+  width: 70%; /* 원하는 너비로 설정 */
+  height: 0.9px;
+  background-color: #988C73;
+  margin-top: 20px;
+  margin-left: auto; /* 왼쪽 여백 자동 */
+  margin-right: auto; /* 오른쪽 여백 자동 */
+  cursor: pointer; /* 클릭 가능하도록 포인터 추가 */
+  transition: background-color 0.3s ease;
+}
+
+.bottomBar:hover {
+  background-color: #2f2e2c; /* 마우스 오버 시 색상 변경 */
 }
 
 @media (max-width: 768px) {
-  .philosophyGrid {
-    grid-template-columns: 1fr;
+  .contentWrapper1 {
+    max-width: 100%;
+    padding: 0rem;
   }
-  
-  .highlightGrid {
-    grid-template-columns: 1fr;
+
+  .animatedSection{
+    width: 90%;
   }
-  
-  .highlightMain {
-    height: 400px;
+
+  .weatherstate {
+    font-size: 22pt;
   }
+
+  .weatherDesc {
+    font-size: 21px;
+  }
+
+  .weatherInfo p:nth-child(3),
+  .weatherInfo p:nth-child(4),
+  .weatherInfo p:nth-child(5),
+  .weatherInfo p:nth-child(6) {
+    font-size: 18px;
+  }
+
+  .weatherFashionTips p{
+    font-size: 14pt;
+  }
+
+  .weatherFashionTips li {
+    font-size: 13pt;
+  }
+
+  .today_style{
+    font-size: 25px;
+    margin-bottom: 40px;
+  }
+
+  .arrow, .arrow2, .arrow3 {
+    width: 70px; 
+    height: 25px;
+  }
+
+  .arrow img, .arrow2 img , .arrow3 img{
+    width: 100%;
+    height: 100;
+    object-fit: cover;
+  }
+
+  .arrowLeft, .arrowLeft2, .arrowLeft3 {
+    left: -25px;
+  }
+
+  .arrowRight, .arrowRight2, .arrowRight3 {
+    right: -25px;
+  }
+
+  .productImage{
+    width: 116px;
+    height: auto;
+  }
+
+  .productText{
+    font-size: 18px;
+    white-space: nowrap;
+    overflow: hidden;  
+    text-overflow: ellipsis; 
+    width: 110px;
+  }
+
 }
-
-
-

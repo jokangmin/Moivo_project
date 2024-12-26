@@ -76,8 +76,8 @@ public class AdminStoreController {
 
     // 상품 등록 화면 카테고리 출력 - uj
     @GetMapping("/category")
-    public ResponseEntity<List<ProductCategoryDTO>> getCategory() {
-        List<ProductCategoryDTO> list = productService.getCategory();
+    public ResponseEntity<Map<String, List<ProductCategoryDTO>>> getAllCategory() {
+        Map<String, List<ProductCategoryDTO>> list = adminStoreService.getAllCategory();
         return ResponseEntity.ok(list);
     }
 
@@ -127,7 +127,7 @@ public class AdminStoreController {
     }
 
     // 상품 삭제 - 24.11.27 - uj
-    @DeleteMapping("delete/{productId}")
+    @DeleteMapping("/delete/{productId}")
     public ResponseEntity<String> deleteProduct(@PathVariable(name = "productId") int productId) {
         System.out.println(productId);
         try {

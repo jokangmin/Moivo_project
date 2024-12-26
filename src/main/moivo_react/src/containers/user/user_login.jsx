@@ -1,70 +1,19 @@
-import axios from 'axios';
-import React, { useState, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../contexts/AuthContext';
-import { PATH } from "../../../scripts/path";
+import React from 'react';
+import { Link } from 'react-router-dom';
 import signin from '../../assets/css/user_login.module.css';
 import kakaoLoginImage from '../../assets/image/kakao_login.png';
-import axiosInstance from '../../utils/axiosConfig';
+import useUserLogin from '../../contexts/user/User_LoginContext';
 
 const user_login = () => {
-//d
-  const navigate = useNavigate();
-  const {login} = useContext(AuthContext);
-  const [formData, setFormData] = useState({ userId: '', pwd: '' });
-  const [error, setError] = useState('');
+    const { 
+        formData, 
+        error, 
+        handleSubmit, 
+        handleChange, 
+        handleFocus, 
+        handleKakaoLogin 
+    } = useUserLogin();
 
-    //사용자 데이터 요청하는 함수임
-    const fetchUserData = async () => {
-        try {
-            const token = localStorage.getItem('accessToken');
-            const response = await axiosInstance.get('/api/user/info', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            console.log("사용자 정보:", response.data);
-        } catch (error) {
-            console.error("데이터 요청 실패:", error);
-        }
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        
-        try {
-            const success = await login(formData.userId, formData.pwd);
-            if (success) {
-                await fetchUserData();
-                navigate('/');
-            }
-        } catch (error) {
-            setError(error.response?.data?.error || "로그인이 불가능합니다.<br/> 아이디 또는 비밀번호를 확인해주세요.");
-        }
-    };
-
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-    };
-
-    const handleKakaoLogin = async () => {
-        try {
-            const response = await axios.get(`${PATH.SERVER}/api/user/social/kakao`);
-            console.log(response.data);
-            window.location.href = response.data;
-        } catch (error) {
-            console.error("인증 오류:", error);
-        }
-    };
-
-    const handleFocus = (e) => {
-        if (e.target.name === 'userId' || e.target.name === 'pwd') {
-            setError('');
-        }
-    };
     return (
         <div className={signin.loginMain}>
             <div className={signin.container} id="container">

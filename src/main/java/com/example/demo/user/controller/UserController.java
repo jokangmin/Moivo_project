@@ -12,6 +12,7 @@ import com.example.demo.user.dto.UserDTO;
 import com.example.demo.user.service.UserService;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
@@ -103,9 +104,32 @@ public class UserController {
 
     // 로그아웃
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestHeader("Authorization") String accesstoken,
-                                         @CookieValue("refreshToken") String refreshToken) {
-        userService.logout(accesstoken, refreshToken);
+    public ResponseEntity<String> logout(
+        @RequestHeader("Authorization") String accessToken,
+        HttpServletRequest request,
+        HttpServletResponse response) {
+        
+        // 리프레시 토큰 쿠키 가져오기
+        Cookie[] cookies = request.getCookies();
+        String refreshToken = null;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    refreshToken = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        // 로그아웃 처리
+        userService.logout(accessToken, refreshToken);
+
+        // 리프레시 토큰 쿠키 삭제
+        Cookie cookie = new Cookie("refreshToken", null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
         return ResponseEntity.ok("로그아웃 성공");
     }
 
@@ -145,7 +169,9 @@ public class UserController {
             String actualToken = token.substring(7); // "Bearer " 제거
             Map<String, Object> userData = jwtUtil.getUserDataFromToken(actualToken);
             String userIdFromToken = (String) userData.get("userId");
-
+            System.out.println(userIdFromToken);
+            System.out.println(userDTO.getUserId());
+            
             // 사용자 ID 일치 여부 확인 (보안 검증)
             if (!userIdFromToken.equals(userDTO.getUserId())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

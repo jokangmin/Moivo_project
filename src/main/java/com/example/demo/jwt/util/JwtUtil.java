@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import com.example.demo.jwt.entity.BlacklistEntity;
 import com.example.demo.jwt.prop.JwtProps;
 import com.example.demo.jwt.repository.BlacklistRepository;
+import com.example.demo.jwt.service.BlacklistService;
 
 import java.security.Key;
 import java.util.Date;
@@ -38,6 +39,9 @@ public class JwtUtil {
 
     @Autowired
     private JwtProps jwtProps;
+
+    @Autowired
+    private BlacklistService blacklistService;
 
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(jwtProps.getSecretKey().getBytes());
@@ -135,7 +139,7 @@ public class JwtUtil {
 
     // 토큰이 블랙리스트에 있는지 확인
     public boolean isTokenBlacklisted(String token) {
-        return blacklistRepository.existsByToken(token);
+        return blacklistService.isTokenBlacklisted(token);
     }
 
     public String resolveToken(HttpServletRequest request) {
@@ -178,7 +182,12 @@ public class JwtUtil {
             userData.put("isAdmin", claims.get("isAdmin"));
             return userData;
         } catch (Exception e) {
-            throw new RuntimeException("토큰에서 사용자 정보를 추출할 ��� 없습니다.");
+            throw new RuntimeException("토큰에서 사용자 정보를 추출할 수 없습니다.");
         }
+    }
+
+    public void invalidateToken(String token) {
+        Date expiryDate = getExpirationDateFromToken(token);
+        blacklistService.addToBlacklist(token, expiryDate);
     }
 }

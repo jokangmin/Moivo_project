@@ -3,7 +3,6 @@
 /* =========================================
    1. 기본 레이아웃
 ========================================= */
-@import url("https://cdn.jsdelivr.net/gh/webfontworld/gmarket/GmarketSans.css");
 
 .container {
   width: 100%;
@@ -114,7 +113,7 @@
 ========================================= */
 .productGrid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(300px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 2.5rem;
   margin: 2rem auto;
 }
@@ -307,8 +306,8 @@
 ========================================= */
 @media screen and (max-width: 1200px) {
   .productGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
   }
   
   .searchContainer.open {
@@ -318,20 +317,62 @@
 
 @media screen and (max-width: 768px) {
   .productGrid {
-    grid-template-columns: repeat(1, 1fr);
-    gap: 1.5rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
   }
   
   .productListWrapper {
-    padding: 0 1rem;
+    padding: 0 0.5rem;
   }
   
   .searchAndCategories {
-    flex-direction: column;
     align-items: flex-start;
   }
 
   .searchContainer.open {
+    width: 100%;
+  }
+
+  .productCard {
+    min-width: 0;
+  }
+
+  .productInfo {
+    padding: 1rem;
+  }
+
+  .productTitle {
+    font-size: 0.9rem;
+  }
+
+  .productPrice {
+    font-size: 0.9rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .productGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  .filterSection {
+    flex-direction: column;
+    gap: 2rem;
+    font-size: 13pt;
+  }
+
+  .categoryList {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .categoryItem {
+    padding: 0.7rem 1.4rem;
+    font-size: 1.7rem;
+  }
+
+  .sortDropdown {
     width: 100%;
   }
 }

@@ -29,8 +29,15 @@ public class ReviewDTO { // 리뷰
     public static ReviewDTO toGetReviewDTO(ReviewEntity entity) {
         ReviewDTO dto = new ReviewDTO();
         dto.setId(entity.getId());
-        dto.setUserId(entity.getUserEntity().getId());
-        dto.setUserName(entity.getUserEntity().getName());
+        
+        if(entity.getUserEntity() == null) { // 사용자 탈퇴 시
+            dto.setUserId(null);
+            dto.setUserName("알수없음");
+        } else{
+            dto.setUserId(entity.getUserEntity().getId());
+            dto.setUserName(entity.getUserEntity().getName());
+        }    
+
         dto.setProductId(entity.getProductEntity().getId());
         dto.setSize(entity.getPaymentDetailEntity().getSize());
         dto.setRating(entity.getRating());

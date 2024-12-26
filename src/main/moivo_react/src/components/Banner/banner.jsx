@@ -11,7 +11,6 @@ const Banner = () => {
   const { isAuthenticated, logout, tokenExpiration, isAdmin } = useContext(AuthContext);
   //2024-12-11 디버그 확인 장훈
   console.log('isAdmin:', isAdmin);
-  const [openMenuIndex, setOpenMenuIndex] = useState(null);
 
   useEffect(() => {
     console.log('현재 인증 상태:', isAuthenticated);
@@ -22,7 +21,7 @@ const Banner = () => {
       title: 'SHOP', navigateTo : '/product-list',
       submenu: [
         { name: 'ALL', navigateTo: '/product-list' },
-        { name: 'Dashboard', navigateTo: '/product-board' }
+        { name: 'Today Style', navigateTo: '/product-board' }
       ]
     },
     {
@@ -40,10 +39,6 @@ const Banner = () => {
     }] : [])
   ];
 
-  const handleToggleMenu = (idx) => {
-    setOpenMenuIndex(openMenuIndex === idx ? null : idx);
-  };
-
   const handleLogout = async () => {
     try {
       await logout();
@@ -58,35 +53,42 @@ const Banner = () => {
     return expiration.toLocaleString();
   };
 
+  const [openMenuIndex, setOpenMenuIndex] = useState(null);
+
+  const handleToggleMenu = (index) => {
+    setOpenMenuIndex(openMenuIndex === index ? null : index);
+  };
+
   return (
-    <>
-      <header className={styles.banner}>
-        <div className={styles.inner}>
-          <h1 className={styles.logo}>
-            <a className={styles.logoLink} onClick={() => navigate('/')}>
-              Moivo
-            </a>
-          </h1>
+    <header className={styles.banner}>
+      <div className={styles.inner}>
+        <h1 className={styles.logo}>
+          <button className={styles.logoLink} onClick={() => navigate('/')}>
+            Moivo
+          </button>
+        </h1>
 
           <nav className={styles.nav}>
             <ul className={styles.navList}>
               {navLinks.map((link, idx) => (
                 <li key={idx} className={styles.navItem}>
-                  <button className={styles.navLink} onClick={() => handleToggleMenu(idx)}>
+                  <button 
+                    className={styles.navLink} 
+                    onClick={() => handleToggleMenu(idx)}
+                  >
                     {link.title}
                   </button>
-                  {openMenuIndex === idx && (
-                    <div className={styles.subMenu}>
-                      {link.submenu.map((item, subIdx) => (
-                        <a
-                          key={subIdx}
-                          className={styles.subLink}
-                          onClick={() => navigate(item.navigateTo)}>
-                          {item.name}
-                        </a>
-                      ))}
-                    </div>
-                  )}
+                  <div className={`${styles.subMenu} ${openMenuIndex === idx ? styles.active : ''}`}>
+                    {link.submenu.map((item, subIdx) => (
+                      <button
+                        key={subIdx}
+                        className={styles.subLink}
+                        onClick={() => navigate(item.navigateTo)}
+                      >
+                        {item.name}
+                      </button>
+                    ))}
+                  </div>
                 </li>
               ))}
             </ul>
@@ -95,17 +97,17 @@ const Banner = () => {
           <div className={styles.utility}>
             {isAuthenticated ? (
               <>
-                <a 
+                <button 
                   onClick={(e) => {
-                    e.preventDefault();  // 기본 동작 방지
+                    e.preventDefault();
                     navigate('/mypage');
                   }} 
                   className={styles.utilityLink}
                 >
                   <span className={styles.text}>My Page</span>
                   <img src={mypageIcon} className={styles.iconImage} alt="mypage" />
-                </a>
-                <a 
+                </button>
+                <button 
                   onClick={(e) => {
                     e.preventDefault();
                     navigate('/cart');
@@ -114,31 +116,25 @@ const Banner = () => {
                 >
                   <span className={styles.text}>Cart</span>
                   <img src={cartIcon} className={styles.iconImage} alt="cart" />
-                </a>
+                </button>
                 <button onClick={handleLogout} className={styles.logoutButton}>
                   Logout
                 </button>
               </>
             ) : (
               <>
-                <a 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate('/user');
-                  }} 
+                <button 
+                  onClick={() => navigate('/user')} 
                   className={styles.utilityLink2}
                 >
                   Login
-                </a>
-                <a 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate('/user_signup');
-                  }} 
+                </button>
+                <button 
+                  onClick={() => navigate('/user_signup')} 
                   className={styles.utilityLink2}
                 >
                   Sign Up
-                </a>
+                </button>
               </>
             )}
 
@@ -150,10 +146,9 @@ const Banner = () => {
               {isAuthenticated && ( <span className={styles.expiration}>{formatExpiration(tokenExpiration)}</span> )}
             </div>
 
-          </div>
         </div>
-      </header>
-    </>
+      </div>
+    </header>
   );
 };
 

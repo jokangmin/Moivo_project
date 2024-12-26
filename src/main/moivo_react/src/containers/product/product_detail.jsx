@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable no-unused-vars */
+import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaHeart, FaShoppingCart, FaMinus, FaPlus, FaTruck, FaExchangeAlt, FaCreditCard } from 'react-icons/fa';
@@ -6,231 +7,65 @@ import styles from '../../assets/css/product_detail.module.css';
 import Banner from '../../components/Banner/banner';
 import Footer from '../../components/Footer/Footer';
 import LoadingModal from './LoadingModal';
-import axiosInstance from '../../utils/axiosConfig';
+import { useProDetail } from '../../contexts/productCon/ProDetailContext';
 
 const ProductDetail = () => {
-  const { productId } = useParams(); // 받아온 상품 ID
-  const token = localStorage.getItem('accessToken');
-  const [product, setProduct] = useState(null); // 상품 정보
-  const [mainImage, setMainImage] = useState(''); // 메인 이미지
-  const [thumbnailImages, setThumbnailImages] = useState([]); // 썸네일 이미지
-  const [detailImages, setDetailImages] = useState([]); // 상세 이미지
-  const [selectedSize, setSelectedSize] = useState(''); // 선택한 사이즈
-  const [stocks, setStocks] = useState([]); // 재고 정보
-  const [selectedProduct, setSelectedProduct] = useState(null); // 선택한 상품
-  const [reviews, setReviews] = useState([]); // 리뷰 정보
-  const [loading, setLoading] = useState(false); // 로딩 상태
-  const [error, setError] = useState(null); // 에러 상태
-  const [quantity, setQuantity] = useState(1); // 수량
-  const [activeTab, setActiveTab] = useState('details'); // 활성화된 탭
+  const { productId } = useParams();
   const navigate = useNavigate();
-  const [currentThumbnailIndex, setCurrentThumbnailIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [stockInfo, setStockInfo] = useState([]); // 재고 정보 상태 추가
-
-  // 재고 정보와 사이즈 정보를 가져오는 useEffect!!
-  useEffect(() => {
-    if (stocks && stocks.length > 0) {
-      setStockInfo(stocks);
-      console.log("현재 재고 정보:", stocks);
-    }
-  }, [stocks]);
-
-  // 선택된 사이즈와 수량 변경 감지하는 useEffect
-  useEffect(() => {
-    if (selectedSize) {
-      const currentStock = stockInfo.find(stock => stock.size === selectedSize);
-      console.log("선택된 사이즈:", selectedSize);
-      console.log("선택된 사이즈의 재고:", currentStock?.count);
-      console.log("현재 선택된 수량:", quantity);
-    }
-  }, [selectedSize, quantity, stockInfo]);
-
-  const fetchProductDetail = async () => { //상품 상세정보 불러오기
-    setLoading(true);
-    setError(null);
-  
-    try {
-      const response = await axiosInstance.get(`/api/store/${productId}`);
-      const { product: productData, imgList, stockList, reviewList } = response.data;
-      
-      // 상품 정보 설정
-      setProduct(productData);
-      
-      // 메인 이미지 설정
-      const mainImg = imgList.find(img => img.layer === 1);
-      const mainImgUrl = mainImg ? mainImg.fileName : productData.img;
-      setMainImage(mainImgUrl);
-      
-      // 썸네일 이미지 설정 (메인 이미지를 첫 번째로 포함)
-      const thumbnails = imgList.filter(img => img.layer === 2);
-      setThumbnailImages([{ id: 'main', fileName: mainImgUrl }, ...thumbnails]);
-      
-      // 상세 이미지 설정
-      const details = imgList.filter(img => img.layer === 3);
-      setDetailImages(details);
-      
-      // 재고 정보 설정
-      setStocks(stockList);
-      
-      // 리뷰 정보 설정
-      setReviews(reviewList);
-  
-    } catch (error) {
-      console.error('Error fetching product detail:', error);
-      setError(error.message || '상품 정보를 불러오는 중 오류가 발생했습니다.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    product,
+    mainImage,
+    thumbnailImages,
+    detailImages,
+    selectedSize,
+    stocks,
+    selectedProduct,
+    reviews,
+    loading,
+    error,
+    quantity,
+    activeTab,
+    stockInfo,
+    setActiveTab,
+    fetchProductDetail,
+    handleThumbnailClick,
+    handleThumbnailSlide,
+    handleSizeSelect,
+    handleQuantityChange,
+    handlePurchase,
+    handleAddToWishlist,
+    handleAddToCart,
+    fetchReviews,
+    isAllSizesSoldOut,
+    setError,
+    setLoading
+  } = useProDetail();
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     
     if (!token) {
-        alert("로그인이 필요한 서비스입니다.");
-        navigate("/user");
-        return;
+      alert("로그인이 필요한 서비스입니다.");
+      navigate("/user");
+      return;
     }
   }, [navigate]);
 
   useEffect(() => {
-    fetchProductDetail();
-  }, [productId, token]);
-
-  const handleThumbnailClick = (imgUrl, index) => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    setMainImage(imgUrl);
-    setCurrentThumbnailIndex(index);
-    setTimeout(() => setIsAnimating(false), 300);
-  };
-
-  const handleThumbnailSlide = (direction) => {
-    if (isAnimating) return;
-    setIsAnimating(true);
-    
-    const totalImages = thumbnailImages.length;
-    const newIndex = direction === 'next'
-      ? (currentThumbnailIndex + 1) % totalImages
-      : (currentThumbnailIndex - 1 + totalImages) % totalImages;
-    
-    setCurrentThumbnailIndex(newIndex);
-    setMainImage(thumbnailImages[newIndex].fileName);
-    
-    setTimeout(() => setIsAnimating(false), 300);
-  };
-
-  const handleSizeSelect = (size, count) => { // 사이즈 선택 시 선택한 상품 정보 설정
-    if (count <= 0) {
-      alert('품절된 상품입니다.');
-      return;
-    }
-    setSelectedSize(size);
-    setQuantity(1); // 사이즈 변경시 수량 1로 초기화
-    setSelectedProduct({
-      id: product.id,
-      size: size,
-      count: 1
-    });
-  };
-
-  const handleQuantityChange = (change) => { // 수량 변경 시 수량 업데이트
-    const selectedStock = stockInfo.find(stock => stock.size === selectedSize);
-    if (!selectedStock) {
-      alert('사이즈를 먼저 선택해주세요.');
-      return;
-    }
-
-    const newQuantity = quantity + change;
-    if (newQuantity >= 1 && newQuantity <= selectedStock.count) {
-      setQuantity(newQuantity);
-    } else if (newQuantity > selectedStock.count) {
-      alert('재고 수량을 초과할 수 없습니다.');
-    }
-  };
-
-  const handlePurchase = () => {
-    if(window.confirm("선택하신 상품을 구매하시겠습니까?")) {
-      navigate('/payment', {
-        state: {
-          cartItems: [{
-            productId: product.id,
-            size: selectedProduct.size,
-            count: quantity,
-            price: product.price,
-            name: product.name,
-            img: product.img
-          }],
-          isCartItem : false
-        }
-      });
-    }
-  };
-
-  const handleAddToWishlist = async () => {
-    try {
-      await axiosInstance.get(`/api/user/wish/${productId}`);
-      alert('위시리스트에 추가되었습니다.');
-    } catch (error) {
-      console.error('위시리스트 추가 실패:', error);
-      alert('위시리스트 추가에 실패했습니다.');
-    }
-  };
-
-  const handleAddToCart = async () => {
-    if (!selectedSize) {
-        alert('사이즈를 선택해주세요.');
-        return;
-    }
-
-    try {
-        const url = `/api/user/cart/add/${productId}?count=${quantity}&size=${selectedSize}`;
-        
-        const response = await axiosInstance.post(url);
-        console.log('장바구니 응답:', response);
-
-        if (response.status === 200) {
-            if(window.confirm('장바구니에 추가되었습니다.\n장바구니로 이동하시겠습니까?')) {
-                navigate('/cart');
-            }
-        }
-    } catch (error) {
-        console.error('장바구니 추가 실패:', error.response || error);
-        if (error.response?.status === 401) {
-            alert('로그인이 필요합니다.');
-        } else {
-            alert(error.response?.data?.message || '장바구니 추가에 실패했습니다.');
-        }
-    }
-  };
+    fetchProductDetail(productId);
+  }, [productId, fetchProductDetail]);
 
   useEffect(() => {
-    const fetchReviews = async () => {
-        try {
-            // axios 대신 axiosInstance 사용
-            const response = await axiosInstance.get(`/api/store/${productId}/reviews`);
-            setReviews(response.data.content);
-        } catch (error) {
-            console.error("리뷰 데이터 가져오기 실패:", error);
-        }
-    };
-
     if (productId && activeTab === 'reviews') {
-      fetchReviews();
+      fetchReviews(productId);
     }
   }, [productId, activeTab]);
 
-  // 모든 사이즈가 품절인지 확인하는 함수 추가
-  const isAllSizesSoldOut = () => {
-    return stocks.every(stock => stock.count <= 0);
-  };
-
-  if (loading) { // 로딩 중일 때 로딩 모달 표시
+  if (loading) {
     return <LoadingModal isOpen={true} />;
   }
 
-  if (error) { // 에러 발생 시 에러 메시지 표시
+  if (error) {
     return (
       <div className={styles.errorWrapper}>
         <div className={styles.errorMessage}>{error}</div>
@@ -239,7 +74,7 @@ const ProductDetail = () => {
           onClick={() => {
             setError(null);
             setLoading(true);
-            fetchProductDetail();
+            fetchProductDetail(productId);
           }}
         >
           재시도
