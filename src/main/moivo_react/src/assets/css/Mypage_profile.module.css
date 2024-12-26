@@ -780,12 +780,12 @@
 
 @media (max-width: 768px) {
   .radioContainer {
-    gap: 5px; 
+    gap: 8px; 
   }
 }
 
 @media (max-width: 700px) {
   .radioContainer {
-    gap: 5px; 
+    gap: 8px; 
   }
 }
