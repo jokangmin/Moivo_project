@@ -782,14 +782,17 @@
   .radioContainer {
     gap: 20px; 
   }
+
+  .radioContainer input[type="radio"] {
+    margin-right: 0px; 
+  }
 }
 
 @media (max-width: 700px) {
   .radioContainer {
-    margin-left: 10px;
     gap: 25px; 
   }
   .radioContainer input[type="radio"] {
-    margin-right: 0.5px; 
+    margin-right: 0px; 
   }
 }
