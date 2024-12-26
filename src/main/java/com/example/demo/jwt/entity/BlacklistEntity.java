@@ -18,5 +18,6 @@ public class BlacklistEntity {
 
     private String token;
     private Date expiryDate;
+    private String reason;
 
 }
