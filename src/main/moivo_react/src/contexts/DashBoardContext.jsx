@@ -1,12 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import styles from "./../assets/css/product_board.module.css";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../utils/axiosConfig';
 
 const DashBoardContext = createContext();
 export const useDashBoard = () => useContext(DashBoardContext);
 
 const DashBoardProvider = ({ children }) => {
-    const [weather, setWeather] = useState({
+      const [weather, setWeather] = useState({
         temp: 0,
         temp_max: 0,
         temp_min: 0,
@@ -15,6 +17,50 @@ const DashBoardProvider = ({ children }) => {
         icon: '',
         loading: true,
       });
+      const navigate = useNavigate();
+      const [productList, setProductList] = useState([]);
+      const [WeatherCategory, setWeatherCategory] = useState(null);
+      const [SortBy, setSortBy] = useState("newest");
+
+      const handleLeftArrowClick = () => {
+        setStartIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : maxIndex));
+      };
+    
+      const handleRightArrowClick = () => {
+          setStartIndex((prevIndex) => (prevIndex < maxIndex ? prevIndex + 1 : 0));
+      };
+
+      useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const WeatherCategoryResponse = await axiosInstance.get(`/api/store`,{
+              params: {
+                sortby: SortBy,
+                categoryid: WeatherCategory
+              }
+            });
+            setProductList(WeatherCategoryResponse.data);
+            
+          } catch (error) {
+            console.error("Error fetching data:", error);
+          }
+        };
+      
+        fetchData();
+      
+      }, [SortBy, WeatherCategory, weather]);
+
+      useEffect(() => {
+        const tempC = Math.round(weather.temp - 273.15);
+      
+        if (tempC < 5) {
+          setWeatherCategory(1);
+        } else if (tempC >= 5 && tempC <= 20) {
+          setWeatherCategory(2);
+        } else if (tempC > 20) {
+          setWeatherCategory(3);
+        }
+      }, [weather]);
     
       // 날씨 정보 초기 로드
       useEffect(() => {
@@ -52,10 +98,13 @@ const DashBoardProvider = ({ children }) => {
       
         if (tempC < 5) {
           tips.push("따뜻한 아우터", "따뜻한 니트", "따뜻한 장갑");
+          console.log("WeatherCategory : " + WeatherCategory);
         } else if (tempC >= 5 && tempC <= 20) {
           tips.push("가벼운 또는 중간 두께의 아우터", "편안한 캐주얼", "따뜻한 양말");
+          console.log("WeatherCategory : " + WeatherCategory);
         } else if (tempC > 20) {
           tips.push("시원한 반팔", "가벼운 셔츠", "가벼운 신발");
+          console.log("WeatherCategory : " + WeatherCategory);
         }
       
         if (["light rain", "moderate rain", "heavy rain", "thunderstorm"].includes(weather.desc)) {
@@ -164,7 +213,10 @@ const DashBoardProvider = ({ children }) => {
                 imgSrc,
                 weatherTips,
                 getWeatherBackground,
-                getWeatherDescription,         
+                getWeatherDescription,  
+                handleLeftArrowClick,
+                handleRightArrowClick,
+                productList,
             }}
         >
             {children}

@@ -1,7 +1,3 @@
-/* product_board.module.css */
-
-@import url("https://cdn.jsdelivr.net/gh/webfontworld/gmarket/GmarketSans.css");
-
 /* =========================================
    1. 기본 레이아웃 & 공통 스타일
 ========================================= */
@@ -10,7 +6,6 @@
   max-width: 100vw;
   margin: 0 auto;
   padding: 20px;
-  font-family: "GmarketSans", sans-serif;
   box-sizing: border-box;
 }
 
@@ -19,13 +14,13 @@
   overflow: hidden;
   background: linear-gradient(to bottom, #ffffff, #f8f9fa);
   min-height: 100vh;
-  font-family: "GmarketSans", sans-serif;
 }
 
-.contentWrapper {
+.contentWrapper1 {
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
+  background-color: #f6f2ee;
 }
 
 .sectionTitle {
@@ -157,11 +152,8 @@
 ========================================= */
 /* 3.1 트렌딩 섹션 */
 .trendingSection {
-  margin: 4rem 0;
+  margin: 6rem 0;
   padding: 2rem;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
 /* 슬라이더 오버레이 텍스트 */
@@ -577,4 +569,130 @@
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7); 
   font-weight: bold;
   z-index: 3;
+}
+
+.contentWrapper {
+  display: flex; /* 가로 배치 */
+  justify-content: space-between; /* 좌우 배치 */
+  align-items: stretch; /* 자식 요소 높이 동일 */
+  width: 98%;
+  margin: 20px auto;
+  gap: 20px; /* 두 박스 간 간격 */
+  box-sizing: border-box;
+}
+
+/* ONLY FOR YOU */
+.onlyForYouBox {
+  position: relative;
+  padding: 20px;
+  border: 1px solid #988C73;
+  background: #F6F2EE;
+  width: 100%; /* 멤버십 박스와 동일한 너비 */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.onlyForYou {
+  font-family: 'Italiana', serif;
+  font-size: 18px;
+  text-align: center;
+  color: #2f2e2c;
+  margin-bottom: 10px;
+}
+
+/* 제품 리스트 사이 간격 줄이기 */
+.productList {
+  display: flex;
+  transition: transform 0.5s ease-in-out; /* 부드러운 전환 효과 추가 */
+  gap: 2px; 
+  overflow: hidden;
+  justify-content: center;
+}
+
+.product {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 150px;
+  flex: 0 0 25%; /* 3개의 항목이 한 줄에 나오도록 설정 */
+}
+.productImage {
+  width: 140px;
+  height: 200px;
+  background: #F6F2EE;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.productImage img{
+  width: 140px;
+  height: 200px;
+  background: #F6F2EE;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.productText {
+  font-family: 'Italiana', serif;
+  font-size: 14px;
+  color: #2f2e2c;
+}
+
+.productText .price {
+  font-family: 'GmarketSans', serif;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* 화살표 버튼 위치 조정 및 반전 스타일 추가 */
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px; /* 기본 이미지 크기 */
+  height: 30px;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  z-index: 10; /* 다른 요소보다 위에 표시되도록 설정 */
+}
+
+
+.arrowLeft {
+  left: 40px; /* 좌측 위치 조정 */
+}
+
+.arrowRight {
+  right: 40PX; /* 우측 위치 조정 */
+}
+
+.arrow img {
+  width: 100%;
+  height: 100;
+  object-fit: cover;
+}
+
+/* 왼쪽 화살표 이미지 뒤집기 */
+.arrowLeft img {
+  transform: scaleX(-1); /* 이미지 좌우 반전 */
+}
+
+/* 하단 바 */
+.bottomBar {
+  width: 70%; /* 원하는 너비로 설정 */
+  height: 0.9px;
+  background-color: #988C73;
+  margin-top: 20px;
+  margin-left: auto; /* 왼쪽 여백 자동 */
+  margin-right: auto; /* 오른쪽 여백 자동 */
+  cursor: pointer; /* 클릭 가능하도록 포인터 추가 */
+  transition: background-color 0.3s ease;
+}
+
+.bottomBar:hover {
+  background-color: #2f2e2c; /* 마우스 오버 시 색상 변경 */
 }

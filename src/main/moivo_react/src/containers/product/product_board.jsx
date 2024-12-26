@@ -14,7 +14,10 @@ const ProductBoard = () => {
     imgSrc,
     weatherTips, 
     getWeatherBackground, 
-    getWeatherDescription
+    getWeatherDescription,
+    handleLeftArrowClick,
+    handleRightArrowClick,
+    productList,
   } = useDashBoard();
 
   return (
@@ -23,7 +26,7 @@ const ProductBoard = () => {
 
       {/* 트렌딩 섹션 */}
       <motion.div 
-        className={styles.contentWrapper}
+        className={styles.contentWrapper1}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
@@ -72,63 +75,38 @@ const ProductBoard = () => {
             </div>
           )}
         </motion.section>
-        {/* 시즌 컬렉션 쇼케이스 */}
-        <motion.section 
-          className={styles.seasonShowcase}
-          {...fadeInUp}
-        >
-          <h2 className={styles.sectionTitle}>Season Collection</h2>
-          <div className={styles.seasonGrid}>
-            {[
-              { 
-                season: 'Spring', 
-                desc: '봄의 새로움을 담은 컬렉션', 
-                image: 'https://images.unsplash.com/photo-1522682078546-47888fe04e81',
-                items: ['플로럴 원피스', '라이트 데님', '트렌치코트'] 
-              },
-              { 
-                season: 'Summer', 
-                desc: '여름의 청량감을 담은 컬렉션', 
-                image: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b',
-                items: ['린넨 셔츠', '와이드 팬츠', '스트로 햇'] 
-              },
-              { 
-                season: 'Fall', 
-                desc: '가을의 따스함을 담은 컬렉션', 
-                image: 'https://images.unsplash.com/photo-1511401139252-f158d3209c17',
-                items: ['니트 카디건', '울 코트', '앵클부츠'] 
-              },
-              { 
-                season: 'Winter', 
-                desc: '겨울의 포근함을 담은 컬렉션', 
-                image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b',
-                items: ['캐시미어 코트', '터틀넥', '울 스카프'] 
-              }
-            ].map((item) => (
-              <motion.div 
-                key={item.season}
-                className={styles.seasonCard}
-                whileHover={{ scale: 1.05 }}
-              >
-                <div className={styles.seasonImage} style={{backgroundImage: `url(${item.image})`}}>
-                  <div className={styles.seasonOverlay}>
-                    <h3>{item.season}</h3>
+        {/* 날씨에 따른 오늘의 옷 추천  */}
+        
+      </motion.div>
+          {/* ONLY FOR YOU */}
+          <div className={styles.onlyForYouBox}>
+            <div className={styles.onlyForYou}>ONLY FOR YOU</div>
+            {/* 좌우 화살표 버튼 */}
+            <button className={`${styles.arrow} ${styles.arrowLeft}`} onClick={handleLeftArrowClick}>
+              <img src="../image/arrow.png" alt="Left Arrow" />
+            </button>
+            <button className={`${styles.arrow} ${styles.arrowRight}`} onClick={handleRightArrowClick}>
+              <img src="../image/arrow.png" alt="Right Arrow" />
+            </button>
+
+            {/* <div className={styles.productList}>
+              {productList.slice(startIndex, startIndex + 3).map((product, index) => (
+                <div key={index} className={styles.product}>
+                  <div className={styles.productImage}>
+                    <img src={product.img} alt={product.name} />
+                  </div>
+                  <div className={styles.productText}>
+                    {product.name} <br />
+                    <span className={styles.price}>{product.price}</span>
                   </div>
                 </div>
-                <div className={styles.seasonContent}>
-                  <h4>{item.desc}</h4>
-                  <ul>
-                    {item.items.map((i, idx) => (
-                      <li key={idx} className={styles.seasonItem}>{i}</li>
-                    ))}
-                  </ul>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.section>
-      </motion.div>
+              ))}
+            </div> */}
 
+            {/* 하단 바 */}
+            <div className={styles.bottomBar}></div>
+            
+          </div>
       <Footer />
     </div>
   );

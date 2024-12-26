@@ -52,14 +52,43 @@ import MypageOrderDetailProvider from './contexts/mypageCon/MypageOrderDetailCon
 import CartProvider from './contexts/cartCon/CartContext';
 
 
+
 const routeConfig = [
   { path: "/", element: <Main_index /> },
   { path: "/user", element: <User_login /> },
   { path: "/user_signup", element: <User_signup /> },
-  { path: "/product-board", element: <ProductBoard /> },
-  { path: "/product-list", element: <ProductList /> },
-  { path: "/product-detail/:productId", element: <ProductDetail /> },
-  { path: "/review/write", element: <ReviewWrite /> },
+  { 
+    path: "/product-board", 
+    element: (
+      <DashBoardProvider>
+        <ProductBoard />
+      </DashBoardProvider>
+    ),
+  },
+  { 
+    path: "/product-list", 
+    element: (
+      <ProListProvider>
+        <ProductList />
+      </ProListProvider>
+    ),
+  },
+  { 
+    path: "/product-detail/:productId", 
+    element: (
+      <ProDetailProvider>
+        <ProductDetail />
+      </ProDetailProvider>
+    ),
+  },
+  { 
+    path: "/review/write", 
+    element: (
+      <ReviewProvider>
+        <ReviewWrite />
+      </ReviewProvider>
+    ),
+  },
   { path: "/upload", element: <Upload /> },
   { path: "/update", element: <Update /> },
   { path: "/mypage", element: (<MypageProvider><MypageMain /></MypageProvider>) },
@@ -78,11 +107,11 @@ const routeConfig = [
   { path: "/payment-fail", element: ( <PaymentProvider> <FailPage /> </PaymentProvider> ),},
   { path : "/admins_dashboard", element: <Dashboard/>},
   { path: "/api/oauth/kakao/callback", element: <KakaoCallback /> },
-  { path : "/admins_qnaboard", element: <Admins_qna/>},
-  { path : "/admins_productadd", element: <Admins_productAdd/>},
-  { path : "/admins_productupdate/:productId", element: <Admins_productUpdate/>},
-  { path : "/admin/admin_productTrash", element: <ProductTrash/>},
-  { path : "/admin/admin_productList", element: <Admins_ProductList/>},
+  { path: "/admins_qnaboard", element: <Admins_qna /> },
+  { path: "/admins_productadd", element: <Admins_productAdd /> },
+  { path: "/admins_productupdate/:productId", element: <Admins_productUpdate /> },
+  { path: "/admin/admin_productTrash", element: <ProductTrash /> },
+  { path: "/admin/admin_productList", element: <Admins_ProductList /> },
   { path: "/oauth2/callback/kakao", element: <KakaoCallback /> },
   { path: "/admins_FAQ", element: <Admins_FAQ /> },
 
