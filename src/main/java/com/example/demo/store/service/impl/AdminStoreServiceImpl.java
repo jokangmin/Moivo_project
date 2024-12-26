@@ -24,6 +24,7 @@ import com.amazonaws.services.kms.model.NotFoundException;
 import com.example.demo.ncp.dto.NCPObjectStorageDTO;
 import com.example.demo.ncp.service.NCPObjectStorageService;
 import com.example.demo.store.dto.AdminProductDTO;
+import com.example.demo.store.dto.ProductCategoryDTO;
 import com.example.demo.store.dto.ProductDTO;
 import com.example.demo.store.dto.ProductStockDTO;
 import com.example.demo.store.entity.ProductCategoryEntity;
@@ -266,7 +267,7 @@ public class AdminStoreServiceImpl implements AdminStoreService {
         productRepository.save(productEntity);
     }
 
-    // 관리자 상품목록 가져오기, 카테고리 or 키워드별 검색 후 페이징처리 - 12/16 17:31 tang
+    // 관리자 상품목록 가져오기 & 페이징처리 - 12/16 17:31 tang
     // 24.12.18 - 반환 데이터 수정 - uj
     @Override
     public Map<String, Object> getAllProductList(Map<String, Object> dataMap) {
@@ -334,7 +335,6 @@ public class AdminStoreServiceImpl implements AdminStoreService {
 
         // 상품 관련 정보 담기
         products.put("productList", productList);
-        // products.put("category", productService.getCategory());
 
         return products;
     }
@@ -398,5 +398,33 @@ public class AdminStoreServiceImpl implements AdminStoreService {
         }
 
         return false; // 복구 실패
+    }
+
+    // 24.12.23 - uj
+    // 상위 & 하위 카테고리리
+    @Override
+    public Map<String, List<ProductCategoryDTO>> getAllCategory() {
+        Map<String, List<ProductCategoryDTO>> map = new HashMap<>();
+        
+        // 상위 카테고리
+        List<ProductCategoryEntity> parentList = categoryRepository.findByParentId(null);
+        List<ProductCategoryDTO> parentDTOList = new ArrayList<>();
+        for(ProductCategoryEntity entity : parentList) {
+            parentDTOList.add(ProductCategoryDTO.getCategoryDTO(entity));
+        }
+        map.put("category", parentDTOList); // 상위 카테고리
+        
+        // 하위 카테고리
+        for (ProductCategoryEntity parent : parentList) {
+            List<ProductCategoryEntity> childList = categoryRepository.findByParentId(parent.getId());
+            List<ProductCategoryDTO> childDTOList = new ArrayList<>();
+            for(ProductCategoryEntity child : childList) {
+                childDTOList.add(ProductCategoryDTO.getCategoryDTO(child));
+            }
+            
+            map.put(parent.getId().toString(), childDTOList); 
+        }
+        
+        return map;
     }
 }
