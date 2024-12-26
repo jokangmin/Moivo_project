@@ -22,21 +22,18 @@ public class CouponServiceImpl implements CouponService {
         private UserCouponRepository userCouponRepository;
 
         @Override
-        public List<CouponDTO> getUserCoupons(int id) {
-                List<UserCouponEntity> userCoupons = userCouponRepository.findByUserEntity_Id(id);
-                return userCoupons.stream()
-                                .map(userCoupon -> {
-                                        CouponEntity coupon = userCoupon.getCouponEntity(); // 쿠폰 정보만 가져오기
-                                        return new CouponDTO(
-                                                        coupon.getId(),
-                                                        coupon.getName(),
-                                                        coupon.getGrade(),
-                                                        coupon.getDiscountType(),
-                                                        coupon.getDiscountValue(),
-                                                        coupon.getMinOrderPrice(),
-                                                        coupon.getActive());
-                                })
-                                .collect(Collectors.toList());
+        public CouponDTO getUserCoupons(int id) {
+                UserCouponEntity userCoupon = userCouponRepository.findByUserEntity_Id(id);
+
+                CouponEntity coupon = userCoupon.getCouponEntity(); // 쿠폰 정보만 가져오기
+                return new CouponDTO(
+                                coupon.getId(),
+                                coupon.getName(),
+                                coupon.getGrade(),
+                                coupon.getDiscountType(),
+                                coupon.getDiscountValue(),
+                                coupon.getMinOrderPrice(),
+                                coupon.getActive());
         }
 
 }
