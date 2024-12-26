@@ -9,6 +9,11 @@ export const useDashBoard = () => useContext(DashBoardContext);
 
 const DashBoardProvider = ({ children }) => {
       const [startIndex, setStartIndex] = useState(0);
+      const [maxIndex, setMaxIndex] = useState(0);
+      const [startIndex_2, setStartIndex_2] = useState(0);
+      const [maxIndex_2, setMaxIndex_2] = useState(0);
+      const [startIndex_3, setStartIndex_3] = useState(0);
+      const [maxIndex_3, setMaxIndex_3] = useState(0);
       const [weather, setWeather] = useState({
         temp: 0,
         temp_max: 0,
@@ -19,45 +24,28 @@ const DashBoardProvider = ({ children }) => {
         loading: true,
       });
       const navigate = useNavigate();
-      const [productList, setProductList] = useState([
-        { name: "Warm Jacket", img: 'https://images.unsplash.com/photo-1648787984772-458ce678bdf3?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', price: 80000 },
-        { name: "Raincoat", img: 'https://images.unsplash.com/photo-1648787984772-458ce678bdf3?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', price: 45000 },
-        { name: "Light Shirt", img: 'https://images.unsplash.com/photo-1648787984772-458ce678bdf3?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', price: 25000 },
-        { name: "Sneakers", img: 'https://images.unsplash.com/photo-1648787984772-458ce678bdf3?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', price: 60000 },
-        { name: "Wool Hat", img: 'https://images.unsplash.com/photo-1648787984772-458ce678bdf3?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', price: 20000 },
-        { name: "Denim Jeans", img: 'https://images.unsplash.com/photo-1648787984772-458ce678bdf3?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', price: 55000 },
-      ]);
-      const maxIndex = productList.length - 3;
+      const [productList, setProductList] = useState([]);
       const [WeatherCategory, setWeatherCategory] = useState(null);
-      const [SortBy, setSortBy] = useState("newest");
 
-      const handleLeftArrowClick = () => {
-        setStartIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : maxIndex));
-      };
-    
-      const handleRightArrowClick = () => {
-          setStartIndex((prevIndex) => (prevIndex < maxIndex ? prevIndex + 1 : 0));
-      };
 
-      // useEffect(() => {
-      //   const fetchData = async () => {
-      //     try {
-      //       const WeatherCategoryResponse = await axiosInstance.get(`/api/store`,{
-      //         params: {
-      //           sortby: SortBy,
-      //           categoryid: WeatherCategory
-      //         }
-      //       });
-      //       setProductList(WeatherCategoryResponse.data);
+      useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const WeatherCategoryResponse = await axiosInstance.get(`/api/store/weather`,{
+              params: {
+                sortby: WeatherCategory
+              }
+            });
+            setProductList(WeatherCategoryResponse.data);
             
-      //     } catch (error) {
-      //       console.error("Error fetching data:", error);
-      //     }
-      //   };
+          } catch (error) {
+            console.error("Error fetching data:", error);
+          }
+        };
       
-      //   fetchData();
+        fetchData();
       
-      // }, [SortBy, WeatherCategory, weather]);
+      }, [WeatherCategory, weather]);
 
       useEffect(() => {
         const tempC = Math.round(weather.temp - 273.15);
@@ -214,6 +202,33 @@ const DashBoardProvider = ({ children }) => {
       };
 
 
+      const handleLeftArrowClick = () => {
+        setStartIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : maxIndex));
+      };
+    
+      const handleRightArrowClick = () => {
+        setStartIndex((prevIndex) => (prevIndex < maxIndex ? prevIndex + 1 : 0));
+        console.log("maxIndex : " + maxIndex);
+      };
+
+      const handleLeftArrowClick_2 = () => {
+        setStartIndex_2((prevIndex_2) => (prevIndex_2 > 0 ? prevIndex_2 - 1 : maxIndex_2));
+      };
+    
+      const handleRightArrowClick_2 = () => {
+        setStartIndex_2((prevIndex_2) => (prevIndex_2 < maxIndex_2 ? prevIndex_2 + 1 : 0));
+        console.log("maxIndex2 : " + maxIndex_2);
+      };
+
+      const handleLeftArrowClick_3 = () => {
+        setStartIndex_3((prevIndex_3) => (prevIndex_3 > 0 ? prevIndex_3 - 1 : maxIndex_3));
+      };
+    
+      const handleRightArrowClick_3 = () => {
+        setStartIndex_3((prevIndex_3) => (prevIndex_3 < maxIndex_3 ? prevIndex_3 + 1 : 0));
+        console.log("maxIndex3 : " + maxIndex_3);
+      };
+
     return (
         <DashBoardContext.Provider
             value={{
@@ -225,8 +240,20 @@ const DashBoardProvider = ({ children }) => {
                 getWeatherDescription,  
                 handleLeftArrowClick,
                 handleRightArrowClick,
+                handleLeftArrowClick_2,
+                handleRightArrowClick_2,
+                handleLeftArrowClick_3,
+                handleRightArrowClick_3,
                 productList,
                 startIndex,
+                setMaxIndex,
+                startIndex_2,
+                setMaxIndex_2,
+                startIndex_3,
+                setMaxIndex_3,
+                maxIndex,
+                maxIndex_2,
+                maxIndex_3,
             }}
         >
             {children}

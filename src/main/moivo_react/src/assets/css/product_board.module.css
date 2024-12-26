@@ -582,7 +582,7 @@
 }
 
 /* today_style */
-.today_styleBox {
+.today_styleBox, .today_styleBox2, .today_styleBox3 {
   position: relative;
   padding: 20px;
   border: 1px solid #988C73;
@@ -594,13 +594,13 @@
   flex-grow: 1;
 }
 
-.today_style {
+.today_style, .today_style2, .today_style3 {
   font-family: 'Segoe UI', serif;
   font-size: 30px;
   text-align: center;
   color: #2f2e2c;
   margin-bottom: 30px;
-  margin-top: 10px;
+  margin-top: 40px;
 }
 
 /* 제품 리스트 사이 간격 줄이기 */
@@ -618,7 +618,7 @@
   align-items: center;
   text-align: center;
   width: 150px;
-  flex: 0 0 25%; /* 3개의 항목이 한 줄에 나오도록 설정 */
+  flex: 0 0 18%; /* 3개의 항목이 한 줄에 나오도록 설정 */
 }
 .productImage {
   width: 300px;
@@ -640,6 +640,10 @@
   font-family: 'Segoe UI', serif;
   font-size: 20px;
   color: #2f2e2c;
+  white-space: nowrap;
+  overflow: hidden;  
+  text-overflow: ellipsis; 
+  width: 260px;
 }
 
 .productText .price {
@@ -649,11 +653,11 @@
 }
 
 /* 화살표 버튼 위치 조정 및 반전 스타일 추가 */
-.arrow {
+.arrow, .arrow2, .arrow3 {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 30px; /* 기본 이미지 크기 */
+  width: 80px; /* 기본 이미지 크기 */
   height: 30px;
   cursor: pointer;
   background-color: transparent;
@@ -663,27 +667,27 @@
 }
 
 
-.arrowLeft {
+.arrowLeft, .arrowLeft2, .arrowLeft3{
   left: 40px; /* 좌측 위치 조정 */
 }
 
-.arrowRight {
+.arrowRight, .arrowRight2 , .arrowRight3{
   right: 40PX; /* 우측 위치 조정 */
 }
 
-.arrow img {
+.arrow img, .arrow2 img , .arrow3 img{
   width: 100%;
   height: 100;
   object-fit: cover;
 }
 
 /* 왼쪽 화살표 이미지 뒤집기 */
-.arrowLeft img {
+.arrowLeft img, .arrowLeft2 img , .arrowLeft3 img {
   transform: scaleX(-1); /* 이미지 좌우 반전 */
 }
 
 /* 하단 바 */
-.bottomBar {
+.bottomBar, .bottomBar2 , .bottomBar3 {
   width: 70%; /* 원하는 너비로 설정 */
   height: 0.9px;
   background-color: #988C73;
@@ -732,21 +736,40 @@
   }
 
   .today_style{
-    font-size: 23px;
+    font-size: 25px;
     margin-bottom: 40px;
   }
 
-  .arrow {
-    width: 25px; 
+  .arrow, .arrow2, .arrow3 {
+    width: 70px; 
     height: 25px;
   }
 
-  .arrowLeft {
-      left: 40px;
+  .arrow img, .arrow2 img , .arrow3 img{
+    width: 100%;
+    height: 100;
+    object-fit: cover;
   }
 
-  .arrowRight {
-      right: 40px;
+  .arrowLeft, .arrowLeft2, .arrowLeft3 {
+    left: -25px;
+  }
+
+  .arrowRight, .arrowRight2, .arrowRight3 {
+    right: -25px;
+  }
+
+  .productImage{
+    width: 116px;
+    height: auto;
+  }
+
+  .productText{
+    font-size: 18px;
+    white-space: nowrap;
+    overflow: hidden;  
+    text-overflow: ellipsis; 
+    width: 110px;
   }
 
 }

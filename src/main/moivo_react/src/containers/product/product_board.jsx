@@ -9,17 +9,53 @@ import { useDashBoard } from '../../contexts/DashBoardContext';
 
 const ProductBoard = () => {
   const {
-    weather, 
-    fadeInUp, 
+    weather,
+    fadeInUp,
     imgSrc,
-    weatherTips, 
-    getWeatherBackground, 
-    getWeatherDescription,
+    weatherTips,
+    getWeatherBackground,
+    getWeatherDescription,  
     handleLeftArrowClick,
     handleRightArrowClick,
+    handleLeftArrowClick_2,
+    handleRightArrowClick_2,
+    handleLeftArrowClick_3,
+    handleRightArrowClick_3,
     productList,
     startIndex,
+    setMaxIndex,
+    startIndex_2,
+    setMaxIndex_2,
+    startIndex_3,
+    setMaxIndex_3,
+    maxIndex,
+    maxIndex_2,
+    maxIndex_3,
   } = useDashBoard();
+
+  const productListArray = Object.values(productList);
+  console.log(productListArray);
+
+  useEffect(() => {
+    if (productListArray[0]) {
+      setMaxIndex(productListArray[0].length - 3);
+      console.log("maxIndex : " + maxIndex);
+    }
+  }, [productListArray, setMaxIndex]);
+
+  useEffect(() => {
+    if (productListArray[2]) {
+      setMaxIndex_2(productListArray[2].length - 3);
+      console.log("maxIndex2 : " + maxIndex_2);
+    }
+  }, [productListArray, setMaxIndex_2]);
+
+  useEffect(() => {
+    if (productListArray[1]) {
+      setMaxIndex_3(productListArray[1].length - 3);
+      console.log("maxIndex3 : " + maxIndex_3);
+    }
+  }, [productListArray, setMaxIndex_3]);
 
   return (
     <div className={styles.productBoardContainer}>
@@ -79,9 +115,9 @@ const ProductBoard = () => {
         {/* 날씨에 따른 오늘의 옷 추천  */}
         
       </motion.div>
-          {/* ONLY FOR YOU */}
+          {/* Today Style */}
           <div className={styles.today_styleBox}>
-            <div className={styles.today_style}>Today Style</div>
+            <div className={styles.today_style}>Today Weather - Top</div>
             {/* 좌우 화살표 버튼 */}
             <button className={`${styles.arrow} ${styles.arrowLeft}`} onClick={handleLeftArrowClick}>
               <img src="../image/arrow.png" alt="Left Arrow" />
@@ -91,14 +127,14 @@ const ProductBoard = () => {
             </button>
 
             <div className={styles.productList}>
-              {productList.slice(startIndex, startIndex + 3).map((product, index) => (
+              {productListArray[0]?.slice(startIndex, startIndex + 3).map((product, index) => (
                 <div key={index} className={styles.product}>
                   <div className={styles.productImage}>
                     <img src={product.img} alt={product.name} />
                   </div>
                   <div className={styles.productText}>
                     {product.name} <br />
-                    <span className={styles.price}>{product.price} 원</span>
+                    <span className={styles.price}>{product.price?.toLocaleString()} 원</span>
                   </div>
                 </div>
               ))}
@@ -106,6 +142,58 @@ const ProductBoard = () => {
 
             {/* 하단 바 */}
             <div className={styles.bottomBar}></div>
+          </div>
+
+          <div className={styles.today_styleBox2}>
+            <div className={styles.today_style2}>Today Weather - Outer</div>
+            <button className={`${styles.arrow2} ${styles.arrowLeft2}`} onClick={handleLeftArrowClick_2}>
+              <img src="../image/arrow.png" alt="Left Arrow2" />
+            </button>
+            <button className={`${styles.arrow2} ${styles.arrowRight2}`} onClick={handleRightArrowClick_2}>
+              <img src="../image/arrow.png" alt="Right Arrow2" />
+            </button>
+
+            <div className={styles.productList}>
+              {productListArray[2]?.slice(startIndex_2, startIndex_2 + 3).map((product, index) => (
+                <div key={index} className={styles.product}>
+                  <div className={styles.productImage}>
+                    <img src={product.img} alt={product.name} />
+                  </div>
+                  <div className={styles.productText}>
+                    {product.name} <br />
+                    <span className={styles.price}>{product.price?.toLocaleString()} 원</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className={styles.bottomBar2}></div>
+          </div>
+            
+          <div className={styles.today_styleBox3}>
+            <div className={styles.today_style3}>Today Weather - Bottom</div>
+            <button className={`${styles.arrow3} ${styles.arrowLeft3}`} onClick={handleLeftArrowClick_3}>
+              <img src="../image/arrow.png" alt="Left Arrow3" />
+            </button>
+            <button className={`${styles.arrow3} ${styles.arrowRight3}`} onClick={handleRightArrowClick_3}>
+              <img src="../image/arrow.png" alt="Right Arrow3" />
+            </button>
+
+            <div className={styles.productList}>
+              {productListArray[1]?.slice(startIndex_3, startIndex_3 + 3).map((product, index) => (
+                <div key={index} className={styles.product}>
+                  <div className={styles.productImage}>
+                    <img src={product.img} alt={product.name} />
+                  </div>
+                  <div className={styles.productText}>
+                    {product.name} <br />
+                    <span className={styles.price}>{product.price?.toLocaleString()} 원</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className={styles.bottomBar3}></div>
             
           </div>
       <Footer />
