@@ -302,7 +302,7 @@
   }
   
   .radioContainer input[type="radio"] {
-    margin-right: 5px; /* 라디오 버튼과 텍스트 간 간격 */
+    margin-right: 2px; /* 라디오 버튼과 텍스트 간 간격 */
   }
   
   .exception {
@@ -780,12 +780,16 @@
 
 @media (max-width: 768px) {
   .radioContainer {
-    gap: 15px; 
+    gap: 20px; 
   }
 }
 
 @media (max-width: 700px) {
   .radioContainer {
-    gap: 13px; 
+    margin-left: 10px;
+    gap: 25px; 
+  }
+  .radioContainer input[type="radio"] {
+    margin-right: 0.5px; 
   }
 }
