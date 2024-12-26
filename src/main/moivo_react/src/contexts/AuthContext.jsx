@@ -70,16 +70,15 @@ export const AuthProvider = ({ children }) => {
             
             // 토큰이 있는 경우에만 로그아웃 요청
             if (accessToken) {
-                await axiosInstance.post(`/api/user/logout`, 
-                    { refreshToken },
-                    {
-                        withCredentials: true,
-                        headers: {
-                            'Authorization': `Bearer ${accessToken}`
-                        }
+                await axiosInstance.post(`/api/user/logout`, null, {
+                    withCredentials: true,
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
                     }
-                );
+                });
             }
+
+            // 로컬 스토리지 및 상태 초기화
             removeTokens();
             setIsAuthenticated(false);
             setIsAdmin(false); // 2024-12-11 로그아웃 시 isAdmin 상태 초기화 장훈
@@ -87,16 +86,11 @@ export const AuthProvider = ({ children }) => {
             // 사용자 정보 제거
             localStorage.removeItem('userId');
             localStorage.removeItem('id');
-
-            // 로컬 스토리지 토큰 제거
-            localStorage.removeItem('accessToken');
-            setIsAuthenticated(false);
             navigate('/');
         } catch (error) {
             console.error('로그아웃 요청 실패:', error);
-
             // 에러가 발생하더라도 로컬의 토큰은 제거
-            localStorage.removeItem("accessToken");
+            removeTokens();
             setIsAuthenticated(false);
             setIsAdmin(false); // 2024-12-11 로그아웃 시 isAdmin 상태 초기화 장훈
             navigate('/');

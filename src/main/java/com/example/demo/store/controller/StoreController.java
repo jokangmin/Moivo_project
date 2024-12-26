@@ -1,6 +1,7 @@
 package com.example.demo.store.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.store.dto.ProductDTO;
 import com.example.demo.store.dto.ReviewDTO;
 import com.example.demo.store.service.ProductService;
 import com.example.demo.store.service.ReviewService;
@@ -34,7 +36,7 @@ public class StoreController {
     // 상품 리스트, 카테고리별 검색 or 키워드별 검색 후 페이징처리-11/25-tang
     @GetMapping("")
     public ResponseEntity<?> getProductAll(
-            @PageableDefault(page = 0, size = 15, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            @PageableDefault(page = 0, size = 16, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(name = "block", required = false, defaultValue = "3") int block,
             @RequestParam(name = "sortby", required = false, defaultValue = "newest") String sortby,
             @RequestParam(name = "categoryid", required = false, defaultValue = "0") int categoryid,
@@ -49,16 +51,17 @@ public class StoreController {
 
         Map<String, Object> map = productService.getProductList(dataMap);
 
-        //400 Bad Request: 잘못된 요청
+        // 400 Bad Request: 잘못된 요청
         if (categoryid < 0 || sortby.isEmpty()) {
             return ResponseEntity.status(HttpStatus.SC_BAD_REQUEST).body("400 Bad Request");
         }
 
-        //401 Unauthorized: 인증되지 않은 사용자
-        //추후 토큰 사용시 사용예정
-//        if (token == null || !isValidToken(token)) {
-//            return ResponseEntity.status(HttpStatus.SC_UNAUTHORIZED).body("401 Unauthorized");
-//        }
+        // 401 Unauthorized: 인증되지 않은 사용자
+        // 추후 토큰 사용시 사용예정
+        // if (token == null || !isValidToken(token)) {
+        // return ResponseEntity.status(HttpStatus.SC_UNAUTHORIZED).body("401
+        // Unauthorized");
+        // }
 
         // 값 존재 X
         if (map == null)
@@ -93,6 +96,22 @@ public class StoreController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).body(null);
         }
+    }
+
+    // 24.12.26 - uj
+    // 날씨에 따른 옷 추천
+    @GetMapping("/weather")
+    public ResponseEntity<?> getWeatherMatchProduct(
+            @RequestParam(name = "sortby", required = false, defaultValue = "1") int sortby) {
+
+        try {
+            Map<String, List<ProductDTO>> map = productService.getWeatherMatchProduct(sortby);
+            return ResponseEntity.ok(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.SC_NOT_FOUND).body(null);
+        }
+
     }
 
 }
