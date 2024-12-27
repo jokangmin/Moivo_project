@@ -1,12 +1,13 @@
-spring: # test
+spring:
   security:
     oauth2:
       client:
         registration:
           kakao:
-            client-id: test
-            client-secret: test
-            redirect-uri: test
+            client-id: 171f1e13421b3a8fd7cf7a1be6061a69
+            client-secret: rjAeew9NrYPFpffzWaZcaDCPqFKkMg03
+            redirect-uri: http://localhost:5173/oauth2/callback/kakao
+            # redirect-uri: http://101.79.9.149/oauth2/callback/kakao
             authorization-grant-type: authorization_code
             client-authentication-method: POST
             scope:
@@ -18,9 +19,9 @@ spring: # test
 
         provider:
           kakao:
-            authorization-uri: test
-            token-uri: test
-            user-info-uri: test
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
   # Redis 설정
@@ -61,8 +62,8 @@ spring: # test
   mail:
     host: smtp.gmail.com # 12/11 16:57 조강민
     port: 587
-    username: test
-    password: test
+    username: jomin5151
+    password: hyqawdnslaekqoux
     properties:
       mail:
         smtp:
@@ -75,14 +76,14 @@ spring: # test
 
 ncp:
   storage:
-    access-key: test
-    secret-key: test
+    access-key: 6A890BBDD2150DF9BDC5
+    secret-key: E59E91B8E8475F97570C5CC1B44F87162DCDBF24
     region: kr-standard
-    endpoint: test
+    endpoint: http://kr.object.ncloudstorage.com
 
 
 jwt:
-  secret: 1234567890abcdef1234567890abcdef
+  secret: "|+<T%0h;[G97|I$5Lr?h]}`8rUX.7;0gw@bF<R/|\"-U0n:_6j={'.T'GHs~<AxU9"
   access-token-validity: 3600000  # 1시간
   refresh-token-validity: 604800000  # 7일
 

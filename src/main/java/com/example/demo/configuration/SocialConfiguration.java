@@ -32,7 +32,7 @@ public class SocialConfiguration {
     @PostConstruct
     public void init() {
         // kakaoRedirectUri?client_id=${KAKAO_CLIENT_ID}&redirect_uri=${KAKAO_REDIRECT_URI}&response_type=code
-        this.kakaoRedirectUri = kakaoRedirectUri + "?client_id=" + this.kakaoClientId + "&redirect_uri=" + this.kakaoRedirectUri + "&response_type=code";
+        this.kakaoAuthorizationUri = kakaoAuthorizationUri + "?client_id=" + this.kakaoClientId + "&redirect_uri=" + this.kakaoRedirectUri + "&response_type=code";
     }
 
 }
