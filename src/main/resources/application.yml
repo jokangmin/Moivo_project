@@ -83,12 +83,6 @@ spring:
           max-wait: -1
 
   datasource:
-    # Oracle 설정
-    # url: jdbc:oracle:thin:@localhost:1521:XE
-    # username: c##java
-    # password: 1234
-    # driver-class-name: oracle.jdbc.driver.OracleDriver
-
     # MySQL 설정
     #  url: jdbc:mysql://localhost:3306/moivotest?useSSL=false&serverTimezone=Asia/Seoul
     #  username: root
