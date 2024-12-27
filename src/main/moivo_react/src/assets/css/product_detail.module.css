@@ -6,7 +6,7 @@
   --secondary-color: #f5f5f5;
   --accent-color: #ff4d4d;
   --text-primary: #333;
-  --text-secondary: #666;
+  --text-secondary: #333333;
   --spacing-unit: 1rem;
 }
 
@@ -560,8 +560,70 @@
 }
 
 .detailContent {
-  line-height: 1.6;
-  margin-bottom: 2rem;
+  margin: 2rem auto;
+  padding: 2.5rem;
+  background: #fff;
+  border-radius: 20px;
+  position: relative;
+}
+
+.detailContent p {
+  font-size: 1.15rem;
+  color: #4a4a4a;
+  line-height: 1.8;
+  letter-spacing: -0.3px;
+  word-break: keep-all;
+  white-space: pre-wrap;
+  padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+/* 단락 구분을 위한 스타일 */
+.detailContent p + p {
+  margin-top: 1.5rem;
+}
+
+/* 중요 정보 강조 */
+.detailContent p strong {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+  .detailContent {
+    padding: 1.5rem;
+    margin: 1rem auto;
+  }
+
+  .detailContent p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    padding: 0.3rem 0.5rem;
+  }
+}
+
+.detailContent::before {
+  content: '"';
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  font-size: 4rem;
+  color: #70c1b3;
+  opacity: 0.2;
+  font-family: Georgia, serif;
+}
+
+.detailContent::after {
+  content: '"';
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+  font-size: 4rem;
+  color: #70c1b3;
+  opacity: 0.2;
+  font-family: Georgia, serif;
 }
 
 .detailImages {
@@ -573,7 +635,7 @@
 
 .detailImage {
   width: 100%;
-  max-width: 600px;
+  max-width: 800px;
   height: auto;
   border-radius: 15px;
   margin: 1rem 0;
@@ -870,6 +932,25 @@
 
   .detailImage {
     max-width: 100%;
+  }
+
+  .detailContent {
+    padding: 2rem;
+    margin: 2rem auto;
+  }
+
+  .detailContent p {
+    font-size: 1.2rem;
+    padding: 1.5rem;
+  }
+
+  .detailContent::before,
+  .detailContent::after {
+    font-size: 3rem;
+  }
+
+  .detailContent p::first-letter {
+    font-size: 1.8rem;
   }
 }
 
