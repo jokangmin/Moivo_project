@@ -31,8 +31,12 @@ const useUserLogin = () => {
         try {
             const success = await login(formData.userId, formData.pwd);
             if (success) {
-                await fetchUserData();
-                navigate('/');
+                // 2024/12/27 로그인 성공 후, isAdmin 상태를 확인하여 어드민 대시보드로 리디렉션 추가 장훈
+                if (localStorage.getItem('isAdmin') === 'true') {
+                    navigate('/admins_dashboard'); // 어드민 대시보드 페이지로 이동
+                } else {
+                    navigate('/'); // 일반 사용자 대시보드로 이동
+                }
             }
         } catch (error) {
             setError(error.response?.data?.error || "로그인이 불가능합니다.<br/> 아이디 또는 비밀번호를 확인해주세요.");
