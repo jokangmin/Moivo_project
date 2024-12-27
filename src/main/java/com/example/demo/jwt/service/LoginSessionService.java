@@ -1,5 +1,6 @@
 package com.example.demo.jwt.service;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ public class LoginSessionService {
     private final BlacklistService blacklistService;
     private final JwtUtil jwtUtil;
     
-    public LoginSessionService(RedisTemplate<String, String> redisTemplate, BlacklistService blacklistService, JwtUtil jwtUtil) {
+    public LoginSessionService(@Qualifier("redisTemplate") RedisTemplate<String, String> redisTemplate, BlacklistService blacklistService, JwtUtil jwtUtil) {
         this.redisTemplate = redisTemplate;
         this.blacklistService = blacklistService;
         this.jwtUtil = jwtUtil;
