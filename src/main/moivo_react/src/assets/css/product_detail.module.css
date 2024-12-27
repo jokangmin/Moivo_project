@@ -39,19 +39,16 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  width: 100%;
 }
 
 .mainImageContainer {
+  position: relative;
   width: 100%;
-  height: 700px;
+  padding-bottom: 100%; /* 1:1 비율 유지 */
   overflow: hidden;
   border-radius: 15px;
   background-color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
 }
 
 .mainImageContainer::after {
@@ -73,10 +70,12 @@
 }
 
 .mainImage {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: auto;
-  object-fit: contain;
-  cursor: pointer;
+  height: 100%;
+  object-fit: contain; /* 이미지 비율 유지 */
   transition: transform 0.3s ease;
 }
 
@@ -185,7 +184,7 @@
 .productName::after {
   content: '';
   position: absolute;
-  bottom: -5px;
+  bottom: -6px;
   left: 0;
   width: 100%;
   height: 2px;
@@ -678,7 +677,7 @@
   font-weight: 600;
 }
 
-/* 모바일 대응 */
+/* 모바�� 대응 */
 @media (max-width: 768px) {
   .detailContent {
     padding: 1.5rem;
@@ -925,7 +924,7 @@
   }
 
   .mainImageContainer {
-    height: 500px;
+    padding-bottom: 90%; /* 약간 줄임 */
   }
 }
 
@@ -943,7 +942,7 @@
   }
 
   .mainImageContainer {
-    height: 450px;
+    padding-bottom: 80%; /* 더 줄임 */
   }
 
   .infoSection {
@@ -963,7 +962,7 @@
   }
 
   .mainImageContainer {
-    height: 400px;
+    padding-bottom: 70%;
   }
 
   .productName {
@@ -993,7 +992,7 @@
   }
 
   .mainImageContainer {
-    height: 350px;
+    padding-bottom: 100%; /* 모바일에서는 정사각형 */
   }
 
   .thumbnailContainer {
@@ -1080,7 +1079,7 @@
   }
 
   .mainImageContainer {
-    height: 300px;
+    padding-bottom: 100%;
   }
 
   .thumbnailContainer {
@@ -1177,7 +1176,7 @@
   }
 
   .mainImageContainer {
-    height: 350px;
+    padding-bottom: 70%;
   }
 }
 
@@ -1187,39 +1186,6 @@
   }
 
   .mainImageContainer {
-    height: 300px;
+    padding-bottom: 60%;
   }
-}
-
-/* 새로운 배지 스타일 */
-.productBadge {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  background: linear-gradient(45deg, #ff6b6b, #ff8787);
-  color: white;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.2);
-  animation: badgePulse 2s infinite;
-}
-
-@keyframes badgePulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-
-/* 스크롤 프로그레스 바 */
-.scrollProgress {
-  position: fixed;
-  top: 80px;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(to right, #70c1b3, #ff8787);
-  transform-origin: 0%;
-  z-index: 999;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
