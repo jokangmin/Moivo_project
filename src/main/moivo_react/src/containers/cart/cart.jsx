@@ -14,6 +14,8 @@ const Cart = () => {
     handleNavigateToPayment,
     setSelectedItems,
     setCartItems,
+    selectAllChecked,
+    handleSelectAll,
   } = useCartContext();
 
   return (
@@ -23,6 +25,16 @@ const Cart = () => {
         <div className={styles.title}>CART</div>
         {cartItems.length > 0 ? (
           <div className={styles.cartContainer}>
+            {/* 전체 선택 버튼 */}
+            <div className={styles.selectAllSection}>
+              <input
+                type="checkbox"
+                id="select-all"
+                checked={selectAllChecked}
+                onChange={handleSelectAll}
+              />
+              <label htmlFor="select-all">전체 선택</label>
+            </div>
             {cartItems.map((item) => (
               <div key={item.usercartId} className={styles.cartItem}>
                 {/* 품절 상품 체크 불가 */}
