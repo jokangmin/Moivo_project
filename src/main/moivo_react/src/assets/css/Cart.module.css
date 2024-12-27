@@ -199,14 +199,70 @@
   background: #2f2e2c;
 }
 
+.selectAllSection {
+  display: flex;
+  align-items: center;
+  padding: 15px 0;
+  margin-bottom: 10px;
+  width: 69%; /* 장바구니 아이템과 동일한 너비 */
+  margin: 0 auto; /* 가운데 정렬 */
+  border-radius: 8px; /* 둥근 테두리 */
+}
+
+.selectAllSection input[type="checkbox"] {
+  display: none; /* 기본 체크박스 숨김 */
+}
+
+.selectAllSection input[type="checkbox"] + label {
+  font-family: "GmarketSans", sans-serif;
+  display: inline-flex;
+  position: relative; 
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  color: #2f2e2c;
+  cursor: pointer;
+}
+
+.selectAllSection input[type="checkbox"] + label::before {
+  content: "";
+  display: inline-block;
+  width: 22px;
+  height: 24px;
+  border: 2px solid #988c73;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.selectAllSection input[type="checkbox"]:checked + label::before {
+  background-color: #988c73;
+  border-color: #988c73;
+}
+
+.selectAllSection input[type="checkbox"]:checked + label::after {
+  content: "";
+  position: absolute; 
+  top: 5px; 
+  left: 8px; 
+  width: 6px; 
+  height: 10px; 
+  border: solid white; 
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg); 
+}
+
+.selectAllSection input[type="checkbox"] + label:hover::before {
+  border-color: #2f2e2c; 
+}
+
   /* 빈 장바구니 */
   .emptyCart {
     text-align: center;
     font-family: "Italiana", serif;
-    font-size: 20px;
+    font-size: 20px; 
     color: #988c73;
   }
-  
+
   .cartItem input[type="checkbox"] {
     display: none;
   }
@@ -304,4 +360,20 @@
     padding: 105px 0;
   }
 
+}
+
+@media screen and (max-width: 576px) {
+  .selectAllSection {
+    width: 100%;
+    padding: 10px 0;
+  }
+
+  .selectAllSection input[type="checkbox"] + label {
+    font-size: 16px;
+  }
+
+  .selectAllSection input[type="checkbox"] + label::before {
+    width: 18px;
+    height: 20px;
+  }
 }

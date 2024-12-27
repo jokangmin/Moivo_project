@@ -41,6 +41,7 @@ const MypageOrderDetailProvider = ({ children }) => {
             try {
                 const orderInfoResponse = await axiosInstance.get(`/api/user/mypage/orders/info/${tosscode}`);
                 setOrdersInfo(orderInfoResponse.data);
+                console.log("주문내역" + OrdersInfo);
 
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -61,7 +62,7 @@ const MypageOrderDetailProvider = ({ children }) => {
                 try {
                     const orderDetailsResponse = await axiosInstance.get(`/api/user/mypage/orders/details/${paymentId}`);
                     setOrderDetailList(orderDetailsResponse.data);
-
+                    console.log("주문상세내역" +OrderDetailList);
                     // OrdersInfo가 로드된 후 paymentId 설정
                     if (OrdersInfo[0]) {
                         setPaymentId(OrdersInfo[0].id); // OrdersInfo[0]가 있을 경우에만 설정

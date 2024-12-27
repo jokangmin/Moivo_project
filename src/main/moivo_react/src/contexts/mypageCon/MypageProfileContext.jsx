@@ -32,6 +32,7 @@ const MypageProfileProvider = ({ children }) => {
     const [showTooltip, setShowTooltip] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [deletePassword, setDeletePassword] = useState(""); // 빈 문자열로 초기화
+    const [showCouponTooltip, setShowCouponTooltip] = useState(false);
 
 
     const { refreshAccessToken } = useAuth();  // useAuth에서 refreshAccessToken 가져오기
@@ -171,6 +172,14 @@ const MypageProfileProvider = ({ children }) => {
             console.error("우편번호 찾기 스크립트 로드 실패:", error);
             alert("우편번호 찾기 기능을 사용할 수 없습니다. 잠시 후 다시 시도해주세요.");
         }
+    };
+
+    const handleCouponMouseEnter = () => {
+        setShowCouponTooltip(true);
+    };
+
+    const handleCouponMouseLeave = () => {
+        setShowCouponTooltip(false);
     };
 
     const handleMouseEnter = () => setShowTooltip(true);
@@ -344,6 +353,9 @@ const MypageProfileProvider = ({ children }) => {
         validateForm,
         loadDaumPostcodeScript,
         splitPhoneNumber,
+        handleCouponMouseEnter,
+        handleCouponMouseLeave,
+        showCouponTooltip,
     };
 
     return (
