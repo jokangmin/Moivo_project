@@ -2,14 +2,12 @@ package com.example.demo.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-// import org.springframework.context.annotation.PropertySource;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 
 @Getter
 @Configuration
-// @PropertySource("classpath:external-config.properties")
 public class SocialConfiguration {
 
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")

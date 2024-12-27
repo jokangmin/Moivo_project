@@ -9,22 +9,20 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@PropertySource("classpath:external-config.properties") // yml에서 불러오는게 아니라 처음 실행할 때 프로퍼티스를 읽어오는거임
 public class NCPStorageConfig {
 
-    @Value("${NCP_STORAGE_ACCESS_KEY}")
+    @Value("${ncp.storage.access-key}")
     private String accessKey;
 
-    @Value("${NCP_STORAGE_SECRET_KEY}")
+    @Value("${ncp.storage.secret-key}")
     private String secretKey;
 
-    @Value("${NCP_STORAGE_REGION}")
+    @Value("${ncp.storage.region}")
     private String region;
 
-    @Value("${NCP_STORAGE_ENDPOINT}")
+    @Value("${ncp.storage.endpoint}")
     private String endpoint;
 
     @Bean
