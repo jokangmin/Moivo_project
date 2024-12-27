@@ -20,7 +20,6 @@ import com.example.demo.jwt.service.BlacklistService;
 // import com.example.demo.jwt.service.RefreshTokenService;
 import com.example.demo.jwt.util.JwtUtil;
 import com.example.demo.payment.entity.PaymentEntity;
-import com.example.demo.payment.repository.PaymentDetailRepository;
 import com.example.demo.payment.repository.PaymentRepository;
 import com.example.demo.qna.repository.QuestionRepository;
 import com.example.demo.store.repository.ReviewRepository;
@@ -30,11 +29,10 @@ import com.example.demo.user.entity.UserEntity;
 import com.example.demo.user.entity.WishEntity;
 import com.example.demo.user.entity.UserEntity.LoginType;
 import com.example.demo.user.repository.CartRepository;
-import com.example.demo.user.repository.UserCartRepository;
 import com.example.demo.user.repository.UserRepository;
-import com.example.demo.user.repository.UserWishRepository;
 import com.example.demo.user.repository.WishRepository;
 import com.example.demo.user.service.UserService;
+import com.example.demo.jwt.service.LoginSessionService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -84,6 +82,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private JwtProps jwtProps;
+
+    @Autowired
+    private LoginSessionService loginSessionService;
 
     // 24-12-16 - uj - 중복 부분 함수 처리 (수정)
     @Override
@@ -136,55 +137,6 @@ public class UserServiceImpl implements UserService {
 
         return userEntity;
     }
-    /*
-     * @Override
-     * public Map<String, Object> login(String userId, String pwd) {
-     * // 사용자 인증
-     * UserEntity userEntity = authenticate(userId, pwd);
-     *
-     * // Wish와 Cart 정보 조회
-     * WishEntity wishEntity =
-     * wishRepository.findByUserEntity_Id(userEntity.getId())
-     * .stream()
-     * .findFirst()
-     * .orElseGet(() -> {
-     * WishEntity newWish = new WishEntity();
-     * newWish.setUserEntity(userEntity);
-     * return wishRepository.save(newWish);
-     * });
-     *
-     * CartEntity cartEntity =
-     * cartRepository.findByUserEntity_Id(userEntity.getId())
-     * .orElseGet(() -> {
-     * CartEntity newCart = new CartEntity();
-     * newCart.setUserEntity(userEntity);
-     * return cartRepository.save(newCart);
-     * });
-     *
-     * // JWT 토큰 생성 (JwtUtil 사용)
-     * String accessToken = jwtUtil.generateAccessToken(
-     * userEntity.getUserId(),
-     * userEntity.getId(),
-     * wishEntity.getId(),
-     * cartEntity.getId()
-     * );
-     *
-     * String refreshToken = jwtUtil.generateRefreshToken(
-     * userEntity.getUserId(),
-     * userEntity.getId()
-     * );
-     *
-     * // 결과 맵 생성
-     * Map<String, Object> result = new HashMap<>();
-     * result.put("accessToken", accessToken);
-     * result.put("refreshToken", refreshToken);
-     * result.put("id", userEntity.getId());
-     * result.put("wishId", wishEntity.getId());
-     * result.put("cartId", cartEntity.getId());
-     *
-     * return result;
-     * }
-     */
 
     // 24.12.16 - uj (소셜 & Moivo 로그인 공통 사용, 함수처리)
     // JWT 토큰 생성 & 응답 데이터
@@ -215,24 +167,31 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Map<String, Object> login(String userId, String pwd) {
-        // 사용자 인증 로직
         UserEntity user = authenticate(userId, pwd);
-
+        
         if (user == null) {
             throw new RuntimeException("Invalid credentials");
         }
-
-        // 24.12.16 - uj (수정, 함수 처리)
-        // JWT 토큰 생성 & 응답 데이터
+        
         Map<String, Object> result = loginResponseData(user);
+        
+        // 새로운 로그인 세션 저장
+        loginSessionService.saveLoginSession(
+            userId,
+            (String) result.get("accessToken"),
+            (String) result.get("refreshToken")
+        );
+        
         return result;
     }
 
     @Override
     public void logout(String accessToken, String refreshToken) {
         if (refreshToken != null) {
-            // 토큰 유효성 검증 후 저장
             if (jwtUtil.validateToken(refreshToken)) {
+                String userId = jwtUtil.getUserIdFromToken(refreshToken);
+                loginSessionService.removeLoginSession(userId);
+                
                 Date expiryDate = jwtUtil.getExpirationDateFromToken(refreshToken);
                 blacklistService.addToBlacklist(refreshToken, expiryDate);
             }
@@ -447,7 +406,7 @@ public class UserServiceImpl implements UserService {
         userEntity.setWishEntity(null);
         userRepository.save(userEntity);
 
-        // 2. Cart 관련 데이터 삭제
+        // 2. Cart 관련 데이터 ���제
         userEntity.setCartEntity(null);
         userRepository.save(userEntity);
 

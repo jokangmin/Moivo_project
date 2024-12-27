@@ -114,6 +114,18 @@ axiosInstance.interceptors.response.use(
       return Promise.resolve({ data: null });
     }
 
+    if (error.response?.status === 409) { // 중복 로그인
+        console.log('중복 로그인 감지');
+        const { message } = error.response.data;
+        alert(message);
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('id');
+        localStorage.removeItem('isAdmin');
+        window.location.href = '/user';
+        return Promise.reject(new Error(message));
+    }
+
     console.error('[RESPONSE ERROR] 요청 실패:', error);
     return Promise.reject(error);
   }
