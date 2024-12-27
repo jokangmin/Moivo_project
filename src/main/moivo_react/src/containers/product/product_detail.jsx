@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 import { FaHeart, FaShoppingCart, FaMinus, FaPlus, FaTruck, FaExchangeAlt, FaCreditCard } from 'react-icons/fa';
 import styles from '../../assets/css/product_detail.module.css';
 import Banner from '../../components/Banner/banner';
@@ -40,6 +40,13 @@ const ProductDetail = () => {
     setError,
     setLoading
   } = useProDetail();
+
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
@@ -89,6 +96,8 @@ const ProductDetail = () => {
 
   return (
     <div className={styles.productDetailRoot}>
+      <motion.div className={styles.scrollProgress} style={{ scaleX }} />
+      
       <div className={styles.container}>
         <Banner />
         <motion.div 
@@ -98,6 +107,16 @@ const ProductDetail = () => {
           transition={{ duration: 0.5 }}
         >
           <div className={styles.imageSection}>
+            {product?.isNew && (
+              <motion.div 
+                className={styles.productBadge}
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+              >
+                신상품
+              </motion.div>
+            )}
             <motion.div 
               className={styles.mainImageContainer}
               whileHover={{ scale: 1.02 }}
@@ -244,6 +263,7 @@ const ProductDetail = () => {
                     disabled={stock.count <= 0}
                     whileHover={{ scale: stock.count > 0 ? 1.05 : 1 }}
                     whileTap={{ scale: stock.count > 0 ? 0.95 : 1 }}
+                    initial={false}
                   >
                     {stock.size}
                     <span className={styles.stock}>
@@ -272,6 +292,8 @@ const ProductDetail = () => {
                     className={styles.quantityButton}
                     onClick={() => handleQuantityChange(-1)}
                     disabled={!selectedSize || quantity <= 1}
+                    whileHover={{ rotate: 180 }}
+                    transition={{ duration: 0.3 }}
                   >
                     <FaMinus />
                   </motion.button>
@@ -280,6 +302,8 @@ const ProductDetail = () => {
                     className={styles.quantityButton}
                     onClick={() => handleQuantityChange(1)}
                     disabled={!selectedSize || quantity >= (stockInfo.find(s => s.size === selectedSize)?.count || 0)}
+                    whileHover={{ rotate: 180 }}
+                    transition={{ duration: 0.3 }}
                   >
                     <FaPlus />
                   </motion.button>
@@ -402,6 +426,8 @@ const ProductDetail = () => {
                           initial={{ opacity: 0, y: 20 }}
                           whileInView={{ opacity: 1, y: 0 }}
                           viewport={{ once: true }}
+                          whileHover={{ y: -5 }}
+                          transition={{ duration: 0.3 }}
                         >
                           <div className={styles.reviewHeader}>
                             <div className={styles.reviewInfo}>
@@ -424,9 +450,14 @@ const ProductDetail = () => {
                       ))}
                     </div>
                   ) : (
-                    <div className={styles.noReviewContainer}>
-                      <p className={styles.noReview}>리뷰가 존재하지 않습니다.</p>
-                    </div>
+                    <motion.div 
+                      className={styles.noReviewContainer}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <p className={styles.noReview}>아직 리뷰가 없습니다. 상품 구매 후 리뷰 작성이 가능합니다.</p>
+                    </motion.div>
                   )}
                 </div>
               )}
