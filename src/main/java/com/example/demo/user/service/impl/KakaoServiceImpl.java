@@ -27,6 +27,7 @@ public class KakaoServiceImpl implements KakaoService {
     // Access Token 요청
     @Override
     public KakaoTokenDTO getToken(String code, SocialConfiguration socialConfig) {
+        System.out.println("[KakaoServiceImpl] getToken() 호출");
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
@@ -67,6 +68,8 @@ public class KakaoServiceImpl implements KakaoService {
     // 사용자 정보 요청
     @Override
     public UserDTO getUserInfo(String kakaoAccessToken, String kakaoUserInfoUri) {
+        System.out.println("[KakaoServiceImpl] getUserInfo() 호출");
+
         // 카카오로부터 사용자 정보 받아오기
         RestTemplate rt = new RestTemplate();
 

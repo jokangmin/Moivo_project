@@ -55,25 +55,30 @@ const MypageMain = () => {
             <div className={styles.couponSection}>
               <div className={styles.coupon}>
                 COUPON: &nbsp;
-                {userInfo && userInfo.coupons ? (
-                  userInfo.coupons.map((coupon, index) => {
-                    const isInvalidCoupon = coupon.couponName === "이미 사용한 쿠폰" || coupon.couponName === "유효기간이 지난 쿠폰";
-                    return (
+                {userInfo && userInfo.coupon ? (
+                  <>
+                    {/* 사용 불가 쿠폰 처리 */}
+                    {userInfo.coupon.couponName === "이미 사용한 쿠폰입니다." ||
+                    userInfo.coupon.couponName === "유효기간이 지난 쿠폰입니다." ? (
+                      <strong>{userInfo.coupon.couponName}</strong>
+                    ) : (
+                      // 유효한 쿠폰 출력
                       <div 
-                        key={index} 
                         className={styles.couponItem}
-                        onMouseEnter={() => !isInvalidCoupon && handleCouponMouseEnter()}
+                        onMouseEnter={handleCouponMouseEnter}
                         onMouseLeave={handleCouponMouseLeave}
                       >
-                        <strong>{coupon.couponName}</strong>
-                        {!isInvalidCoupon && showCouponTooltip && (
+                        <strong>{userInfo.coupon.couponName}</strong>
+                        {showCouponTooltip && (
                           <div className={styles.couponTooltip}>
-                              유효기간: {new Date(coupon.startDate).toLocaleDateString()} ~ {new Date(coupon.endDate).toLocaleDateString()}
+                            유효기간:{" "}
+                            {new Date(userInfo.coupon.startDate).toLocaleDateString()} ~{" "}
+                            {new Date(userInfo.coupon.endDate).toLocaleDateString()}
                           </div>
                         )}
                       </div>
-                    );
-                  })
+                    )}
+                  </>
                 ) : (
                   "쿠폰 정보를 불러오는 중입니다..."
                 )}

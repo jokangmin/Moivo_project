@@ -45,6 +45,8 @@ public class SocialServiceImpl implements SocialService {
     @Transactional
     @Override
     public Map<String, Object> getKakaoLogin(String code) {
+        System.out.println("[SocialServiceImpl] getKakaoLogin() 호출");
+
         // 1. Access Token 요청
         KakaoTokenDTO kakaoTokenDTO = kakaoService.getToken(code, socialConfig);
 
@@ -61,8 +63,8 @@ public class SocialServiceImpl implements SocialService {
         if (checkUserOptional == null || checkUserOptional.isEmpty()) {
             // 신규 회원 >> 회원가입 진행
             userKakaoEntity = userService.insertInit(UserEntity.toSaveKakaoUserEntity(userKakaoInfoDTO));
-            // System.out.println("신규 회원 >> pk: " + userKakaoEntity.getId() +
-            //         " & userid: " + userKakaoEntity.getUserId());
+            System.out.println("신규 회원 >> pk: " + userKakaoEntity.getId() +
+                    " & userid: " + userKakaoEntity.getUserId());
         } else {
             // 기존 회원 >> 로그인 성공
             System.out.println("기존 회원 >> pk: " + checkUserOptional.get().getId() +
