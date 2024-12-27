@@ -1,14 +1,12 @@
-spring:
-  config:
-    import: file:/home/spring/external-config.properties
+spring: # test
   security:
     oauth2:
       client:
         registration:
           kakao:
-            client-id: ${KAKAO_CLIENT_ID}
-            client-secret: ${KAKAO_CLIENT_SECRET}
-            redirect-uri: ${KAKAO_REDIRECT_URI}
+            client-id: test
+            client-secret: test
+            redirect-uri: test
             authorization-grant-type: authorization_code
             client-authentication-method: POST
             scope:
@@ -20,9 +18,9 @@ spring:
 
         provider:
           kakao:
-            authorization-uri: ${KAKAO_AUTHORIZATION_URI}
-            token-uri: ${KAKAO_TOKEN_URI}
-            user-info-uri: ${KAKAO_USER_INFO_URI}
+            authorization-uri: test
+            token-uri: test
+            user-info-uri: test
             user-name-attribute: id
 
   # Redis 설정
@@ -41,16 +39,15 @@ spring:
           max-wait: -1
 
   datasource:
-
     # MySQL - NAVER Cloud 설정
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PWD}
-    driver-class-name: ${DB_DRIVER}
+    url: jdbc:mysql://db-2vrk3j-kr.vpc-pub-cdb.ntruss.com:3306/moivodb?serverTimezone=Asia/Seoul
+    username: moivo
+    password: bitcamp123!@#
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
-      ddl-auto: ${DDL_AUTO}
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate.format_sql: true
@@ -64,8 +61,8 @@ spring:
   mail:
     host: smtp.gmail.com # 12/11 16:57 조강민
     port: 587
-    username: ${mail.username}
-    password: ${mail.password}
+    username: test
+    password: test
     properties:
       mail:
         smtp:
@@ -78,14 +75,14 @@ spring:
 
 ncp:
   storage:
-    access-key: ${NCP_STORAGE_ACCESS_KEY}
-    secret-key: ${NCP_STORAGE_SECRET_KEY}
+    access-key: test
+    secret-key: test
     region: kr-standard
-    endpoint: ${NCP_STORAGE_ENDPOINT}
+    endpoint: test
 
 
 jwt:
-  secret: ${jwt.secret}
+  secret: 1234567890abcdef1234567890abcdef
   access-token-validity: 3600000  # 1시간
   refresh-token-validity: 604800000  # 7일
 
