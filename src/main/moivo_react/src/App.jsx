@@ -104,7 +104,7 @@ const routeConfig = [
   { path: "/payment-method", element: ( <PaymentProvider> <PaymentMethod /> </PaymentProvider> ),},
   { path: "/payment-success", element: ( <PaymentProvider> <SuccessPage /> </PaymentProvider> ),},
   { path: "/payment-fail", element: ( <PaymentProvider> <FailPage /> </PaymentProvider> ),},
-  { path: "/admins_dashboard", element: <Dashboard/>},
+  { path: "/admins_dashboard", element: ( <DashBoardProvider> <Dashboard/> </DashBoardProvider> )},
   { path: "/api/oauth/kakao/callback", element: <KakaoCallback /> },
   { path: "/admins_qnaboard", element: <Admins_qna /> },
   { path: "/admins_productadd", element: <Admins_productAdd /> },
@@ -122,19 +122,11 @@ const App = () => {
     <Router>
       <AuthProvider>
         <MainProvider>
-          <DashBoardProvider>
-              <ProListProvider>
-                <ProDetailProvider>
-                  <ReviewProvider>
-                    <Routes>
-                      {routeConfig.map(({ path, element }, index) => (
-                        <Route key={index} path={path} element={element} />
-                      ))}
-                    </Routes>
-                  </ReviewProvider>
-                </ProDetailProvider>
-              </ProListProvider>
-          </DashBoardProvider>
+          <Routes>
+            {routeConfig.map(({ path, element }, index) => (
+              <Route key={index} path={path} element={element} />
+            ))}
+          </Routes>
         </MainProvider>
       </AuthProvider>
     </Router>
