@@ -83,11 +83,6 @@ spring:
           max-wait: -1
 
   datasource:
-    # MySQL 설정
-    #  url: jdbc:mysql://localhost:3306/moivotest?useSSL=false&serverTimezone=Asia/Seoul
-    #  username: root
-    #  password: 1234
-    #  driver-class-name: com.mysql.cj.jdbc.Driver
 
     # MySQL - NAVER Cloud 설정
     url: ${DB_URL}
