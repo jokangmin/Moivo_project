@@ -14,7 +14,8 @@ const CartProvider = ({ children }) => {
     const [selectedItems, setSelectedItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [userid, setUserid] = useState(null);
-  
+    const [selectAllChecked, setSelectAllChecked] = useState(false);
+
     useEffect(() => {
       const fetchCartItems = async () => {
         try {
@@ -56,6 +57,24 @@ const CartProvider = ({ children }) => {
       fetchCartItems();
     }, [isAuthenticated, navigate]);
   
+    // 전체 선택 처리
+    const handleSelectAll = () => {
+      if (selectAllChecked) {
+        setSelectedItems([]);
+      } else {
+        const allItemIds = cartItems.map(item => item.usercartId);
+        setSelectedItems(allItemIds);
+      }
+      setSelectAllChecked(!selectAllChecked);
+    };
+
+    // selectAllChecked 상태를 selectedItems에 맞게 동기화
+    useEffect(() => {
+      if (cartItems.length > 0) {
+        setSelectAllChecked(selectedItems.length === cartItems.length);
+      }
+    }, [selectedItems, cartItems.length]);
+
     // 상품 제거
     const handleRemoveItem = async (id) => {
       const token = getAccessToken(); // 토큰을 가져옵니다.
@@ -151,6 +170,8 @@ const CartProvider = ({ children }) => {
         handleNavigateToPayment,
         setSelectedItems,
         setCartItems,
+        selectAllChecked,
+        handleSelectAll,
     };
 
     return (
