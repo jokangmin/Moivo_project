@@ -1,21 +1,22 @@
   import React, { useState, useEffect, useRef } from "react";
   import admin_product from "../../assets/css/admins_product.module.css";
-  import axios from "axios";
-  import { PATH } from "../../../scripts/path";
   import Admins_side from '../../components/admin_sidebar/admins_side';
-  import { Link } from 'react-router-dom';
   import axiosInstance from '../../utils/axiosConfig';
+  import { useNavigate } from "react-router-dom";
 
   const Admins_ProductAdd = () => {
     const [product, setProduct] = useState({
       name: "",
       price: "",
       content: "",
-      categoryId: 0,
+      categoryId: "",
       gender: ""
     });
 
+    const navigate = useNavigate();
     const [categories, setCategories] = useState([]);
+    const [selectedMainCategory, setSelectedMainCategory] = useState("");
+    const [subCategories, setSubCategories] = useState([]);
     const [genders, setGenders] = useState([]);
 
     const [stock, setStock] = useState({
@@ -44,8 +45,8 @@
     useEffect(() => {
       // 카테고리 정보 가져오기
       axiosInstance.get(`/api/admin/store/category`).then((res) => {
-        if (Array.isArray(res.data)) {
-          setCategories(res.data);
+        if (Array.isArray(res.data.category)) {
+          setCategories(res.data.category);
         } else {
           console.error("카테고리 데이터는 배열이 아닙니다 ? :", res.data);
         }
@@ -58,6 +59,50 @@
         }
       });
     }, []);
+
+    //2024/12/26 카테고리 변경 시 세부 카테고리 가져오기 추가 장훈
+    const handleCategoryChange = (e) => {
+      const mainCategoryId = e.target.value;
+      console.log("선택된 메인 categoryId:", mainCategoryId);
+      
+      // 메인 카테고리 저장
+      setSelectedMainCategory(mainCategoryId);
+      // 메인 카테고리 변경 시 product의 categoryId는 초기화
+      setProduct(prev => ({ ...prev, categoryId: "" }));
+  
+      if (mainCategoryId) {
+        axiosInstance.get("/api/admin/store/category").then((res) => {
+          if (res.data.category && res.data[mainCategoryId]) {
+            const subCategories = res.data[mainCategoryId];
+            if (Array.isArray(subCategories)) {
+              console.log("필터된 세부 카테고리:", subCategories);
+              setSubCategories(subCategories);
+            } else {
+              setSubCategories([]);
+            }
+          } else {
+            setSubCategories([]);
+          }
+        }).catch((error) => {
+          console.error("API 요청 실패:", error);
+          setSubCategories([]);
+        });
+      } else {
+        setSubCategories([]);
+      }
+    };
+    
+    // 2024/12/26 서브카테고리 선택 시, 서브카테고리 값을 categoryId로 업데이트 장훈
+    const handleSubCategoryChange = (e) => {
+      const subCategoryId = e.target.value;
+      console.log("선택된 서브카테고리 ID:", subCategoryId);
+      
+      // 서브카테고리 ID를 최종 categoryId로 설정
+      setProduct(prev => ({
+        ...prev,
+        categoryId: subCategoryId // 서브카테고리 ID가 최종적으로 DB에 저장될 categoryId가 됨
+      }));
+    };
 
     // 상품 정보 입력 핸들러
     const handleInputChange = (e) => {
@@ -111,12 +156,13 @@
     // 업로드 핸들러
     const handleUpload = async () => {
       const formData = new FormData();
+      console.log("전송되는 데이터:", product);
 
       if (
         !product.name ||
         !product.price ||
         !product.content ||
-        !product.categoryId
+        !product.categoryId   
       ) {
         alert("모든 상품 정보를 입력해주세요.");
         return;
@@ -163,6 +209,7 @@
 
         if (response.status === 200) {
           alert("상품이 성공적으로 등록되었습니다.");
+          navigate(`/admin/admin_productList`)
           resetForm();
         }
       } catch (error) {
@@ -230,7 +277,7 @@
           <h1 className={admin_product.uploadTitle}>상품 추가</h1>
           <div className={admin_product.form}>
             
-            {/* 버튼 */}
+            {/* 버튼
             <div className={admin_product.Navi}>
               <Link to="/admins_productadd">
                 <button className={admin_product.UploadBtn}>상품 추가</button>
@@ -238,8 +285,9 @@
               <Link to="/admins_productUpdate">
                 <button className={admin_product.UpdateBtn}>상품 수정</button>
               </Link>
-            </div>
-            
+            </div> */}
+
+            <h2 className={admin_product.sectionTitle}>기본 상품 정보</h2>
             <div className={admin_product.basicsection}>
               {/* 상품명 */}
               <div className={admin_product.inputGroup}>
@@ -256,7 +304,7 @@
               {/* 카테고리 */}
               <div className={admin_product.inputGroup}>
                 <label className={admin_product.label}>카테고리</label>
-                <select className={admin_product.select} name="categoryId" value={product.categoryId} onChange={handleInputChange} >
+                <select className={admin_product.select} value={selectedMainCategory} onChange={handleCategoryChange} >
                   <option value="">카테고리 선택</option>
                   {categories.map((category) => (
                     <option key={category.id} value={category.id}>
@@ -265,7 +313,22 @@
                   ))}
                 </select>
               </div>
-              
+
+              {/* 세부 카테고리 */}
+              <div className={admin_product.inputGroup}>
+                <label className={admin_product.label}>세부 카테고리</label>
+                <select className={admin_product.select} value={product.categoryId} onChange={handleSubCategoryChange} >
+                  <option value="">세부 카테고리 선택</option>
+                  {subCategories && subCategories.length > 0
+                    ? subCategories.map((subCategory) => (
+                        <option key={subCategory.id} value={subCategory.id}>
+                          {subCategory.name}
+                        </option>
+                      ))
+                    : null}
+                </select>
+              </div>
+
               {/* 성별 */}
               <div className={admin_product.inputGroup}>
                 <label className={admin_product.label}>성별</label>
