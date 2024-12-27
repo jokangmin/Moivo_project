@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
-// import { useAuth } from 'moivo_react/src/contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext.jsx';
 
 const KakaoCallback = () => {
     const navigate = useNavigate();
