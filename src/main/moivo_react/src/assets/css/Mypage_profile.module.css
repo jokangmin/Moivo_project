@@ -32,6 +32,21 @@
     margin-right: 50px;
 }
 
+.couponTooltip {
+  position: absolute;
+  top: 100%; /* COUPON 아래에 표시 */
+  left: 30%;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  z-index: 10;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-size: 13px;
+  width: 300px;
+  white-space: normal; /* 툴팁 내용은 줄바꿈 허용 */
+}
+
 .membershipInfo {
     font-family: 'GmarketSans', sans-serif;
     font-size: 14px;
