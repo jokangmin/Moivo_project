@@ -1,8 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import admin_sidebar from '../../assets/css/admin_side.module.css';
+import { useAuth } from '../../contexts/AuthContext';
 
 const admins_side = () => {
+  
+  const { logout } = useAuth();  // AuthContext에서 제공하는 logout 함수
+
+    // 로그아웃 함수
+    const handleLogout = async () => {
+      await logout();  // 로그아웃 처리 (내부에서 리디렉션 처리)
+  };
+
     return (
         <div className={`${admin_sidebar.area}`}>
           <nav className={admin_sidebar.mainMenu}>
@@ -55,16 +64,21 @@ const admins_side = () => {
                 </Link>
               </li>
             </ul>
-    
-            {/* home */}
+
+            {/* logout */}
             <ul className={admin_sidebar.logout}>
               <li>
-                <Link to="/">
-                  <i className="fa fa-home fa-2x"></i>
-                  <span className={admin_sidebar.navText}>home</span>
+                <Link to="/" onClick={(e) => {
+                    e.preventDefault();  // Link의 기본 동작을 막고
+                    handleLogout();      // 로그아웃 함수 호출
+                  }}
+                  className={admin_sidebar.logoutItem}
+                >
+                  <i className="fa fa-sign-out-alt fa-2x"></i>
+                  <span className={admin_sidebar.navText}>Logout</span>
                 </Link>
               </li>
-            </ul>
+            </ul>      
           </nav>
         </div>
       );

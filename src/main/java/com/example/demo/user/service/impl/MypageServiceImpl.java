@@ -205,7 +205,7 @@ public class MypageServiceImpl implements MypageService {
         Page<PaymentEntity> orderEntities = paymentRepository.findByUserEntity_Id(id, sortedByIdDesc);
         List<PaymentDTO> list = new ArrayList<>();
         NCPObjectStorageDTO ncpDTO = new NCPObjectStorageDTO();
-
+        
         if (orderEntities == null || orderEntities.isEmpty()) {
             throw new RuntimeException("해당 사용자에 대한 주문 내역이 존재하지 않습니다.");
         }
@@ -215,6 +215,7 @@ public class MypageServiceImpl implements MypageService {
             PaymentDTO paymentDTO = PaymentDTO.toGetOrderDTO(paymentEntity);
             paymentDTO.setProductImg(ncpDTO.getURL() + productEntity.getImg());
             paymentDTO.setProductName(productEntity.getName());
+            System.out.println(paymentDTO.getDiscount());
             list.add(paymentDTO);
         }
 
