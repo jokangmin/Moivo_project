@@ -36,11 +36,14 @@ export function ProListProvider({ children }) {
     // 페이지 상태를 세션스토리지에 저장/복원하는 로직 추가
     const [lastViewedState, setLastViewedState] = useState(() => {
         const saved = sessionStorage.getItem('productListState');
-        return saved ? JSON.parse(saved) : {
-            page: 0,
-            sortBy: "newest",
-            categoryId: 0,
-            searchTerm: ""
+        if (saved) {
+            return JSON.parse(saved);
+        }
+        return {
+            page: currentPage || 0,
+            sortBy: sortBy || "newest",
+            categoryId: activeCategory?.id || 0,
+            searchTerm: searchTerm || ""
         };
     });
 
@@ -179,7 +182,7 @@ export function ProListProvider({ children }) {
         if ((savedSortBy !== undefined && savedSortBy !== sortBy) || 
             (savedCategoryId !== undefined && savedCategoryId !== activeCategory.id) || 
             (savedSearchTerm !== undefined && savedSearchTerm !== searchTerm)) {
-            fetchProducts(0); // 필터 변경 시에만 첫 페이지로
+            fetchProducts(0); // 필터 변경 시에만 첫 페이���로
         }
     }, [sortBy, activeCategory.id, searchTerm]);
 
