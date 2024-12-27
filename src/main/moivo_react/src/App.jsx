@@ -35,7 +35,7 @@ import Admins_qna from './containers/admin/admins_qnaboard';
 import Admins_productAdd from './containers/admin/admins_productadd';
 import Admins_productUpdate from './containers/admin/admins_productupdate';
 import ProductTrash from './containers/admin/admin_productTrash';
-import KakaoCallback from './components/kakao/KakaoCallback';
+import KakaoCallback from './components/kakao/KakaoCallback.jsx';
 import Admins_FAQ from './containers/admin/admins_FAQ';
 import Admins_ProductList from './containers/admin/admin_productList';
 import ReviewWrite from './containers/review/review_write';
@@ -105,7 +105,7 @@ const routeConfig = [
   { path: "/payment-method", element: ( <PaymentProvider> <PaymentMethod /> </PaymentProvider> ),},
   { path: "/payment-success", element: ( <PaymentProvider> <SuccessPage /> </PaymentProvider> ),},
   { path: "/payment-fail", element: ( <PaymentProvider> <FailPage /> </PaymentProvider> ),},
-  { path : "/admins_dashboard", element: <Dashboard/>},
+  { path: "/admins_dashboard", element: <Dashboard/>},
   { path: "/api/oauth/kakao/callback", element: <KakaoCallback /> },
   { path: "/admins_qnaboard", element: <Admins_qna /> },
   { path: "/admins_productadd", element: <Admins_productAdd /> },
