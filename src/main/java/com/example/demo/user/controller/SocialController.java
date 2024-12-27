@@ -41,6 +41,7 @@ public class SocialController {
     @GetMapping("/kakao/login")
     public ResponseEntity<?> getKakaoLogin(@RequestParam(name = "code") String code, HttpServletResponse response) {
         try {
+            System.out.println("Get & api/user/social/kakao/login & code=" + code);
             Map<String, Object> loginResult = socialService.getKakaoLogin(code);
 
             Cookie refreshTokenCookie = new Cookie("refreshToken",
