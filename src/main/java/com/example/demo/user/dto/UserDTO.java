@@ -32,7 +32,7 @@ public class UserDTO { // 사용자 & 관리자
     private Grade grade = Grade.LV1;
     private double height;
     private double weight;
-    private List<UserCouponDTO> coupons;
+    private UserCouponDTO coupon;
     private int totalSpent; // 누적 구매 금액
     private int nextLevelTarget; // 다음 등급까지 남은 금액
 

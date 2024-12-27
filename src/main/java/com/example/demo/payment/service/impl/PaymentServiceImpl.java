@@ -149,12 +149,7 @@ public class PaymentServiceImpl implements PaymentService {
         // 5. 쿠폰 사용 여부 저장
         if (paymentDTO.getDiscount() > 0) {
             // 사용자에 해당하는 쿠폰 목록을 가져옵니다.
-            List<UserCouponEntity> couponEntityList = userCouponRepository.findByUserEntity_Id(paymentDTO.getUserId());
-
-            if (!couponEntityList.isEmpty()) {
-                // 첫 번째 쿠폰을 가져와서 사용된 것으로 표시
-                UserCouponEntity userCoupon = couponEntityList.get(0); // 쿠폰 하나만 사용되므로 첫 번째 쿠폰을 사용
-
+            UserCouponEntity userCoupon = userCouponRepository.findByUserEntity_Id(paymentDTO.getUserId());
                 // 쿠폰이 아직 사용되지 않았고 유효하다면
                 if (!userCoupon.getUsed()) {
                     userCoupon.setUsed(true); // 사용된 것으로 표시
@@ -163,7 +158,7 @@ public class PaymentServiceImpl implements PaymentService {
                     userCouponRepository.save(userCoupon); // 변경 사항 저장
                     System.out.println("Coupon used status updated to: " + userCoupon.getUsed());
                 }
-            }
+
         }
 
         // 6. 결제 후 등급 업데이트 - sumin (2024.12.16)
@@ -298,20 +293,20 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         // 2. 쿠폰 사용 시, 쿠폰 돌려주기
-        List<UserCouponEntity> userCouponEntity = userCouponRepository
+        UserCouponEntity userCouponEntity = userCouponRepository
                 .findByUserEntity_Id(paymentEntity.getUserEntity().getId());
-        if (userCouponEntity.size() == 0) {
+        if (userCouponEntity == null) {
             throw new NotFoundException("사용자 (" + paymentEntity.getUserEntity().getId() + ") 의 쿠폰 정보를 찾을 수 없습니다.");
         }
 
-        if (paymentEntity.getDiscount() > 0 && userCouponEntity.get(0).getUsed()) {
-            userCouponEntity.get(0).setUsed(false);
-            userCouponRepository.save(userCouponEntity.get(0));
+        if (paymentEntity.getDiscount() > 0 && userCouponEntity.getUsed()) {
+            userCouponEntity.setUsed(false);
+            userCouponRepository.save(userCouponEntity);
             System.out.println("사용자 (" +
                     paymentEntity.getUserEntity().getId() + ") 의 쿠폰 (" +
-                    userCouponEntity.get(0).getId() +
+                    userCouponEntity.getId() +
                     ") 사용 값을 변경하였습니다. >> " +
-                    userCouponEntity.get(0).getUsed());
+                    userCouponEntity.getUsed());
         }
 
         // 3. 결제 내역 & 결제 상세 내역 삭제
