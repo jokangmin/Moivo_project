@@ -105,7 +105,7 @@ const routeConfig = [
   { path: "/payment-method", element: ( <PaymentProvider> <PaymentMethod /> </PaymentProvider> ),},
   { path: "/payment-success", element: ( <PaymentProvider> <SuccessPage /> </PaymentProvider> ),},
   { path: "/payment-fail", element: ( <PaymentProvider> <FailPage /> </PaymentProvider> ),},
-  { path : "/admins_dashboard", element: <Dashboard/>},
+  { path: "/admins_dashboard", element: <Dashboard/>},
   { path: "/api/oauth/kakao/callback", element: <KakaoCallback /> },
   { path: "/admins_qnaboard", element: <Admins_qna /> },
   { path: "/admins_productadd", element: <Admins_productAdd /> },

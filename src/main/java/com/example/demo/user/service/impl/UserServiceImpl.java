@@ -20,7 +20,6 @@ import com.example.demo.jwt.service.BlacklistService;
 // import com.example.demo.jwt.service.RefreshTokenService;
 import com.example.demo.jwt.util.JwtUtil;
 import com.example.demo.payment.entity.PaymentEntity;
-import com.example.demo.payment.repository.PaymentDetailRepository;
 import com.example.demo.payment.repository.PaymentRepository;
 import com.example.demo.qna.repository.QuestionRepository;
 import com.example.demo.store.repository.ReviewRepository;
@@ -30,9 +29,7 @@ import com.example.demo.user.entity.UserEntity;
 import com.example.demo.user.entity.WishEntity;
 import com.example.demo.user.entity.UserEntity.LoginType;
 import com.example.demo.user.repository.CartRepository;
-import com.example.demo.user.repository.UserCartRepository;
 import com.example.demo.user.repository.UserRepository;
-import com.example.demo.user.repository.UserWishRepository;
 import com.example.demo.user.repository.WishRepository;
 import com.example.demo.user.service.UserService;
 
