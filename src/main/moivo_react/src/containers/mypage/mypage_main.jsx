@@ -118,9 +118,11 @@ const MypageMain = () => {
             <div className={styles.productList}>
               {productList.slice(startIndex, startIndex + 3).map((product, index) => (
                 <div key={index} className={styles.product}>
-                  <div className={styles.productImage}>
-                    <img src={product.img} alt={product.name} />
-                  </div>
+                  <Link to={`/product-detail/${product.id}`} className={styles.orderLink}>
+                    <div className={styles.productImage}>
+                      <img src={product.img} alt={product.name} />
+                    </div>
+                  </Link>
                   <div className={styles.productText}>
                     {product.name} <br />
                     <span className={styles.price}>{product.price}</span>
