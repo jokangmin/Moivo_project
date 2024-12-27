@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
 
         // 회원가입 후, LV1 쿠폰 발급 2024.11.25 sumin
         System.out.println("쿠폰 발급 시도");
-        userCouponService.updateCouponByUserAndGrade(savedUser.getId(), "LV1"); // LV1 쿠폰 발급
+        userCouponService.registerCouponForNewUser(savedUser.getId()); // LV1 쿠폰 발급
         System.out.println("회원가입 후 LV1 쿠폰 발급 완료");
 
         return userEntity;

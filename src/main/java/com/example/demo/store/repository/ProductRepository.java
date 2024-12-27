@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.example.demo.store.entity.ProductCategoryEntity;
 import com.example.demo.store.entity.ProductEntity;
 
 @Repository
@@ -91,5 +92,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Integer>
 
     // 삭제된 상품 수 조회 - 24.12.18 - sumin
     public long countByDeleteTrue();
+
+    public List<ProductEntity> findByCategoryEntity(ProductCategoryEntity categoryEntity);
 
 }
