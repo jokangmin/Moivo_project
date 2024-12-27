@@ -14,6 +14,17 @@ const MypageOrderDetails = () => {
         handleButtonClick,
     } = useMypageOrderDetailContext();
 
+    const originalTotalPrice = OrderDetailList.reduce(
+        (acc, item) => acc + item.price,
+        0
+    );
+
+    // 할인된 총 가격
+    const discountedTotalPrice = OrdersInfo[0]?.totalPrice || 0;
+
+    // 할인 금액
+    const discountAmount = originalTotalPrice - discountedTotalPrice;
+
     const navigate = useNavigate();
     //*********************************************************************** */
     return (
@@ -156,8 +167,17 @@ const MypageOrderDetails = () => {
                 <hr className={styles.solidLine} />
 
                 {/* 결제 정보 */}
+                {/* 결제 정보 섹션 */}
                 <section className={styles.paymentSummary}>
-                    <p className={styles.totalPrice}>합계: <span>KRW {OrdersInfo[0]?.totalPrice}</span></p>
+                        <p className={styles.totalPrice1}>
+                            <strong>상품 금액:</strong> <span>KRW {originalTotalPrice.toLocaleString()}</span>
+                        </p>
+                        <p className={styles.totalPrice2}>
+                            <strong>할인 금액:</strong> <span>- KRW {discountAmount.toLocaleString()}</span>
+                        </p>
+                        <p className={styles.totalPrice}>
+                            <strong>총 결제 금액:</strong> <span>KRW {discountedTotalPrice.toLocaleString()}</span>
+                        </p>
                 </section>
 
 

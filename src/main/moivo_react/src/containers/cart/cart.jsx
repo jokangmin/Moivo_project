@@ -43,8 +43,7 @@ const Cart = () => {
                   <img src={item.img || "../image/default.jpg"} alt={item.name} />
                 </div>
                 <div className={styles.productDetails}>
-                  <div className={styles.productName}>{item.name}</div>
-                  <div className={styles.productContent}>{item.content}</div>
+                  <div className={styles.productName}>{item.name}</div>                
                   <div className={styles.productPrice}>
                     KRW {item.price.toLocaleString()}
                   </div>
