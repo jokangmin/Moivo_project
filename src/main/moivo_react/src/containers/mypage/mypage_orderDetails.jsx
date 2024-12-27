@@ -97,7 +97,7 @@ const MypageOrderDetails = () => {
                             <div className={styles.column3}>{item.productName}</div>
                             <div className={styles.column}>{item.size}</div>
                             <div className={styles.column}>x {item.count}</div> {/* 수량 표시 */}
-                            <div className={styles.column}>KRW {item.price}</div>
+                            <div className={styles.column}>KRW {item.price.toLocaleString()}</div>
                             <div className={styles.column}>
                             {OrdersInfo[0]?.deliveryStatus === "CONFIRMED" ? (
                                 item.writeReview === false ? (
