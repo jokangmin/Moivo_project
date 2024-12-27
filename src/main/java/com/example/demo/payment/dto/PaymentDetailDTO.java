@@ -46,6 +46,7 @@ public class PaymentDetailDTO {
             dto.setProductId(productEntity.getId());
             dto.setProductImg(ncpDTO.getURL() + productEntity.getImg()); // 상품 이미지
             dto.setProductName(productEntity.getName()); // 상품명
+
         }
 
         // 기타 필드들
