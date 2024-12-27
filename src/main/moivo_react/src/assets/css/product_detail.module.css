@@ -555,6 +555,8 @@
 /* Detail Section */
 .detailSection {
   color: var(--text-primary);
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .detailContent {
@@ -562,8 +564,17 @@
   margin-bottom: 2rem;
 }
 
+.detailImages {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
 .detailImage {
   width: 100%;
+  max-width: 600px;
+  height: auto;
   border-radius: 15px;
   margin: 1rem 0;
 }
@@ -855,6 +866,10 @@
 
   .deliveryInfo {
     padding: 1rem;
+  }
+
+  .detailImage {
+    max-width: 100%;
   }
 }
 
