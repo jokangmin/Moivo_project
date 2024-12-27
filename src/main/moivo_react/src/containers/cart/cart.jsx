@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styles from "../../assets/css/Cart.module.css";
 import Banner from "../../components/Banner/banner";
 import Footer from "../../components/Footer/Footer";
@@ -39,9 +40,11 @@ const Cart = () => {
                   }
                 />
                 <label htmlFor={`${item.usercartId}`}></label>
-                <div className={styles.productImage}>
-                  <img src={item.img || "../image/default.jpg"} alt={item.name} />
-                </div>
+                <Link to={`/product-detail/${item.productId}`} className={styles.orderLink}>
+                  <div className={styles.productImage}>
+                    <img src={item.img || "../image/default.jpg"} alt={item.name} />
+                  </div>
+                </Link>
                 <div className={styles.productDetails}>
                   <div className={styles.productName}>{item.name}</div>                
                   <div className={styles.productPrice}>

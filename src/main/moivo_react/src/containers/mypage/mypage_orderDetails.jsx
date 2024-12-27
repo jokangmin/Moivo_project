@@ -3,7 +3,7 @@ import styles from "../../assets/css/Mypage_orderDetails.module.css";
 import Banner from "../../components/Banner/banner";
 import Footer from "../../components/Footer/Footer";
 import { useMypageOrderDetailContext } from '../../contexts/mypageCon/MypageOrderDetailContext';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const MypageOrderDetails = () => {
     const {
@@ -91,9 +91,9 @@ const MypageOrderDetails = () => {
                     </div>
                     {OrderDetailList.map((item, index) => (
                         <div className={styles.row} key={index}>
-                            <div className={styles.image}>
+                            <Link to={`/product-detail/${item.productId}`} className={styles.detailLink}>
                                 <img src={item.productImg} alt={`order-${index}`} />
-                            </div>
+                            </Link>
                             <div className={styles.column3}>{item.productName}</div>
                             <div className={styles.column}>{item.size}</div>
                             <div className={styles.column}>x {item.count}</div> {/* 수량 표시 */}

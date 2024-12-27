@@ -182,7 +182,7 @@ export function ProListProvider({ children }) {
         if ((savedSortBy !== undefined && savedSortBy !== sortBy) || 
             (savedCategoryId !== undefined && savedCategoryId !== activeCategory.id) || 
             (savedSearchTerm !== undefined && savedSearchTerm !== searchTerm)) {
-            fetchProducts(0); // 필터 변경 시에만 첫 페이지로
+            fetchProducts(0); // 필터 변경 시에만 첫 페이지로 이동
         }
     }, [sortBy, activeCategory.id, searchTerm]);
 
