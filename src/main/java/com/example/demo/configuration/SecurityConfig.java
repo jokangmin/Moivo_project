@@ -91,7 +91,6 @@ public class SecurityConfig {
                 "http://101.79.9.149", // 배포 시, react 사용
                 "http://101.79.9.149:9090", // 배포 시, spring boot 사용 
                 "https://moivo.shop", // 도메인
-                "https://moivo.shop:9090", // 도메인
                 "https://kauth.kakao.com",
                 "https://kapi.kakao.com",
                 "http://localhost:8080"));
