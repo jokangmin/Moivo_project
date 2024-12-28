@@ -624,7 +624,6 @@
   width: 300px;
   height: 400px;
   background: #F6F2EE;
-  border: 1px solid #ccc;
   margin-bottom: 10px;
 }
 
@@ -701,6 +700,96 @@
 .bottomBar:hover {
   background-color: #2f2e2c; /* 마우스 오버 시 색상 변경 */
 }
+
+@media (max-width: 1700px) {
+  .product {
+    width: 150px;
+    flex: 0 0 18%;
+  }
+
+  .productImage{
+    width: 250px;
+    height: auto;
+  }
+}
+
+@media (max-width: 1500px) {
+  .product {
+    width: 150px;
+    flex: 0 0 18%;
+  }
+
+  .productImage{
+    width: 230px;
+    height: auto;
+  }
+}
+
+@media (max-width: 1335px) {
+  .product {
+    width: 150px;
+    flex: 0 0 18%;
+  }
+
+  .productImage{
+    width: 210px;
+    height: auto;
+  }
+
+  .productText{
+    font-size: 18px;
+    white-space: nowrap;
+    overflow: hidden;  
+    text-overflow: ellipsis; 
+    width: 160px;
+  }
+}
+
+@media (max-width: 1220px) {
+  .productImage{
+    width: 190px;
+    height: auto;
+  }
+
+  .productText{
+    font-size: 18px;
+    white-space: nowrap;
+    overflow: hidden;  
+    text-overflow: ellipsis; 
+    width: 150px;
+  }
+}
+
+@media (max-width: 1130px) {
+  .productImage{
+    width: 170px;
+    height: auto;
+  }
+
+  .productText{
+    font-size: 18px;
+    white-space: nowrap;
+    overflow: hidden;  
+    text-overflow: ellipsis; 
+    width: 140px;
+  }
+}
+
+@media (max-width: 1010px) {
+  .productImage{
+    width: 150px;
+    height: auto;
+  }
+
+  .productText{
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;  
+    text-overflow: ellipsis; 
+    width: 140px;
+  }
+}
+
 
 @media (max-width: 768px) {
   .contentWrapper1 {

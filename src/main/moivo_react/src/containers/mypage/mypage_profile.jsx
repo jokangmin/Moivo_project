@@ -26,10 +26,13 @@ const MypageProfile = () => {
         showTooltip,
         showModal,
         deletePassword,
+        handleCouponMouseEnter,
+        handleCouponMouseLeave,
         validatePassword,
         validateForm,
         loadDaumPostcodeScript,
         splitPhoneNumber,
+        showCouponTooltip,
     } = useMypageProfileContext();
 
     return (
@@ -69,15 +72,17 @@ const MypageProfile = () => {
                             )}
                         </div>
                         <div className={styles.couponSection}>
-                            <div className={styles.coupon}>
-                                COUPON: &nbsp;
-                                {userInfo && userInfo.coupons ? (
-                                userInfo.coupons.map((coupon, index) => (
-                                    <strong key={index}>{coupon.couponName}</strong>
-                                ))
-                                ) : (
-                                "쿠폰 정보를 불러오는 중입니다..."
-                                )}
+                        <div className={styles.coupon}>
+                            COUPON: &nbsp;
+                            {userInfo && userInfo.coupon ? (
+                            <>
+                            <strong>
+                            {userInfo.coupon.couponName }
+                            </strong>
+                  </>
+                ) : (
+                  "쿠폰 정보를 불러오는 중입니다..."
+                )}
                             </div>
                         </div>
                     </div>

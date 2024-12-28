@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
@@ -41,8 +42,6 @@ import Admins_ProductList from './containers/admin/admin_productList';
 import ReviewWrite from './containers/review/review_write';
 import DashBoardProvider from './contexts/DashBoardContext';
 import PaymentProvider from './contexts/payment/PaymentContext';
-
-
 import MypageProvider from './contexts/mypageCon/MypageContext';
 import MypageProfileProvider from './contexts/mypageCon/MypageProfileContext';
 import MypageWishProvider from './contexts/mypageCon/MypageWishContext';
@@ -105,7 +104,7 @@ const routeConfig = [
   { path: "/payment-method", element: ( <PaymentProvider> <PaymentMethod /> </PaymentProvider> ),},
   { path: "/payment-success", element: ( <PaymentProvider> <SuccessPage /> </PaymentProvider> ),},
   { path: "/payment-fail", element: ( <PaymentProvider> <FailPage /> </PaymentProvider> ),},
-  { path: "/admins_dashboard", element: <Dashboard/>},
+  { path: "/admins_dashboard", element: ( <DashBoardProvider> <Dashboard/> </DashBoardProvider> )},
   { path: "/api/oauth/kakao/callback", element: <KakaoCallback /> },
   { path: "/admins_qnaboard", element: <Admins_qna /> },
   { path: "/admins_productadd", element: <Admins_productAdd /> },
@@ -123,19 +122,11 @@ const App = () => {
     <Router>
       <AuthProvider>
         <MainProvider>
-          <DashBoardProvider>
-              <ProListProvider>
-                <ProDetailProvider>
-                  <ReviewProvider>
-                    <Routes>
-                      {routeConfig.map(({ path, element }, index) => (
-                        <Route key={index} path={path} element={element} />
-                      ))}
-                    </Routes>
-                  </ReviewProvider>
-                </ProDetailProvider>
-              </ProListProvider>
-          </DashBoardProvider>
+          <Routes>
+            {routeConfig.map(({ path, element }, index) => (
+              <Route key={index} path={path} element={element} />
+            ))}
+          </Routes>
         </MainProvider>
       </AuthProvider>
     </Router>
