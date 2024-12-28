@@ -1,4 +1,7 @@
 spring: # test
+  config:
+    import:
+      - classpath:/application-mysql.properties
   security:
     oauth2:
       client:
@@ -40,10 +43,10 @@ spring: # test
 
   datasource:
     # MySQL - NAVER Cloud 설정
-    url: jdbc:mysql://db-2vrk3j-kr.vpc-pub-cdb.ntruss.com:3306/moivodb?serverTimezone=Asia/Seoul
-    username: moivo
-    password: bitcamp123!@#
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PWD}
+    driver-class-name: ${DB_DRIVER}
 
   jpa:
     hibernate:
