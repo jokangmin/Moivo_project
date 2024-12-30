@@ -1,6 +1,6 @@
 2024.11.08~2024.12.31 
 
-7인 Team Project [ Moivo ]
+7인 Team Project [ Moivo ](https://moivo.shop/)
 
 패션/잡화 판매 플랫폼 사이트 구축을 하는 프로젝트 입니다.
 Spring Boot + React 를 주로 활용하였으며, 내부 로직을 구성하였습니다.
