@@ -30,7 +30,6 @@ export const AuthProvider = ({ children }) => {
 
     const removeTokens = () => {
         localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
     };
 
     // 토큰 갱신 함수
@@ -117,18 +116,34 @@ export const AuthProvider = ({ children }) => {
             const response = await axiosInstance.get(`/api/user/social/kakao/login?code=${code}`, {
                 withCredentials: true
             });
-            console.log(response.data);
             
-            const success = await handleLoginSuccess(response);
-            if (success) {
+            if (response.data.accessToken) {
+                // 토큰 및 사용자 정보 저장
+                localStorage.setItem('accessToken', response.data.accessToken);
+                localStorage.setItem('userId', response.data.userId);
+                localStorage.setItem('id', response.data.id);
+                localStorage.setItem('isAdmin', response.data.isAdmin);
+
+                // axios 헤더 설정
+                axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`;
+                
+                // 상태 업데이트
                 setIsAuthenticated(true);
+                setIsAdmin(response.data.isAdmin);
+                
+                console.log('[AuthContext] 카카오 로그인 성공');
                 return true;
             }
-
-            return await handleLoginSuccess(response);
+            return false;
         } catch (error) {
-            console.error('카카오 로그인 실패:', error);
-            throw error.response?.data?.error || error.message;
+            console.error('[AuthContext] 카카오 로그인 실패:', error);
+            // 중복 로그인이 아닌 경우에만 토큰 제거
+            if (error.response?.status !== 409) {
+                removeTokens();
+                setIsAuthenticated(false);
+                setIsAdmin(false);
+            }
+            throw error;
         }
     };
 
