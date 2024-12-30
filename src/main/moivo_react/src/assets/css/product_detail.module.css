@@ -677,7 +677,7 @@
   font-weight: 600;
 }
 
-/* 모바�� 대응 */
+/* 모바일 대응 */
 @media (max-width: 768px) {
   .detailContent {
     padding: 1.5rem;
@@ -730,6 +730,8 @@
 
 /* Review Section */
 .reviewSection {
+  max-width: 890px;
+  margin: 0 auto;
   padding: 2rem;
   background: #fff;
   border-radius: 12px;
@@ -747,15 +749,16 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  width: 100%;
 }
 
 .review {
+  width: 100%;
   padding: 1.5rem;
   border: none;
   background: linear-gradient(145deg, #ffffff, #f5f5f5);
   box-shadow: 5px 5px 15px #d9d9d9, -5px -5px 15px #ffffff;
   border-radius: 8px;
-  background: #fafafa;
   position: relative;
   overflow: hidden;
   transition: all 0.4s ease;
@@ -796,6 +799,7 @@
 }
 
 .reviewAuthor {
+  font-size: 1.5rem;
   font-weight: 500;
   color: #444;
   padding: 0 0.5rem;
@@ -1070,6 +1074,23 @@
 
   .review {
     margin: 10px 0;
+  }
+
+  .reviewSection {
+    padding: 1rem;
+    margin: 0 1rem;
+  }
+
+  .review {
+    padding: 1.2rem;
+  }
+
+  .reviewAuthor {
+    font-size: 0.9rem;
+  }
+
+  .reviewInfo {
+    gap: 0.8rem;
   }
 }
 
