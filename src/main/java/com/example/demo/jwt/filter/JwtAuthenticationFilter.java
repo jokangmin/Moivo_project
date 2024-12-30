@@ -44,43 +44,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
-        
-        String requestURI = request.getRequestURI();
-        
-        if (requestURI.contains("/api/auth/token/refresh") 
-            || requestURI.contains("/api/user/login")
-            || requestURI.contains("/api/user/join")
-            || requestURI.contains("/api/user/idCheck")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException {
         try {
             String token = getJwtFromRequest(request);
             
-            if (StringUtils.hasText(token)) {
-                if (blacklistService.isTokenBlacklisted(token)) {
-                    String userId = jwtUtil.getUserIdFromToken(token);
+            if (StringUtils.hasText(token) && jwtUtil.validateToken(token)) {
+                String userId = jwtUtil.getUserIdFromToken(token);
+                
+                if (!loginSessionService.isValidSession(userId, token)) {
                     sendDuplicateLoginResponse(response, userId);
                     return;
                 }
-
-                if (jwtUtil.validateToken(token)) {
-                    String userId = jwtUtil.getUserIdFromToken(token);
-                    
-                    if (!loginSessionService.isValidSession(userId, token)) {
-                        sendDuplicateLoginResponse(response, userId);
-                        return;
-                    }
-                    
-                    // 4. 인증 처리
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
-                    UsernamePasswordAuthenticationToken authentication = 
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
+                
+                UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
+                UsernamePasswordAuthenticationToken authentication = 
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
             filterChain.doFilter(request, response);
         } catch (Exception ex) {
@@ -97,12 +76,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void sendDuplicateLoginResponse(HttpServletResponse response, String userId) throws IOException {
-    
         String prevRefreshToken = redisTemplate.opsForValue().get("RT:" + userId);
         loginSessionService.handleDuplicateLogin(userId, prevRefreshToken);
         
-        //메시지 전송
-        sendJsonResponse(response, HttpServletResponse.SC_CONFLICT, //409 상태
+        sendJsonResponse(response, HttpServletResponse.SC_CONFLICT,
             new DuplicateLoginResponse("DuplicateLogin", 
                 "이미 다른 기기에서 로그인되어 있습니다.", 
                 "SESSION_EXPIRED"));
