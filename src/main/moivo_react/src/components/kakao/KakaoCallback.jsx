@@ -1,33 +1,35 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext.jsx';
+import { useAuth } from '../../contexts/AuthContext';
 
 const KakaoCallback = () => {
     const navigate = useNavigate();
     const { kakaoLogin } = useAuth();
 
-    // 24.12.16 - uj
-    // 카카오 로그인 요청
-    const kakao = async () => {
-        const code = new URL(window.location.href).searchParams.get("code");
-        console.log(code);
-        if (code) {
+    useEffect(() => {
+        const processKakaoLogin = async () => {
             try {
-                const success = await kakaoLogin(code);
-                if (success) {
-                    console.log(success);
-                    navigate('/');
+                const code = new URL(window.location.href).searchParams.get("code");
+                if (code) {
+                    console.log("[KakaoCallback] 인가 코드:", code);
+                    const success = await kakaoLogin(code);
+                    if (success) {
+                        console.log("[KakaoCallback] 로그인 성공");
+                        navigate('/');
+                    }
                 }
             } catch (error) {
-                console.error(error);
+                console.error("[KakaoCallback] 로그인 실패:", error);
+                // 중복 로그인이 아닌 다른 에러인 경우에만 로그인 페이지로 이동
+                if (!error.response?.status === 409) {
+                    navigate('/user');
+                }
             }
-        }
-    }
+        };
 
-    useEffect(() =>  {
-        kakao();
-    }, []);
-  
+        processKakaoLogin();
+    }, [kakaoLogin, navigate]);
+
     return <div>카카오 로그인 처리 중...</div>;
 };
 
