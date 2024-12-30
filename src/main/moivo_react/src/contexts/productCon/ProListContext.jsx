@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-vars */
 import React, { createContext, useState, useContext, useCallback, useMemo, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from "../AuthContext";
 import axiosInstance from '../../utils/axiosConfig';
 import PropTypes from 'prop-types';
 
 export const ProListContext = createContext();
 
-export function ProListProvider({ children }) {
+export const ProListProvider = ({ children }) => {
     const { token } = useContext(AuthContext); // 토큰 가져오기
     const accessToken = localStorage.getItem('accessToken'); // 로컬스토리지에서 토큰 가져오기
     const [products, setProducts] = useState([]); // 상품 목록 상태
@@ -32,6 +32,7 @@ export function ProListProvider({ children }) {
     const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
     const [isLoading, setIsLoading] = useState(false); // 로딩 상태
     const navigate = useNavigate();
+    const location = useLocation();
 
     // 페이지 상태를 세션스토리지에 저장/복원하는 로직 추가
     const [lastViewedState, setLastViewedState] = useState(() => {
@@ -50,16 +51,22 @@ export function ProListProvider({ children }) {
     const fetchProducts = useCallback(async (page) => {
         setIsLoading(true);
         try {
-            const response = await axiosInstance.get('/api/store', {
-                params: {
-                    page: page,
-                    size: itemsPerPage,
-                    sortby: sortBy,
-                    keyword: searchTerm,
-                    block: pageBlock,
-                    categoryid: activeCategory.id
-                }
+            // URL 쿼리 파라미터 구성
+            const queryParams = new URLSearchParams({
+                page: page,
+                size: itemsPerPage,
+                sortby: sortBy,
+                block: pageBlock,
+                categoryid: activeCategory.id
             });
+
+            // 검색어가 있는 경우에만 추가
+            if (searchTerm) {
+                queryParams.append('keyword', searchTerm);
+            }
+
+            // 쿼리스트링을 포함한 URL로 요청
+            const response = await axiosInstance.get(`/api/store?${queryParams.toString()}`);
 
             if (response.data) {
                 setProducts(response.data.productList || []);
@@ -184,7 +191,71 @@ export function ProListProvider({ children }) {
             (savedSearchTerm !== undefined && savedSearchTerm !== searchTerm)) {
             fetchProducts(0); // 필터 변경 시에만 첫 페이지로 이동
         }
-    }, [sortBy, activeCategory.id, searchTerm]);
+    }, [sortBy, activeCategory.id, searchTerm, fetchProducts]);
+
+    useEffect(() => {
+        // URL에서 쿼기 상태 읽기
+        const searchParams = new URLSearchParams(window.location.search);
+        
+        // URL 파라미터에서 각 값 추출 (없으면 기본값 사용)
+        const pageParam = parseInt(searchParams.get('page')) || 0;
+        const sortParam = searchParams.get('sortby') || 'newest';
+        const categoryIdParam = parseInt(searchParams.get('categoryid')) || 0;
+        const keywordParam = searchParams.get('keyword') || '';
+
+        // 상태 업데이트
+        setCurrentPage(pageParam);
+        setSortBy(sortParam);
+        setSearchTerm(keywordParam);
+
+        // 카테고리 설정
+        const category = categories.find(cat => cat.id === categoryIdParam) || categories[0];
+        setActiveCategory(category);
+
+        // 초기 데이터 로드
+        fetchProducts(pageParam);
+    }, []);
+
+    // 페이지 변경 핸들러
+    const handlePageChange = useCallback((page) => {
+        const searchParams = new URLSearchParams(location.search);
+        searchParams.set('page', page);
+        navigate(`${location.pathname}?${searchParams.toString()}`);
+        fetchProducts(page);
+    }, [location.search, location.pathname, navigate, fetchProducts]);
+
+    // 검색어 변경 핸들러
+    const handleSearchChange = useCallback((value) => {
+        const searchParams = new URLSearchParams(location.search);
+        if (value) {
+            searchParams.set('keyword', value);
+        } else {
+            searchParams.delete('keyword');
+        }
+        navigate(`${location.pathname}?${searchParams.toString()}`);
+        setSearchTerm(value);
+        fetchProducts(0); // 검색 시 첫 페이지로 이동
+    }, [location.search, location.pathname, navigate, fetchProducts]);
+
+    // 카테고리 변경 핸들러
+    const handleCategoryChange = useCallback((category) => {
+        const searchParams = new URLSearchParams(location.search);
+        searchParams.set('categoryid', category.id);
+        searchParams.set('page', '0'); // 카테고리 변경 시 첫 페이지로
+        navigate(`${location.pathname}?${searchParams.toString()}`);
+        setActiveCategory(category);
+        fetchProducts(0);
+    }, [location.search, location.pathname, navigate, fetchProducts]);
+
+    // 정렬 변경 핸들러
+    const handleSortChange = useCallback((value) => {
+        const searchParams = new URLSearchParams(location.search);
+        searchParams.set('sortby', value);
+        searchParams.set('page', '0'); // 정렬 변경 시 첫 페이지로
+        navigate(`${location.pathname}?${searchParams.toString()}`);
+        setSortBy(value);
+        fetchProducts(0);
+    }, [location.search, location.pathname, navigate, fetchProducts]);
 
     const value = useMemo(() => ({
         products,
@@ -212,7 +283,11 @@ export function ProListProvider({ children }) {
         setPageInfo,
         setProducts,
         setCartItem,
-        setWishItem
+        setWishItem,
+        handlePageChange,
+        handleSearchChange,
+        handleCategoryChange,
+        handleSortChange
     }), [
         products, 
         currentPage, 
@@ -229,7 +304,11 @@ export function ProListProvider({ children }) {
         handleProductClick, 
         handleWishClick, 
         handleCartClick,
-        lastViewedState
+        lastViewedState,
+        handlePageChange,
+        handleSearchChange,
+        handleCategoryChange,
+        handleSortChange
     ]);
 
     return (
@@ -237,7 +316,7 @@ export function ProListProvider({ children }) {
             {children}
         </ProListContext.Provider>
     );
-}
+};
 
 ProListProvider.propTypes = {
     children: PropTypes.node.isRequired
