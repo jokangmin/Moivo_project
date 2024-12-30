@@ -38,28 +38,18 @@ const ProductDetail = () => {
     fetchReviews,
     isAllSizesSoldOut,
     setError,
-    setLoading
+    setLoading,
+    initializeProduct,
+    loadReviews,
   } = useProDetail();
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    
-    if (!token) {
-      alert("로그인이 필요한 서비스입니다.");
-      navigate("/user");
-      return;
-    }
-  }, [navigate]);
+    initializeProduct(productId);
+  }, [productId, initializeProduct]);
 
   useEffect(() => {
-    fetchProductDetail(productId);
-  }, [productId, fetchProductDetail]);
-
-  useEffect(() => {
-    if (productId && activeTab === 'reviews') {
-      fetchReviews(productId);
-    }
-  }, [productId, activeTab]);
+    loadReviews(productId);
+  }, [productId, loadReviews]);
 
   if (loading) {
     return <LoadingModal isOpen={true} />;
