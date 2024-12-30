@@ -9,7 +9,7 @@ import cartIcon from '../../assets/image/cart.png';
 const Banner = () => {
   const navigate = useNavigate();
   const { isAuthenticated, logout, tokenExpiration, isAdmin } = useContext(AuthContext);
-  //2024-12-11 디버그 확인 장훈
+  //2024-12-11 디버그 확인 장훈s
   console.log('isAdmin:', isAdmin);
 
   useEffect(() => {

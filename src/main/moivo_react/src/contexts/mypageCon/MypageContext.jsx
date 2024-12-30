@@ -69,6 +69,16 @@ const MypageProvider = ({ children }) => {
     setShowCouponTooltip(false);
   };
 
+  // 자동 슬라이드 기능
+  useEffect(() => {
+    const interval = setInterval(() => {
+      handleRightArrowClick(); // 일정 시간마다 오른쪽 화살표 클릭 함수 실행
+    }, 3000); // 3초마다 자동으로 슬라이드
+
+    // 컴포넌트 언마운트 시 interval 정리
+    return () => clearInterval(interval);
+  }, [handleRightArrowClick]);
+
   const value = {
     userInfo,
     productList,

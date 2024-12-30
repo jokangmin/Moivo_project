@@ -3,7 +3,7 @@ import styles from "../../assets/css/Mypage_orderDetails.module.css";
 import Banner from "../../components/Banner/banner";
 import Footer from "../../components/Footer/Footer";
 import { useMypageOrderDetailContext } from '../../contexts/mypageCon/MypageOrderDetailContext';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const MypageOrderDetails = () => {
     const {
@@ -13,6 +13,17 @@ const MypageOrderDetails = () => {
         userId,
         handleButtonClick,
     } = useMypageOrderDetailContext();
+
+    const originalTotalPrice = OrderDetailList.reduce(
+        (acc, item) => acc + item.price,
+        0
+    );
+
+    // 할인된 총 가격
+    const discountedTotalPrice = OrdersInfo[0]?.totalPrice || 0;
+
+    // 할인 금액
+    const discountAmount = originalTotalPrice - discountedTotalPrice;
 
     const navigate = useNavigate();
     //*********************************************************************** */
@@ -80,13 +91,13 @@ const MypageOrderDetails = () => {
                     </div>
                     {OrderDetailList.map((item, index) => (
                         <div className={styles.row} key={index}>
-                            <div className={styles.image}>
+                            <Link to={`/product-detail/${item.productId}`} className={styles.detailLink}>
                                 <img src={item.productImg} alt={`order-${index}`} />
-                            </div>
+                            </Link>
                             <div className={styles.column3}>{item.productName}</div>
                             <div className={styles.column}>{item.size}</div>
                             <div className={styles.column}>x {item.count}</div> {/* 수량 표시 */}
-                            <div className={styles.column}>KRW {item.price}</div>
+                            <div className={styles.column}>KRW {item.price.toLocaleString()}</div>
                             <div className={styles.column}>
                             {OrdersInfo[0]?.deliveryStatus === "CONFIRMED" ? (
                                 item.writeReview === false ? (
@@ -156,8 +167,17 @@ const MypageOrderDetails = () => {
                 <hr className={styles.solidLine} />
 
                 {/* 결제 정보 */}
+                {/* 결제 정보 섹션 */}
                 <section className={styles.paymentSummary}>
-                    <p className={styles.totalPrice}>합계: <span>KRW {OrdersInfo[0]?.totalPrice}</span></p>
+                        <p className={styles.totalPrice1}>
+                            <strong>상품 금액:</strong> <span>KRW {originalTotalPrice.toLocaleString()}</span>
+                        </p>
+                        <p className={styles.totalPrice2}>
+                            <strong>할인 금액:</strong> <span>- KRW {discountAmount.toLocaleString()}</span>
+                        </p>
+                        <p className={styles.totalPrice}>
+                            <strong>총 결제 금액:</strong> <span>KRW {discountedTotalPrice.toLocaleString()}</span>
+                        </p>
                 </section>
 
 

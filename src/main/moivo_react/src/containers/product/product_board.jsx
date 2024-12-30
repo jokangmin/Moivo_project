@@ -6,6 +6,7 @@ import Footer from '../../components/Footer/Footer';
 import Banner from '../../components/Banner/banner';
 import { motion } from 'framer-motion';
 import { useDashBoard } from '../../contexts/DashBoardContext';
+import { Link } from 'react-router-dom';
 
 const ProductBoard = () => {
   const {
@@ -129,9 +130,11 @@ const ProductBoard = () => {
             <div className={styles.productList}>
               {productListArray[0]?.slice(startIndex, startIndex + 3).map((product, index) => (
                 <div key={index} className={styles.product}>
-                  <div className={styles.productImage}>
-                    <img src={product.img} alt={product.name} />
-                  </div>
+                  <Link to={`/product-detail/${product.id}`} className={styles.detailLink}>
+                    <div className={styles.productImage}>
+                      <img src={product.img} alt={product.name} />
+                    </div>
+                  </Link>
                   <div className={styles.productText}>
                     {product.name} <br />
                     <span className={styles.price}>{product.price?.toLocaleString()} 원</span>
@@ -156,9 +159,11 @@ const ProductBoard = () => {
             <div className={styles.productList}>
               {productListArray[2]?.slice(startIndex_2, startIndex_2 + 3).map((product, index) => (
                 <div key={index} className={styles.product}>
-                  <div className={styles.productImage}>
-                    <img src={product.img} alt={product.name} />
-                  </div>
+                  <Link to={`/product-detail/${product.id}`} className={styles.detailLink}>
+                    <div className={styles.productImage}>
+                      <img src={product.img} alt={product.name} />
+                    </div>
+                  </Link>
                   <div className={styles.productText}>
                     {product.name} <br />
                     <span className={styles.price}>{product.price?.toLocaleString()} 원</span>
@@ -182,9 +187,11 @@ const ProductBoard = () => {
             <div className={styles.productList}>
               {productListArray[1]?.slice(startIndex_3, startIndex_3 + 3).map((product, index) => (
                 <div key={index} className={styles.product}>
-                  <div className={styles.productImage}>
-                    <img src={product.img} alt={product.name} />
-                  </div>
+                  <Link to={`/product-detail/${product.id}`} className={styles.detailLink}>
+                    <div className={styles.productImage}>
+                      <img src={product.img} alt={product.name} />
+                    </div>
+                  </Link>
                   <div className={styles.productText}>
                     {product.name} <br />
                     <span className={styles.price}>{product.price?.toLocaleString()} 원</span>
