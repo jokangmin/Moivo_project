@@ -25,6 +25,10 @@ public class LoginSessionService {
     
     // 사용자의 현재 세션 토큰 저장
     public void saveLoginSession(String userId, String accessToken, String refreshToken) {
+        System.out.println("Redis 저장 시도 - userId: " + userId);
+        System.out.println("AT key: AT:" + userId);
+        System.out.println("RT key: RT:" + userId);
+        
         // 이전 토큰들 조회
         String prevAccessToken = redisTemplate.opsForValue().get("AT:" + userId);
         String prevRefreshToken = redisTemplate.opsForValue().get("RT:" + userId);
@@ -49,6 +53,12 @@ public class LoginSessionService {
         // userId로도 토큰 조회 가능하도록 저장
         redisTemplate.opsForValue().set("AT:" + userId, accessToken, 1, TimeUnit.HOURS);
         redisTemplate.opsForValue().set("RT:" + userId, refreshToken, 7, TimeUnit.DAYS);
+        
+        // 저장 확인
+        String savedAT = redisTemplate.opsForValue().get("AT:" + userId);
+        String savedRT = redisTemplate.opsForValue().get("RT:" + userId);
+        System.out.println("저장된 AT 확인: " + (savedAT != null));
+        System.out.println("저장된 RT 확인: " + (savedRT != null));
     }
     
     // 사용자의 현재 세션 토큰 확인

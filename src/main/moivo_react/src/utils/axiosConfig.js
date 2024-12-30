@@ -48,8 +48,16 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // 카카오 로그인 프로세스 중인지 확인
+    const isKakaoLoginProcess = window.location.pathname.includes('/oauth/callback/kakao');
+
     // 401 Unauthorized 처리
     if (error.response?.status === 401 && !originalRequest._retry) {
+      // 카카오 로그인 중이면 토큰 갱신 시도하지 않음
+      if (isKakaoLoginProcess) {
+        return Promise.reject(error);
+      }
+
       // 토큰이 있는 경우에만 토큰 갱신 시도
       const token = localStorage.getItem('accessToken');
       if (token) {
@@ -111,6 +119,11 @@ axiosInstance.interceptors.response.use(
     }
 
     if (error.response?.status === 409) { // 중복 로그인
+      // 카카오 로그인 중이면 중복 로그인 체크 건너뛰기
+      if (isKakaoLoginProcess) {
+        return Promise.reject(error);
+      }
+
       // 현재 토큰이 있는 경우에만 중복 로그인으로 처리
       if (localStorage.getItem('accessToken')) {
         console.log('중복 로그인 감지');
