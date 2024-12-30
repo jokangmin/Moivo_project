@@ -56,18 +56,19 @@ public class SocialController {
             System.out.println("로그인 성공!!");
 
             return ResponseEntity.ok(loginResult);
-        } catch (NullPointerException e) {
-            // 카카오 서버에서 회원 정보 추출 실패
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.SC_NOT_FOUND).body(e.getMessage());
         } catch (RuntimeException e) {
-            // 인증 및 인가 예외 처리
-            System.out.println("로그인 실패: " + e.getMessage()); // 디버깅
+            if (e.getMessage().contains("이미 다른 기기에서 로그인")) {
+                // 중복 로그인 예외를 409 Conflict로 처리
+                return ResponseEntity.status(HttpStatus.SC_CONFLICT)
+                        .body(Map.of("error", e.getMessage()));
+            }
+            // 다른 RuntimeException은 401로 처리
             return ResponseEntity.status(HttpStatus.SC_UNAUTHORIZED)
                     .body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.SC_EXPECTATION_FAILED).body(null);
+            return ResponseEntity.status(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "서버 오류가 발생했습니다."));
         }
     }
 
