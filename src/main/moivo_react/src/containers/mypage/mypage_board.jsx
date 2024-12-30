@@ -24,7 +24,7 @@ const mypage_board = () => {
     } = useMypageBoardContext();
 
     return (
-        <div className={styles.reviewPage}>
+        <div className={styles.reviewPageMain}>
             <div className={styles.reviewPage}>
                 <Banner/>
                 {/* 타이틀 */}
