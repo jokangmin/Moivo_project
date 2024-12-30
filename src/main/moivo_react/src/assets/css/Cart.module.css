@@ -7,6 +7,7 @@
     background: #f6f2ee;
     padding: 130px 0;
     padding-bottom: 40vh;
+    height: 100vh;
   }
   
   /* 제목 스타일 */
@@ -313,6 +314,14 @@
   border-color: #bbb;
 }
 
+/* cartItem 반응형 추가*/
+@media screen and (max-width: 770px) {
+  .cartItem {
+    width: 100%;
+    padding: 10px;
+  }
+}
+
 @media screen and (max-width: 576px) {
   .cartItem {
     width: 100%;
@@ -320,14 +329,20 @@
   }
 
   .cartItem input[type="checkbox"] + label {
-    width: 26px;
-    height: 24px;
-    margin-right: 10px;
+    width: 15px;
+    height: 20px;
+    margin-right: 5px;
+    padding: 7px;
   }
- 
+
+  .removeButton{
+    margin-right: 15px;
+  }
+
   .productImage {
     width: 160px;
     height: 230px;
+    margin-right: 10px;
   }
 
   .productDetails {
