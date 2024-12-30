@@ -39,7 +39,7 @@ const Cart = () => {
               <div key={item.usercartId} className={styles.cartItem}>
                 {/* 품절 상품 체크 불가 */}
                 <input
-                  type="checkbox"
+                  type="checkbox" 
                   id={`${item.usercartId}`}
                   checked={selectedItems.includes(item.usercartId)}
                   disabled={item.soldOut} // 품절 상태일 때 체크박스를 비활성화
