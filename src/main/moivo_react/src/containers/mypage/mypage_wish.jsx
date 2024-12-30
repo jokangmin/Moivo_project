@@ -21,9 +21,11 @@ const MypageWish = () => {
             <div className={styles.wishlistContainer}>
               {wishlistItems.map((item) => (
                 <div key={item.id} className={styles.wishlistItem}>
-                  <div className={styles.itemImage}>
-                    <img src={item.img} alt={item.name} />
-                  </div>
+                  <Link to={`/product-detail/${item.id}`} className={styles.orderLink}>
+                    <div className={styles.itemImage}>
+                      <img src={item.img} alt={item.name} />
+                    </div>
+                  </Link>
                   <div className={styles.itemInfo}>
                     <div className={styles.itemName}>{item.name}</div>
                     <div className={styles.itemPrice}>{item.price}원</div>

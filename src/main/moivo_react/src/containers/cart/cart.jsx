@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styles from "../../assets/css/Cart.module.css";
 import Banner from "../../components/Banner/banner";
 import Footer from "../../components/Footer/Footer";
@@ -13,6 +14,8 @@ const Cart = () => {
     handleNavigateToPayment,
     setSelectedItems,
     setCartItems,
+    selectAllChecked,
+    handleSelectAll,
   } = useCartContext();
 
   return (
@@ -22,6 +25,16 @@ const Cart = () => {
         <div className={styles.title}>CART</div>
         {cartItems.length > 0 ? (
           <div className={styles.cartContainer}>
+            {/* 전체 선택 버튼 */}
+            <div className={styles.selectAllSection}>
+              <input
+                type="checkbox"
+                id="select-all"
+                checked={selectAllChecked}
+                onChange={handleSelectAll}
+              />
+              <label htmlFor="select-all">전체 선택</label>
+            </div>
             {cartItems.map((item) => (
               <div key={item.usercartId} className={styles.cartItem}>
                 {/* 품절 상품 체크 불가 */}
@@ -39,12 +52,13 @@ const Cart = () => {
                   }
                 />
                 <label htmlFor={`${item.usercartId}`}></label>
-                <div className={styles.productImage}>
-                  <img src={item.img || "../image/default.jpg"} alt={item.name} />
-                </div>
+                <Link to={`/product-detail/${item.productId}`} className={styles.orderLink}>
+                  <div className={styles.productImage}>
+                    <img src={item.img || "../image/default.jpg"} alt={item.name} />
+                  </div>
+                </Link>
                 <div className={styles.productDetails}>
-                  <div className={styles.productName}>{item.name}</div>
-                  <div className={styles.productContent}>{item.content}</div>
+                  <div className={styles.productName}>{item.name}</div>                
                   <div className={styles.productPrice}>
                     KRW {item.price.toLocaleString()}
                   </div>
