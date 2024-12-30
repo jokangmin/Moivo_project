@@ -18,6 +18,12 @@ const CartProvider = ({ children }) => {
 
     useEffect(() => {
       const fetchCartItems = async () => {
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+          alert("로그인이 필요합니다.");
+          navigate("/user");
+          return;
+        }
         try {
           const response = await axiosInstance.get(`/api/user/cart/list`);
           
