@@ -1,12 +1,16 @@
 @import url("https://cdn.jsdelivr.net/gh/webfontworld/gmarket/GmarketSans.css");
 
 /* 전체 컨테이너 */
+.reviewPageMain{
+    height: 100%;
+}
+
 .reviewPage {
     width: 100%;
     margin: 0 auto;
     background: #F6F2EE;
     padding: 130px 0;
-    height: 100vh;
+    min-height: 645px;
 }
 
 /* 타이틀 */
