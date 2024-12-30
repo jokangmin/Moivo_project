@@ -42,7 +42,7 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// 응답 인터셉터: 401 응답 처리 및 토큰 갱신
+// 응답 인터셉터
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -50,71 +50,69 @@ axiosInstance.interceptors.response.use(
 
     // 401 Unauthorized 처리
     if (error.response?.status === 401 && !originalRequest._retry) {
-      // 토큰이 만료되었는지 확인
-      const errorMessage = error.response?.data?.message;
-      if (errorMessage?.includes('만료된 토큰') || errorMessage?.includes('expired')) {
-        console.warn('[RESPONSE] 토큰 만료: 갱신 시도');
-        if (isRefreshing) {
-          return new Promise((resolve, reject) => {
-            failedQueue.push({ resolve, reject });
-          })
-            .then((token) => {
-              console.log('[RESPONSE] 갱신된 토큰으로 재요청 진행');
-              originalRequest.headers.Authorization = `Bearer ${token}`;
-              return axiosInstance(originalRequest);
+      // 토큰이 있는 경우에만 토큰 갱신 시도
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const errorMessage = error.response?.data?.message;
+        if (errorMessage?.includes('만료된 토큰') || errorMessage?.includes('expired')) {
+          console.warn('[RESPONSE] 토큰 만료: 갱신 시도');
+          if (isRefreshing) {
+            return new Promise((resolve, reject) => {
+              failedQueue.push({ resolve, reject });
             })
-            .catch((err) => {
-              console.error('[RESPONSE ERROR] 재요청 중 에러 발생:', err);
-              return Promise.reject(err);
-            });
-        }
-
-        originalRequest._retry = true;
-        isRefreshing = true;
-
-        try {
-          console.log('[RESPONSE] 토큰 갱신 요청 시작');
-          const response = await axios.post(
-              `${PATH.SERVER}/api/auth/token/refresh`,
-              {}, // Refresh Token 요청 시 Body 필요 여부 확인
-              { withCredentials: true } // 쿠키 기반 인증 포함
-          );
-      
-          const { newAccessToken } = response.data; // 새로 발급된 토큰
-          console.log('[RESPONSE] 새로 갱신된 토큰:', newAccessToken);
-      
-          if (newAccessToken) {
-              // 새 토큰 저장 및 적용
-              localStorage.setItem('accessToken', newAccessToken); // localStorage에 저장
-              axiosInstance.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`; // axios 기본 헤더 설정
-              originalRequest.headers.Authorization = `Bearer ${newAccessToken}`; // 재요청 헤더에 갱신된 토큰 설정
-      
-              processQueue(null, newAccessToken); // 실패한 요청 큐 처리
-              console.log('[RESPONSE] 갱신된 토큰으로 재요청 진행');
-              return axiosInstance(originalRequest); // 재요청
+              .then((token) => {
+                console.log('[RESPONSE] 갱신된 토큰으로 재요청 진행');
+                originalRequest.headers.Authorization = `Bearer ${token}`;
+                return axiosInstance(originalRequest);
+              })
+              .catch((err) => {
+                console.error('[RESPONSE ERROR] 재요청 중 에러 발생:', err);
+                return Promise.reject(err);
+              });
           }
-      } catch (refreshError) {
-          console.error('[RESPONSE ERROR] 토큰 갱신 실패:', refreshError);
-          processQueue(refreshError, null); // 실패한 요청 처리
-          localStorage.removeItem('accessToken'); // 실패 시 토큰 삭제
-          window.location.href = '/user'; // 로그아웃 처리
-          return Promise.reject(refreshError); // 에러 반환    
-        } finally {
-          isRefreshing = false; // 갱신 상태 초기화
-        }
-      } else {
-        // 다른 인증 오류의 경우 바로 에러 반환
-        console.error('[RESPONSE] 인증 오류:', errorMessage);
-        return Promise.reject(error);
-      }
-    }
 
-    if (error.response?.status === 404) {
-      console.warn('[RESPONSE] 404 응답 처리: 데이터 없음');
-      return Promise.resolve({ data: null });
+          originalRequest._retry = true;
+          isRefreshing = true;
+
+          try {
+            console.log('[RESPONSE] 토큰 갱신 요청 시작');
+            const response = await axios.post(
+                `${PATH.SERVER}/api/auth/token/refresh`,
+                {}, // Refresh Token 요청 시 Body 필요 여부 확인
+                { withCredentials: true } // 쿠키 기반 인증 포함
+            );
+        
+            const { newAccessToken } = response.data; // 새로 발급된 토큰
+            console.log('[RESPONSE] 새로 갱신된 토큰:', newAccessToken);
+        
+            if (newAccessToken) {
+                // 새 토큰 저장 및 적용
+                localStorage.setItem('accessToken', newAccessToken); // localStorage에 저장
+                axiosInstance.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`; // axios 기본 헤더 설정
+                originalRequest.headers.Authorization = `Bearer ${newAccessToken}`; // 재요청 헤더에 갱신된 토큰 설정
+        
+                processQueue(null, newAccessToken); // 실패한 요청 큐 처리
+                console.log('[RESPONSE] 갱신된 토큰으로 재요청 진행');
+                return axiosInstance(originalRequest); // 재요청
+            }
+        } catch (refreshError) {
+            console.error('[RESPONSE ERROR] 토큰 갱신 실패:', refreshError);
+            processQueue(refreshError, null); // 실패한 요청 처리
+            localStorage.removeItem('accessToken'); // 실패 시 토큰 삭제
+            window.location.href = '/user'; // 로그아웃 처리
+            return Promise.reject(refreshError); // 에러 반환    
+          } finally {
+            isRefreshing = false; // 갱신 상태 초기화
+          }
+        }
+      }
+      // 토큰이 없는 경우는 그냥 에러 반환
+      return Promise.reject(error);
     }
 
     if (error.response?.status === 409) { // 중복 로그인
+      // 현재 토큰이 있는 경우에만 중복 로그인으로 처리
+      if (localStorage.getItem('accessToken')) {
         console.log('중복 로그인 감지');
         const { message } = error.response.data;
         alert(message);
@@ -122,8 +120,15 @@ axiosInstance.interceptors.response.use(
         localStorage.removeItem('userId');
         localStorage.removeItem('id');
         localStorage.removeItem('isAdmin');
+        delete axiosInstance.defaults.headers.common['Authorization'];
         window.location.href = '/user';
         return Promise.reject(new Error(message));
+      }
+    }
+
+    if (error.response?.status === 404) {
+      console.warn('[RESPONSE] 404 응답 처리: 데이터 없음');
+      return Promise.resolve({ data: null });
     }
 
     console.error('[RESPONSE ERROR] 요청 실패:', error);
