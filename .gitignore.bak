@@ -43,6 +43,3 @@ socialLogin.yml
 
 ##.gitignore git 날씨 및 설정 키 추가 
 /src/main/moivo_react/.env
-
-# yml 파일 업로드하지 않기
-external-config.properties
