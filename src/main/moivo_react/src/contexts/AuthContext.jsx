@@ -28,10 +28,6 @@ export const AuthProvider = ({ children }) => {
         return localStorage.getItem('accessToken');
     };
 
-    const getRefreshToken = () => {
-        return localStorage.getItem('refreshToken');
-    };
-
     const removeTokens = () => {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
@@ -66,7 +62,6 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         try {
             const accessToken = getAccessToken();
-            const refreshToken = getRefreshToken();
             
             // 토큰이 있는 경우에만 로그아웃 요청
             if (accessToken) {
@@ -83,6 +78,9 @@ export const AuthProvider = ({ children }) => {
             setIsAuthenticated(false);
             setIsAdmin(false); // 2024-12-11 로그아웃 시 isAdmin 상태 초기화 장훈
             
+            // 헤더에서 Authorization 키 삭제
+            delete axiosInstance.defaults.headers.common['Authorization'];
+
             // 사용자 정보 제거
             localStorage.removeItem('userId');
             localStorage.removeItem('id');
@@ -198,7 +196,6 @@ export const AuthProvider = ({ children }) => {
         kakaoLogin,
         handleLoginSuccess,
         getAccessToken,
-        getRefreshToken,
         refreshAccessToken,
         tokenExpiryTime,
         getTokenExpiryTime,
