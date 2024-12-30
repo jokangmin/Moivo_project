@@ -1,5 +1,8 @@
 @import url("https://cdn.jsdelivr.net/gh/webfontworld/gmarket/GmarketSans.css");
 
+.cartPageMain{
+  height: 100%;
+}
 /* 전체 컨테이너 */
 .cartFrame {
     width: 100%;
@@ -7,7 +10,7 @@
     background: #f6f2ee;
     padding: 130px 0;
     padding-bottom: 40vh;
-    height: 100vh;
+    min-height: 645px;
   }
   
   /* 제목 스타일 */

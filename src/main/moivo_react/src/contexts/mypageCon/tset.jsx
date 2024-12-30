@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import axiosInstance from "../../utils/axiosConfig";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom"; // useSearchParams
+// ↑ 기존주석: import ...
 
 const MypageBoardContext = createContext();
 
@@ -25,8 +26,10 @@ const MypageBoardProvider = ({ children }) => {
     });
 
     // 12/18 나의 문의 리스트 가져오기 - km
-    // 2024/12/30 쿼리 파람 추가  장훈
-    const [searchParams, setSearchParams] = useSearchParams(); 
+    // -------------------------------------
+    // 쿼리 파라미터 이용
+    // -------------------------------------
+    const [searchParams, setSearchParams] = useSearchParams();
 
     // 현재 사용자 ID 확인
     const checkUserId = () => {
@@ -78,7 +81,10 @@ const MypageBoardProvider = ({ children }) => {
         }
     };
 
-    // 페이지네이션 버튼 클릭 시 fetchOrders 호출
+    // 페이지네이션 버튼 클릭 시
+    // ------------------------------------------
+    // 여기서 'page'를 쿼리 파라미터로 설정
+    // ------------------------------------------
     const handlePageClick = (page) => {
         setSearchParams({ page });
     };
@@ -151,6 +157,10 @@ const MypageBoardProvider = ({ children }) => {
         }
     };
 
+    // -----------------------------------------------
+    // 기존에 [navigate] 의존성으로 fetchMyQna()를
+    // 호출하던 부분을 쿼리 파라미터 중심으로 수정
+    // -----------------------------------------------
     useEffect(() => {
         // URL의 쿼리 파라미터에서 page값 읽기
         const pageParam = parseInt(searchParams.get("page"), 10) || 0;
@@ -171,6 +181,57 @@ const MypageBoardProvider = ({ children }) => {
         });
     };
 
+    // ========================================
+    // [추가] 5개 단위로 끊어서 페이지네이션
+    // ========================================
+    const renderPagination = () => {
+        // 페이지가 1개 이하라면 숨기기
+        if (totalPages <= 1) return null;
+
+        // 현재 페이지(currentPage)는 0-based
+        // 예) currentPage=0~4 → 표시그룹 1..5
+        //     currentPage=5~9 → 표시그룹 6..10
+        const pageGroupSize = 5;
+        const currentGroup = Math.floor(currentPage / pageGroupSize);
+        const startPage = currentGroup * pageGroupSize; 
+        const endPage = Math.min(startPage + pageGroupSize - 1, totalPages - 1);
+
+        // 페이지 배열 만들기
+        const pages = [];
+        for (let p = startPage; p <= endPage; p++) {
+            pages.push(p);
+        }
+
+        return (
+            <div style={{ marginTop: '20px' }}>
+                {/* 이전 그룹 버튼 */}
+                {currentGroup > 0 && (
+                    <button style={{ marginRight: '8px' }} onClick={() => handlePageClick(startPage - 1)}>
+                        이전
+                    </button>
+                )}
+
+                {/* 개별 페이지 버튼 (0-based → 표시 p+1) */}
+                {pages.map((p) => (
+                    <button
+                        key={p}
+                        style={{ marginRight: '3px', fontWeight: p === currentPage ? 'bold' : 'normal' }}
+                        onClick={() => handlePageClick(p)}
+                    >
+                        {p + 1}
+                    </button>
+                ))}
+
+                {/* 다음 그룹 버튼 */}
+                {endPage < totalPages - 1 && (
+                    <button style={{ marginLeft: '8px' }} onClick={() => handlePageClick(endPage + 1)}>
+                        다음
+                    </button>
+                )}
+            </div>
+        );
+    };
+
     const value = {
         MyQnaList,
         currentPage,
@@ -185,6 +246,9 @@ const MypageBoardProvider = ({ children }) => {
         editedPost,
         setEditedPost,
         setEditModalVisible,
+
+        // [추가] 5개 단위 페이지네이션 렌더함수
+        renderPagination,
     };
 
     return (
