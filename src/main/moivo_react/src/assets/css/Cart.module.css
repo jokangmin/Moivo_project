@@ -314,6 +314,7 @@
   border-color: #bbb;
 }
 
+/* cartItem 반응형 추가*/
 @media screen and (max-width: 770px) {
   .cartItem {
     width: 100%;
