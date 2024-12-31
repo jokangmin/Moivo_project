@@ -158,12 +158,4 @@ public class MypageController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-
-
-    // 주문내역 조회
-    // 주문 내역 상세 조회
-    // 회원정보 수정
-    // 회원 탈퇴
-    // 출석
-    // 찜
 }

@@ -25,34 +25,46 @@ public class LoginSessionService {
     
     // 사용자의 현재 세션 토큰 저장
     public void saveLoginSession(String userId, String accessToken, String refreshToken) {
-        // 1. 기존 토큰 조회
+        System.out.println("Redis 저장 시도 - userId: " + userId);
+        System.out.println("AT key: AT:" + userId);
+        System.out.println("RT key: RT:" + userId);
+        
+        // 이전 토큰들 조회
         String prevAccessToken = redisTemplate.opsForValue().get("AT:" + userId);
         String prevRefreshToken = redisTemplate.opsForValue().get("RT:" + userId);
         
-        // 2. 이전 토큰이 있다면 처리
-        if (prevRefreshToken != null) {
-            Date expiry = jwtUtil.getExpirationDateFromToken(prevRefreshToken);
-            blacklistService.addToBlacklist(prevRefreshToken, expiry);
-            redisTemplate.delete("RT:" + userId);
-            redisTemplate.delete(prevRefreshToken);
-        }
-        
+        // 이전 토큰이 있다면 블랙리스트에 추가
         if (prevAccessToken != null) {
+            Date expiry = jwtUtil.getExpirationDateFromToken(prevAccessToken);
+            blacklistService.addToBlacklist(prevAccessToken, expiry);
             redisTemplate.delete("AT:" + userId);
             redisTemplate.delete(prevAccessToken);
         }
         
-        // 3. 새로운 토큰 저장
+        if (prevRefreshToken != null) {
+            redisTemplate.delete("RT:" + userId);
+            redisTemplate.delete(prevRefreshToken);
+        }
+        
+        // 새로운 토큰 저장 - 토큰을 키로 사용
         redisTemplate.opsForValue().set(accessToken, userId, 1, TimeUnit.HOURS);
         redisTemplate.opsForValue().set(refreshToken, userId, 7, TimeUnit.DAYS);
+        
+        // userId로도 토큰 조회 가능하도록 저장
         redisTemplate.opsForValue().set("AT:" + userId, accessToken, 1, TimeUnit.HOURS);
         redisTemplate.opsForValue().set("RT:" + userId, refreshToken, 7, TimeUnit.DAYS);
+        
+        // 저장 확인
+        String savedAT = redisTemplate.opsForValue().get("AT:" + userId);
+        String savedRT = redisTemplate.opsForValue().get("RT:" + userId);
+        System.out.println("저장된 AT 확인: " + (savedAT != null));
+        System.out.println("저장된 RT 확인: " + (savedRT != null));
     }
     
     // 사용자의 현재 세션 토큰 확인
     public boolean isValidSession(String userId, String accessToken) {
-        String storedToken = redisTemplate.opsForValue().get("AT:" + userId);
-        return accessToken.equals(storedToken);
+        String storedUserId = redisTemplate.opsForValue().get(accessToken);
+        return userId.equals(storedUserId);
     }
     
     // 로그아웃 시 세션 삭제
@@ -74,20 +86,16 @@ public class LoginSessionService {
         }
     }
     
-    public void handleDuplicateLogin(String userId, String prevRefreshToken) {
-        // 1. 이전 Refresh 토큰 블랙리스트 처리
+    public void handleDuplicateLogin(String userId, String prevRefreshToken) throws IOException {
         if (prevRefreshToken != null) {
-            Date expiry = jwtUtil.getExpirationDateFromToken(prevRefreshToken);
-            blacklistService.addToBlacklist(prevRefreshToken, expiry);
-            redisTemplate.delete("RT:" + userId);
+            // 기존 Refresh Token을 블랙리스트에 추가
+            Date refreshTokenExpiry = jwtUtil.getExpirationDateFromToken(prevRefreshToken);
+            blacklistService.addToBlacklist(prevRefreshToken, refreshTokenExpiry);
+            
+            // Redis에서 기존 토큰 정보 삭제
             redisTemplate.delete(prevRefreshToken);
-        }
-        
-        // 2. Access 토큰 삭제
-        String prevAccessToken = redisTemplate.opsForValue().get("AT:" + userId);
-        if (prevAccessToken != null) {
+            redisTemplate.delete("RT:" + userId);
             redisTemplate.delete("AT:" + userId);
-            redisTemplate.delete(prevAccessToken);
         }
     }
 }
