@@ -105,5 +105,3 @@ logging:
 #.gitignore에
 ###인증정보 제외
 #/src/main/resources/google or naver.yml 추가
-
-#배포용 yml 코드
