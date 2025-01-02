@@ -145,7 +145,7 @@ const Banner = () => {
               </span>
               {isAuthenticated && ( <span className={styles.expiration}>{formatExpiration(tokenExpiration)}</span> )}
             </div> */}
-  
+            {/* 로그인 상태 표시 주석 처리 */}
         </div>
       </div>
     </header>
