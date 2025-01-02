@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 
 import com.example.demo.coupon.service.UserCouponService;
 import com.example.demo.payment.entity.PaymentEntity;
@@ -14,7 +15,8 @@ import com.example.demo.payment.repository.PaymentRepository;
 import com.example.demo.user.entity.UserEntity;
 import com.example.demo.user.repository.UserRepository;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
+
 
 @Service
 public class PaymentScheduler {
@@ -35,10 +37,10 @@ public class PaymentScheduler {
      * 스케줄러는 5분마다 실행된다. DeliveryStatus가 CONFIRMED가 아닌 데이터 중
      * 결제 후 30분이 지난 데이터를 업데이트하기
      */
-    @Scheduled(fixedRate = 300000) // 5분마다 실행 (300000ms)
+    @Scheduled(fixedRate = 3000) // 5분마다 실행 (300000ms)
     public void updateDeliveryStatus() {
         // 현재 시간 기준으로 30분 이상 경과한 데이터만 조회
-        LocalDateTime cutoffTime = LocalDateTime.now().minusMinutes(30);
+        LocalDateTime cutoffTime = LocalDateTime.now().minusMinutes(1);
 
         List<PaymentEntity> payments = paymentRepository.findByDeliveryStatusNotAndPaymentDateBefore(
             DeliveryStatus.CONFIRMED, cutoffTime
@@ -52,7 +54,7 @@ public class PaymentScheduler {
 
 
      //개별 PaymentEntity에 대해 상태를 처리하는 메서드
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void processPaymentStatus(PaymentEntity payment) {
         DeliveryStatus currentStatus = payment.getDeliveryStatus();
         DeliveryStatus newStatus = getNextDeliveryStatus(currentStatus);
