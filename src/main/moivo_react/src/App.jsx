@@ -49,6 +49,7 @@ import MypageBoardProvider from './contexts/mypageCon/MypageBoardContext';
 import MypageOrderProvider from './contexts/mypageCon/MypageOrderContext';
 import MypageOrderDetailProvider from './contexts/mypageCon/MypageOrderDetailContext';
 import CartProvider from './contexts/cartCon/CartContext';
+import AdminsBoardProvider from './contexts/adminsCon/AdminsBoardContext';
 
 
 
@@ -106,7 +107,11 @@ const routeConfig = [
   { path: "/payment-fail", element: ( <PaymentProvider> <FailPage /> </PaymentProvider> ),},
   { path: "/admins_dashboard", element: ( <DashBoardProvider> <Dashboard/> </DashBoardProvider> )},
   { path: "/api/oauth/kakao/callback", element: <KakaoCallback /> },
-  { path: "/admins_qnaboard", element: <Admins_qna /> },
+  { path: "/admins_qnaboard", element: (
+    <AdminsBoardProvider>
+      <Admins_qna />
+    </AdminsBoardProvider>
+  ) },
   { path: "/admins_productadd", element: <Admins_productAdd /> },
   { path: "/admins_productupdate/:productId", element: <Admins_productUpdate /> },
   { path: "/admin/admin_productTrash", element: <ProductTrash /> },
