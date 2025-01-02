@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.demo.coupon.dto.CouponDTO;
 import com.example.demo.coupon.dto.UserCouponDTO;
-import com.example.demo.coupon.entity.CouponEntity;
 import com.example.demo.coupon.entity.UserCouponEntity;
 import com.example.demo.coupon.repository.UserCouponRepository;
 import com.example.demo.ncp.dto.NCPObjectStorageDTO;

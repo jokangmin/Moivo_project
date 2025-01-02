@@ -6,7 +6,6 @@ import com.example.demo.store.dto.ReviewDTO;
 import com.example.demo.user.entity.UserEntity;
 import com.example.demo.payment.entity.PaymentDetailEntity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

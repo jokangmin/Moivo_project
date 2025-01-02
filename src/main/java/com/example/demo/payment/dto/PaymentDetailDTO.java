@@ -2,7 +2,6 @@ package com.example.demo.payment.dto;
 
 import com.example.demo.ncp.dto.NCPObjectStorageDTO;
 import com.example.demo.payment.entity.PaymentDetailEntity;
-import com.example.demo.payment.entity.PaymentEntity;
 import com.example.demo.store.entity.ProductEntity;
 import com.example.demo.store.entity.ProductStockEntity.Size;
 
