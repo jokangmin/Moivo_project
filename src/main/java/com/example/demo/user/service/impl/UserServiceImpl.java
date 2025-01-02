@@ -384,15 +384,18 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
-        // 비밀번호가 일치하는지 확인 (BCrypt 비밀번호 암호화 확인)
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encodedPassword = passwordEncoder.encode("mySecretPassword");
-        System.out.println("Encoded password: " + encodedPassword);
-        if (!passwordEncoder.matches(password, userEntity.getPwd())) {
+        // 카카오 로그인 사용자인 경우 비밀번호 검증 건너뛰기
+        if (userEntity.getLoginType() == LoginType.KAKAO) {
+            return true;
+        }
+
+        // 일반 회원의 경우 비밀번호 검증
+        if (password == null || password.isEmpty()) {
             return false;
         }
 
-        return true;
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        return passwordEncoder.matches(password, userEntity.getPwd());
     }
 
     // 회원정보 삭제 - sumin (2024.12.12) (2024.12.20)
@@ -400,13 +403,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(int userId) {
         UserEntity userEntity = userRepository.findById(userId)
-        .orElseThrow(() -> new RuntimeException("User not found"));
+        .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
 
         // 1. Wish 관련 데이터 삭제
         userEntity.setWishEntity(null);
         userRepository.save(userEntity);
 
-        // 2. Cart 관련 데이터 ���제
+        // 2. Cart 관련 데이터 삭제
         userEntity.setCartEntity(null);
         userRepository.save(userEntity);
 
