@@ -406,7 +406,7 @@ public class UserServiceImpl implements UserService {
         userEntity.setWishEntity(null);
         userRepository.save(userEntity);
 
-        // 2. Cart 관련 데이터 ���제
+        // 2. Cart 관련 데이터 삭제
         userEntity.setCartEntity(null);
         userRepository.save(userEntity);
 
