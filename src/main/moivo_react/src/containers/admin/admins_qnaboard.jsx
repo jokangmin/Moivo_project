@@ -144,22 +144,22 @@ const Admins_qnaboard = () => {
         }
     };
 
-    // 카테고리 매핑 상수 추가
+    // 카테고리 매핑 상수 수정
     const CATEGORY_MAPPING = {
-        'ALL': 0,      // 전체문의1
-        'BASIC': 1,    // 일반문의 2
-        'OTHER': 2,    // 기타문의3
-        'SIZE': 3,     // 사이즈문의4
-        'PRIVATE': 4   // 비밀문의5
+        'ALL': 1,      // ALL
+        'BASIC': 2,    // BASIC
+        'OTHER': 3,    // OTHER
+        'PRIVATE': 4,  // PRIVATE
+        'SIZE': 5      // SIZE
     };
 
-    // 카테고리 이름 매핑 추가
+    // 카테고리 이름 매핑 수정
     const CATEGORY_NAMES = {
         'ALL': '전체문의',
         'BASIC': '일반문의',
         'OTHER': '기타문의',
+        'PRIVATE': '비밀문의',
         'SIZE': '사이즈문의',
-        'PRIVATE': '비밀문의'
     };
 
     // 문의글 열고 닫기 함수
@@ -183,7 +183,6 @@ const Admins_qnaboard = () => {
     const filteredQuestions = questions.filter(question => {
         // 카테고리 필터링
         const matchesCategory = selectedCategory === 'ALL' ? true : 
-            selectedCategory === 'PRIVATE' ? question.secret === "true" :
             question.categoryId === CATEGORY_MAPPING[selectedCategory];
 
         // 검색어 필터링
