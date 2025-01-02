@@ -17,7 +17,6 @@ import com.example.demo.coupon.repository.UserCouponRepository;
 import com.example.demo.coupon.service.UserCouponService;
 import com.example.demo.jwt.prop.JwtProps;
 import com.example.demo.jwt.service.BlacklistService;
-// import com.example.demo.jwt.service.RefreshTokenService;
 import com.example.demo.jwt.util.JwtUtil;
 import com.example.demo.payment.entity.PaymentEntity;
 import com.example.demo.payment.repository.PaymentRepository;

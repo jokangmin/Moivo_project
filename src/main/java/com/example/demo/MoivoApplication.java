@@ -4,7 +4,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-// @SpringBootApplication(exclude = SecurityAutoConfiguration.class)
 @EnableScheduling // 스케줄러 기능 활성화
 @SpringBootApplication
 public class MoivoApplication {

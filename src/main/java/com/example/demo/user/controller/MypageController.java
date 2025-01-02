@@ -20,7 +20,6 @@ import com.example.demo.user.service.MypageService;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 @Controller
@@ -54,21 +53,6 @@ public class MypageController {
         List<ProductDTO> productList = mypageService.getProductList(id);
         return ResponseEntity.ok(productList);
     }
-
-    // // 쿠폰 정보 조회
-    // @GetMapping("/coupons/{id}")
-    // public ResponseEntity<List<CouponDTO>> getCoupons(@PathVariable int userSeq) {
-    //     List<CouponDTO> coupons = mypageService.getCoupons(userSeq);
-    //     return ResponseEntity.ok(coupons);
-
-    // }
-
-    // 위시리스트 조회  (포스트맨 테스트 성공)
-
-  /*  @GetMapping("/wishlist/{id}")
-    public ResponseEntity<List<WishDTO>> getWishlist(@PathVariable int id) { 
-
-            List<WishDTO> wishlist = mypageService.getWishlist(id);    충돌 난거!!!!!*/
 
     @GetMapping("/wishlist/{userid}")
     public ResponseEntity<List<WishDTO>> getWishlist(@PathVariable(name = "userid") int userid) {
