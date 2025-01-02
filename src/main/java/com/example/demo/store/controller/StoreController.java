@@ -41,6 +41,7 @@ public class StoreController {
             @RequestParam(name = "sortby", required = false, defaultValue = "newest") String sortby,
             @RequestParam(name = "categoryid", required = false, defaultValue = "0") int categoryid,
             @RequestParam(name = "keyword", required = false) String keyword) {
+        System.out.println("카테고리 = " +categoryid);
 
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("pageable", pageable); // 페이지 처리

@@ -48,8 +48,18 @@ export const ProListProvider = ({ children }) => {
         };
     });
 
+    // fetchProducts 함수 수정 (중복 호출 방지)
     const fetchProducts = useCallback(async (page) => {
+        // 중복 호출 방지 조건
+        if (isLoading || (lastViewedState?.page === page &&
+            lastViewedState?.categoryId === activeCategory.id &&
+            lastViewedState?.sortBy === sortBy &&
+            lastViewedState?.searchTerm === searchTerm)) {
+            return; // 중복 호출 방지
+        }
+
         setIsLoading(true);
+        setProducts([]); // 기존 검색 결과 초기화
         try {
             // URL 쿼리 파라미터 구성
             const queryParams = new URLSearchParams({
@@ -88,7 +98,7 @@ export const ProListProvider = ({ children }) => {
                 }
 
                 setCurrentPage(page);
-                
+
                 // 현재 상태를 세션스토리지에 저장
                 const currentState = {
                     page: page,
@@ -108,7 +118,7 @@ export const ProListProvider = ({ children }) => {
         } finally {
             setIsLoading(false);
         }
-    }, [sortBy, searchTerm, activeCategory.id, accessToken]);
+    }, [sortBy, searchTerm, activeCategory.id, accessToken, itemsPerPage, pageBlock, lastViewedState]);
 
     const getWishCartCount = async (type) => {
         try {
@@ -165,13 +175,13 @@ export const ProListProvider = ({ children }) => {
         const savedState = sessionStorage.getItem('productListState');
         if (savedState) {
             const { page, sortBy: savedSortBy, categoryId, searchTerm: savedSearchTerm } = JSON.parse(savedState);
-            
-            // 이전 상태 모두 복원
+
+            // 이전 상태 복원
             setSortBy(savedSortBy);
             const savedCategory = categories.find(cat => cat.id === categoryId) || categories[0];
             setActiveCategory(savedCategory);
             setSearchTerm(savedSearchTerm);
-            
+
             // 저장된 페이지로 데이터 가져오기
             fetchProducts(page);
         } else {
@@ -182,21 +192,21 @@ export const ProListProvider = ({ children }) => {
     // 필터 변경 감지 효과
     useEffect(() => {
         const savedState = sessionStorage.getItem('productListState');
-        const { sortBy: savedSortBy, categoryId: savedCategoryId, searchTerm: savedSearchTerm } 
+        const { sortBy: savedSortBy, categoryId: savedCategoryId, searchTerm: savedSearchTerm }
             = savedState ? JSON.parse(savedState) : {};
 
         // 필터가 변경되었을 때만 첫 페이지로 이동
-        if ((savedSortBy !== undefined && savedSortBy !== sortBy) || 
-            (savedCategoryId !== undefined && savedCategoryId !== activeCategory.id) || 
+        if ((savedSortBy !== undefined && savedSortBy !== sortBy) ||
+            (savedCategoryId !== undefined && savedCategoryId !== activeCategory.id) ||
             (savedSearchTerm !== undefined && savedSearchTerm !== searchTerm)) {
-            fetchProducts(0); // 필터 변경 시에만 첫 페이지로 이동
+            fetchProducts(0); // 필터 변경 시 첫 페이지로 이동
         }
     }, [sortBy, activeCategory.id, searchTerm, fetchProducts]);
 
     // URL 변경 감지 및 상태 동기화
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
-        
+
         // URL에서 파라미터 추출
         const pageParam = parseInt(searchParams.get('page')) || 0;
         const sortParam = searchParams.get('sortby') || 'newest';
@@ -204,15 +214,15 @@ export const ProListProvider = ({ children }) => {
         const keywordParam = searchParams.get('keyword') || '';
 
         // 현재 상태와 URL 파라미터가 다른 경우에만 상태 업데이트
-        if (currentPage !== pageParam || 
-            sortBy !== sortParam || 
-            activeCategory.id !== categoryIdParam || 
+        if (currentPage !== pageParam ||
+            sortBy !== sortParam ||
+            activeCategory.id !== categoryIdParam ||
             searchTerm !== keywordParam) {
-            
+
             setCurrentPage(pageParam);
             setSortBy(sortParam);
             setSearchTerm(keywordParam);
-            
+
             // 카테고리 설정
             const category = categories.find(cat => cat.id === categoryIdParam) || categories[0];
             setActiveCategory(category);
@@ -250,8 +260,7 @@ export const ProListProvider = ({ children }) => {
         searchParams.set('page', '0'); // 카테고리 변경 시 첫 페이지로
         navigate(`${location.pathname}?${searchParams.toString()}`);
         setActiveCategory(category);
-        fetchProducts(0);
-    }, [location.search, location.pathname, navigate, fetchProducts]);
+    }, [location.search, location.pathname, navigate]);
 
     // 정렬 변경 핸들러
     const handleSortChange = useCallback((value) => {
@@ -295,20 +304,20 @@ export const ProListProvider = ({ children }) => {
         handleCategoryChange,
         handleSortChange
     }), [
-        products, 
-        currentPage, 
-        pageInfo, 
-        sortBy, 
-        categories, 
+        products,
+        currentPage,
+        pageInfo,
+        sortBy,
+        categories,
         activeCategory,
-        cartItem, 
-        wishItem, 
-        searchOpen, 
-        searchTerm, 
-        isLoading, 
+        cartItem,
+        wishItem,
+        searchOpen,
+        searchTerm,
+        isLoading,
         fetchProducts,
-        handleProductClick, 
-        handleWishClick, 
+        handleProductClick,
+        handleWishClick,
         handleCartClick,
         lastViewedState,
         handlePageChange,

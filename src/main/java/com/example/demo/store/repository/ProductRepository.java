@@ -17,8 +17,10 @@ import com.example.demo.store.entity.ProductEntity;
 public interface ProductRepository extends JpaRepository<ProductEntity, Integer> {
 
   // 카테고리id로 검색 (delete가 false인 것만)
-  @Query("SELECT p FROM ProductEntity p WHERE p.categoryEntity.parentId =:categoryid AND p.delete = false")
+  @Query("SELECT p FROM ProductEntity p WHERE (:categoryid = 0 OR p.categoryEntity.parentId = :categoryid) AND p.delete = false")
+//  @Query("SELECT p FROM ProductEntity p WHERE p.categoryEntity.parentId =:categoryid AND p.delete = false")
   public Page<ProductEntity> findBycategoryParentId(@Param("categoryid") int categoryid, Pageable pageable);
+
 
   // 상품 검색 (keyword) (delete가 false인 것만)
   @Query("SELECT p FROM ProductEntity p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) AND p.delete = false")
