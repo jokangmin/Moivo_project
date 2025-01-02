@@ -26,6 +26,8 @@ const Admins_qnaboard = () => {
     const [responseInput, setResponseInput] = useState(''); // 문의리시트 답변등록 모달창 기능
     const [searchQuery, setSearchQuery] = useState('');
     const [filterType, setFilterType] = useState(filterFromUrl || 'ALL'); // 'ALL', 'ANSWERED', 'WAITING' 상태 추가
+    const [categoryMapping, setCategoryMapping] = useState({});
+    const [categoryNames, setCategoryNames] = useState({});
 
     useEffect(() => {
         // 인증 및 관리자 권한 확인
@@ -59,7 +61,25 @@ const Admins_qnaboard = () => {
     const fetchCategories = async () => {
         try {
             const response = await axiosInstance.get(`${PATH.SERVER}/api/admin/qna/management/categories`);
-            setCategories(response.data);
+            const categories = response.data;
+            
+            // 카테고리 매핑 동적 생성
+            const mapping = {};
+            const names = {};
+            
+            // ALL 카테고리 추가
+            mapping['ALL'] = 'ALL';
+            names['ALL'] = '전체문의';
+            
+            // 서버에서 받아온 카테고리 추가
+            categories.forEach(category => {
+                mapping[category.name] = category.id;
+                names[category.name] = category.name;
+            });
+
+            setCategoryMapping(mapping);
+            setCategoryNames(names);
+            setCategories(categories);
         } catch (error) {
             console.error('Failed to fetch categories:', error);
         }
@@ -144,24 +164,6 @@ const Admins_qnaboard = () => {
         }
     };
 
-    // 카테고리 매핑 상수 수정
-    const CATEGORY_MAPPING = {
-        'ALL': 1,      // ALL
-        'BASIC': 2,    // BASIC
-        'OTHER': 3,    // OTHER
-        'PRIVATE': 4,  // PRIVATE
-        'SIZE': 5      // SIZE
-    };
-
-    // 카테고리 이름 매핑 수정
-    const CATEGORY_NAMES = {
-        'ALL': '전체문의',
-        'BASIC': '일반문의',
-        'OTHER': '기타문의',
-        'PRIVATE': '비밀문의',
-        'SIZE': '사이즈문의',
-    };
-
     // 문의글 열고 닫기 함수
     const toggleQuestion = (index) => {
         setActiveIndex(activeIndex === index ? null : index);
@@ -183,7 +185,7 @@ const Admins_qnaboard = () => {
     const filteredQuestions = questions.filter(question => {
         // 카테고리 필터링
         const matchesCategory = selectedCategory === 'ALL' ? true : 
-            question.categoryId === CATEGORY_MAPPING[selectedCategory];
+            question.categoryId === categoryMapping[selectedCategory];
 
         // 검색어 필터링
         const matchesSearch = searchQuery.trim() === '' ? true :
@@ -259,7 +261,7 @@ const Admins_qnaboard = () => {
                             onClick={toggleDropdown}
                         >
                             <span>
-                                {CATEGORY_NAMES[selectedCategory] || '전체문의'}
+                                {categoryNames[selectedCategory] || '전체문의'}
                             </span>
                             <i className={`fas fa-chevron-${isDropdownVisible ? 'up' : 'down'}`}></i>
                         </button>
