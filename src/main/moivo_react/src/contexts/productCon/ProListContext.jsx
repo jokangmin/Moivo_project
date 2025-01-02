@@ -48,18 +48,8 @@ export const ProListProvider = ({ children }) => {
         };
     });
 
-    // fetchProducts 함수 수정 (중복 호출 방지)
     const fetchProducts = useCallback(async (page) => {
-        // 중복 호출 방지 조건
-        if (isLoading || (lastViewedState?.page === page &&
-            lastViewedState?.categoryId === activeCategory.id &&
-            lastViewedState?.sortBy === sortBy &&
-            lastViewedState?.searchTerm === searchTerm)) {
-            return; // 중복 호출 방지
-        }
-
         setIsLoading(true);
-        setProducts([]); // 기존 검색 결과 초기화
         try {
             // URL 쿼리 파라미터 구성
             const queryParams = new URLSearchParams({
@@ -118,7 +108,7 @@ export const ProListProvider = ({ children }) => {
         } finally {
             setIsLoading(false);
         }
-    }, [sortBy, searchTerm, activeCategory.id, accessToken, itemsPerPage, pageBlock, lastViewedState]);
+    }, [sortBy, searchTerm, activeCategory.id, accessToken]);
 
     const getWishCartCount = async (type) => {
         try {
@@ -176,7 +166,7 @@ export const ProListProvider = ({ children }) => {
         if (savedState) {
             const { page, sortBy: savedSortBy, categoryId, searchTerm: savedSearchTerm } = JSON.parse(savedState);
 
-            // 이전 상태 복원
+            // 이전 상태 모두 복원
             setSortBy(savedSortBy);
             const savedCategory = categories.find(cat => cat.id === categoryId) || categories[0];
             setActiveCategory(savedCategory);
@@ -199,7 +189,7 @@ export const ProListProvider = ({ children }) => {
         if ((savedSortBy !== undefined && savedSortBy !== sortBy) ||
             (savedCategoryId !== undefined && savedCategoryId !== activeCategory.id) ||
             (savedSearchTerm !== undefined && savedSearchTerm !== searchTerm)) {
-            fetchProducts(0); // 필터 변경 시 첫 페이지로 이동
+            fetchProducts(0); // 필터 변경 시에만 첫 페이지로 이동
         }
     }, [sortBy, activeCategory.id, searchTerm, fetchProducts]);
 
@@ -237,7 +227,7 @@ export const ProListProvider = ({ children }) => {
         const searchParams = new URLSearchParams(location.search);
         searchParams.set('page', page);
         navigate(`${location.pathname}?${searchParams.toString()}`);
-        fetchProducts(page);
+        // fetchProducts(page);
     }, [location.search, location.pathname, navigate, fetchProducts]);
 
     // 검색어 변경 핸들러
@@ -250,17 +240,21 @@ export const ProListProvider = ({ children }) => {
         }
         navigate(`${location.pathname}?${searchParams.toString()}`);
         setSearchTerm(value);
-        fetchProducts(0); // 검색 시 첫 페이지로 이동
+        // fetchProducts(0); // 검색 시 첫 페이지로 이동
     }, [location.search, location.pathname, navigate, fetchProducts]);
 
     // 카테고리 변경 핸들러
     const handleCategoryChange = useCallback((category) => {
+        console.log("category: " + category.id);
+        console.log(category);
+
         const searchParams = new URLSearchParams(location.search);
         searchParams.set('categoryid', category.id);
         searchParams.set('page', '0'); // 카테고리 변경 시 첫 페이지로
         navigate(`${location.pathname}?${searchParams.toString()}`);
         setActiveCategory(category);
-    }, [location.search, location.pathname, navigate]);
+        // fetchProducts(0);
+    }, [location.search, location.pathname, navigate, fetchProducts]);
 
     // 정렬 변경 핸들러
     const handleSortChange = useCallback((value) => {
@@ -269,7 +263,7 @@ export const ProListProvider = ({ children }) => {
         searchParams.set('page', '0'); // 정렬 변경 시 첫 페이지로
         navigate(`${location.pathname}?${searchParams.toString()}`);
         setSortBy(value);
-        fetchProducts(0);
+        // fetchProducts(0);
     }, [location.search, location.pathname, navigate, fetchProducts]);
 
     const value = useMemo(() => ({

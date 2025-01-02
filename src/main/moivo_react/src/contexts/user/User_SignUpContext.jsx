@@ -144,10 +144,10 @@ const useUserSignup = () => {
                     console.log("status = " + response.status); // 201 Created 상태 코드 확인
                     setErrors((prevErrors) => ({
                         ...prevErrors,
-                        userId: "사용 가능한 아이디입니다.", // 성공 메시지
+                        userId: "사용 가능한 아이디입니다.",
+                        userIdStatus: "success"
                     }));
                 }
-
             } catch (error) {
                 if (error.response.status === 409) {
                     console.log(error.response.status)
@@ -155,6 +155,7 @@ const useUserSignup = () => {
                     setErrors((prevErrors) => ({
                         ...prevErrors,
                         userId: "이미 사용 중인 아이디입니다.",
+                        userIdStatus: "error"
                     }));
                 } else {
                     // 기타 에러
@@ -162,6 +163,7 @@ const useUserSignup = () => {
                     setErrors((prevErrors) => ({
                         ...prevErrors,
                         userId: "아이디 중복 확인에 실패했습니다.",
+                        userIdStatus: "error"
                     }));
                 }
             }

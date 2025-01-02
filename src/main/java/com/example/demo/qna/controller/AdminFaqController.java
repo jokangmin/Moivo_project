@@ -1,10 +1,9 @@
-package com.example.demo.faq.controller;
+package com.example.demo.qna.controller;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import com.example.demo.faq.service.AdminFaqService;
 import com.example.demo.qna.dto.QuestionDTO;
 // 24.12.17 yjy
+import com.example.demo.qna.service.AdminFaqService;
 
 @RestController
 @RequestMapping("/api/admin/faq")
@@ -96,6 +95,5 @@ public class AdminFaqController {
                     .body("FAQ 삭제 중 오류가 발생했습니다: " + e.getMessage());
         }
     }
-
 
 }

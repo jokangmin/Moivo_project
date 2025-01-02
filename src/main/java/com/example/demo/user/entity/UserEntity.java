@@ -30,8 +30,8 @@ public class UserEntity { // 사용자 & 관리자
     }
 
     public enum Grade {
-        LV1, LV2, LV3, LV4, LV5
-        // 0, 10, 30, 50, 70
+        ADMIN, LV1, LV2, LV3, LV4, LV5
+        // 관리자, 0, 10, 30, 50, 70
     }
 
     // 양방향 매핑시킴
