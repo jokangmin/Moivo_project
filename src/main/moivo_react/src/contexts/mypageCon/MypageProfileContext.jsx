@@ -210,7 +210,7 @@ const MypageProfileProvider = ({ children }) => {
             if (userInfo?.loginType === 'KAKAO') {
                 await axiosInstance.post('/api/user/mypage/delete', {
                     userId: id,
-                    pwd: ''  // 빈 문자열로 전송
+                    pwd: ''
                 });
             } else {
                 // 일반 사용자의 경우 비밀번호 검증 후 삭제
@@ -218,28 +218,33 @@ const MypageProfileProvider = ({ children }) => {
                     alert("비밀번호를 입력해주세요.");
                     return;
                 }
-                await axiosInstance.post('/api/user/mypage/delete', {
+                
+                // 토큰 만료 체크를 먼저 수행
+                if (!jwtUtil.validateToken(token)) {
+                    const refreshed = await refreshAccessToken();
+                    if (!refreshed) {
+                        alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+                        navigate("/user");
+                        return;
+                    }
+                }
+    
+                const response = await axiosInstance.post('/api/user/mypage/delete', {
                     userId: id,
                     pwd: deletePassword
                 });
+    
+                if (response.status === 200) {
+                    alert("회원 탈퇴가 완료되었습니다.");
+                    await logout();
+                    navigate("/");
+                }
             }
-            
-            alert("회원 탈퇴가 완료되었습니다.");
-            await logout();
-            navigate("/");
         } catch (error) {
             console.error("Account deletion error:", error);
-            if (error.response?.status === 401) {
-                // 토큰 만료 시 갱신 시도
-                const refreshed = await refreshAccessToken();
-                if (refreshed) {
-                    handleDeleteAccount();
-                } else {
-                    alert("세션이 만료되었습니다. 다시 로그인해주세요.");
-                    navigate("/user");
-                }
-            } else {
-                alert(error.response?.data?.message || "회원 탈퇴 처리 중 오류가 발생했습니다.");
+            // 409 (중복 로그인) 에러가 아닌 경우에만 비밀번호 오류 메시지 표시
+            if (error.response?.status !== 409) {
+                alert(error.response?.data?.message || "비밀번호가 틀렸습니다.");
             }
         }
     };
