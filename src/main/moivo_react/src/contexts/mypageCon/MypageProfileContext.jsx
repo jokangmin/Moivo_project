@@ -35,7 +35,7 @@ const MypageProfileProvider = ({ children }) => {
     const [showCouponTooltip, setShowCouponTooltip] = useState(false);
 
 
-    const { refreshAccessToken } = useAuth();  // useAuth에서 refreshAccessToken 가져오기
+    const { refreshAccessToken, logout } = useAuth();  // useAuth에서 refreshAccessToken 가져오기
 
     //2024-12-19 비밀번호 정규화 추가 장훈
     const validatePassword = (password) => {
@@ -185,33 +185,47 @@ const MypageProfileProvider = ({ children }) => {
     const handleMouseEnter = () => setShowTooltip(true);
     const handleMouseLeave = () => setShowTooltip(false);
 
-    const handleOpenModal = () => setShowModal(true);
+    const handleOpenModal = () => {
+        // 카카오 로그인 사용자의 경우 모달 표시 없이 바로 탈퇴 처리
+        if (userInfo?.loginType === 'KAKAO') {
+            if (window.confirm('정말로 탈퇴하시겠습니까?')) {
+                handleDeleteAccount();
+            }
+        } else {
+            setShowModal(true);
+        }
+    };
     const handleCloseModal = () => setShowModal(false);
 
     const handleDeletePasswordChange = (e) => setDeletePassword(e.target.value);
 
     const handleDeleteAccount = async () => {
         const token = localStorage.getItem("accessToken");
-
-         // 토큰 디코딩 (jwt-decode 없이)
-         const payload = token.split('.')[1];
-         const decodedPayload = JSON.parse(atob(payload));
-         const id = decodedPayload.id;  //토큰에 있는 id 추출
-         console.log("User ID:", id);
-
-        if (!deletePassword) {
-            alert("비밀번호를 입력해주세요.");
-            return;
-        }
+        const payload = token.split('.')[1];
+        const decodedPayload = JSON.parse(atob(payload));
+        const id = decodedPayload.id;
 
         try {
-            await axiosInstance.post('/api/user/mypage/delete', {
-                pwd: deletePassword,
-                userId: id
-            });
-
+            // 카카오 로그인 사용자의 경우 비밀번호 없이 바로 삭제 요청
+            if (userInfo?.loginType === 'KAKAO') {
+                await axiosInstance.post('/api/user/mypage/delete', {
+                    userId: id,
+                    pwd: ''  // 빈 문자열로 전송
+                });
+            } else {
+                // 일반 사용자의 경우 비밀번호 검증 후 삭제
+                if (!deletePassword) {
+                    alert("비밀번호를 입력해주세요.");
+                    return;
+                }
+                await axiosInstance.post('/api/user/mypage/delete', {
+                    userId: id,
+                    pwd: deletePassword
+                });
+            }
+            
             alert("회원 탈퇴가 완료되었습니다.");
-            localStorage.clear();
+            await logout();
             navigate("/");
         } catch (error) {
             console.error("Account deletion error:", error);
@@ -219,14 +233,13 @@ const MypageProfileProvider = ({ children }) => {
                 // 토큰 만료 시 갱신 시도
                 const refreshed = await refreshAccessToken();
                 if (refreshed) {
-                    // 토큰 갱신 성공 시 다시 요청
                     handleDeleteAccount();
                 } else {
                     alert("세션이 만료되었습니다. 다시 로그인해주세요.");
                     navigate("/user");
                 }
             } else {
-                alert(error.response?.data?.message || "비밀번호가 틀렸거나 오류가 발생했습니다.");
+                alert(error.response?.data?.message || "회원 탈퇴 처리 중 오류가 발생했습니다.");
             }
         }
     };

@@ -201,6 +201,40 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const deleteAccount = async () => {
+        try {
+            const accessToken = getAccessToken();
+            
+            if (accessToken) {
+                // API 호출
+                await axiosInstance.delete(`/api/user/withdrawal`, {
+                    withCredentials: true,
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+            }
+
+            // 로컬 스토리지 초기화
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('id');
+            localStorage.removeItem('isAdmin');
+
+            // 상태 초기화
+            setIsAuthenticated(false);
+            setIsAdmin(false);
+            
+            // axios 헤더 초기화
+            delete axiosInstance.defaults.headers.common['Authorization'];
+            
+            navigate('/');
+        } catch (error) {
+            console.error('회원탈퇴 실패:', error);
+            throw error;
+        }
+    };
+
     const value = {
         isAuthenticated,
         isAdmin, // 2024-12-11 isAdmin 값을 Context에서 제공 장훈
@@ -214,6 +248,7 @@ export const AuthProvider = ({ children }) => {
         refreshAccessToken,
         tokenExpiryTime,
         getTokenExpiryTime,
+        deleteAccount,
     };
 
     return (
