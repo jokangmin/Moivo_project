@@ -21,7 +21,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import java.util.Date;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.AllArgsConstructor;

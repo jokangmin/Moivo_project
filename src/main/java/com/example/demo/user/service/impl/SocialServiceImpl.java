@@ -2,10 +2,8 @@ package com.example.demo.user.service.impl;
 
 import java.util.Map;
 import java.util.Optional;
-import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.configuration.SocialConfiguration;
@@ -38,9 +36,6 @@ public class SocialServiceImpl implements SocialService {
 
     @Autowired
     private LoginSessionService loginSessionService;
-
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
     
     // 24.12.16 - uj
     // 카카오 승인 URI 반환

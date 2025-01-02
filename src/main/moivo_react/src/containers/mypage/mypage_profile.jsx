@@ -11,12 +11,10 @@ const MypageProfile = () => {
         userInfo,
         formData,
         errors,
-        setFormData,
         handleSubmit,
         handleDeleteAccount,
         handleDeletePasswordChange,
         handleChange,
-        handleBlur,
         handleFindPostalCode,
         handleMouseEnter,
         handleMouseLeave,
@@ -26,13 +24,6 @@ const MypageProfile = () => {
         showTooltip,
         showModal,
         deletePassword,
-        handleCouponMouseEnter,
-        handleCouponMouseLeave,
-        validatePassword,
-        validateForm,
-        loadDaumPostcodeScript,
-        splitPhoneNumber,
-        showCouponTooltip,
     } = useMypageProfileContext();
 
     return (
@@ -87,7 +78,7 @@ const MypageProfile = () => {
                         </div>
                     </div>
                     <Modal 
-                        isOpen={showModal} 
+                        isOpen={showModal && userInfo?.loginType !== 'KAKAO'} 
                         onRequestClose={handleCloseModal}
                         contentLabel="회원 탈퇴 확인"
                         className={styles.modal}
