@@ -10,7 +10,7 @@ const Banner = () => {
   const navigate = useNavigate();
   const { isAuthenticated, logout, tokenExpiration, isAdmin } = useContext(AuthContext);
   //2024-12-11 디버그 확인 장훈
-  console.log('isAdmin:', isAdmin);
+  console.log('isAdmin:', isAdmin); 
 
   useEffect(() => {
     console.log('현재 인증 상태:', isAuthenticated);
