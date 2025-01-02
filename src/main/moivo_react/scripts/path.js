@@ -9,5 +9,5 @@ export const PATH = {
 
     // 도메인
     SERVER: 'https://moivo.shop', // 서버 주소
-    CLIENT: 'https://moivo.shop' // 클라이언트 주소
+    CLIENT: 'https://moivo.shop' // 클라이언트 주소 
 };
