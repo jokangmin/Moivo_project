@@ -11,8 +11,5 @@ import com.example.demo.user.entity.CartEntity;
 public interface CartRepository extends JpaRepository<CartEntity, Integer> {
 
     Optional<CartEntity> findByUserEntity_Id(Integer id);
-    
-    // userId로 CartEntity 검색
-    //Optional<CartEntity> findByUserEntity_UserId(String userId);
 
 }
