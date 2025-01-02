@@ -227,7 +227,7 @@ export const ProListProvider = ({ children }) => {
         const searchParams = new URLSearchParams(location.search);
         searchParams.set('page', page);
         navigate(`${location.pathname}?${searchParams.toString()}`);
-        fetchProducts(page);
+        // fetchProducts(page);
     }, [location.search, location.pathname, navigate, fetchProducts]);
 
     // 검색어 변경 핸들러
@@ -240,17 +240,20 @@ export const ProListProvider = ({ children }) => {
         }
         navigate(`${location.pathname}?${searchParams.toString()}`);
         setSearchTerm(value);
-        fetchProducts(0); // 검색 시 첫 페이지로 이동
+        // fetchProducts(0); // 검색 시 첫 페이지로 이동
     }, [location.search, location.pathname, navigate, fetchProducts]);
 
     // 카테고리 변경 핸들러
     const handleCategoryChange = useCallback((category) => {
+        console.log("category: " + category.id);
+        console.log(category);
+        
         const searchParams = new URLSearchParams(location.search);
         searchParams.set('categoryid', category.id);
         searchParams.set('page', '0'); // 카테고리 변경 시 첫 페이지로
         navigate(`${location.pathname}?${searchParams.toString()}`);
         setActiveCategory(category);
-        fetchProducts(0);
+        // fetchProducts(0);
     }, [location.search, location.pathname, navigate, fetchProducts]);
 
     // 정렬 변경 핸들러
@@ -260,7 +263,7 @@ export const ProListProvider = ({ children }) => {
         searchParams.set('page', '0'); // 정렬 변경 시 첫 페이지로
         navigate(`${location.pathname}?${searchParams.toString()}`);
         setSortBy(value);
-        fetchProducts(0);
+        // fetchProducts(0);
     }, [location.search, location.pathname, navigate, fetchProducts]);
 
     const value = useMemo(() => ({
