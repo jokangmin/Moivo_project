@@ -138,14 +138,14 @@ const Banner = () => {
               </>
             )}
 
-            <div className={styles.loginStatus}>
+            {/* <div className={styles.loginStatus}>
               <span>
                 <span className={`${styles.status} ${isAuthenticated ? styles.on : styles.off}`}></span>
                 {isAuthenticated ? 'ON' : 'OFF'}
               </span>
               {isAuthenticated && ( <span className={styles.expiration}>{formatExpiration(tokenExpiration)}</span> )}
-            </div>
-
+            </div> */}
+            {/* 로그인 상태 표시 주석 처리 */}
         </div>
       </div>
     </header>
