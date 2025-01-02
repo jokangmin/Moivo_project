@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useSearchParams } from 'react-router-dom';
 import { PATH } from '../../../scripts/path';
 import axiosInstance from '../../utils/axiosConfig';
 
@@ -14,7 +14,9 @@ const MypageOrderProvider = ({ children }) => {
     const [emailSent, setEmailSent] = useState(false);
     const [myEmail, setMyEmail] = useState(null);
     const navigate = useNavigate();
-
+    
+    // 2024/12/30 쿼리 파람 추가 장훈
+    const [searchParams, setSearchParams] = useSearchParams();
     //나의 이메일 얻어오는 부분 추가 - 12/20 11:22 강민
     useEffect(()=>{
         const id = localStorage.getItem("id");
@@ -36,7 +38,7 @@ const MypageOrderProvider = ({ children }) => {
         }
 
         fetchGetEmail();
-    },[]);
+    },[navigate]); // 2024/12/30 의존성 배열 추가 navigate가 변경될 때마다 이 useEffect 콜백이 재실행 장훈
 
     //fetchordercancel 부분 추가 - 12/20 강민
     const handleOrderCancel = (order) => {
@@ -91,7 +93,8 @@ const MypageOrderProvider = ({ children }) => {
               
                     sendEmail();
                 }
-
+                // 2024/12/30 주문 취소 시 현제 페이지 그대로 조회 장훈
+                refetchOrdersAfterAction();
             } catch (error) {
                 console.error("OrderCancel Error fetching data:", error);
                 alert("주문 취소 중 문제가 발생했습니다. 다시 시도해주세요.");
@@ -147,14 +150,21 @@ const MypageOrderProvider = ({ children }) => {
         }
     }
 
+    // 2024/12/30 URL 쿼리 파라미터 추가 장훈
+    useEffect(() => {
+        const pageParam = parseInt(searchParams.get("page"), 10) || 0;
+        fetchOrders(pageParam);
+    }, [searchParams, navigate]); 
+
     // 페이지네이션 버튼 클릭 시 fetchOrders 호출
     const handlePageClick = (page) => {
-        fetchOrders(page);
+        setSearchParams({ page });
     };
 
-    useEffect(() => {
-        fetchOrders();
-    }, [navigate]);
+    const refetchOrdersAfterAction = () => {
+        const currentPageParam = parseInt(searchParams.get("page"), 10) || 0;
+        fetchOrders(currentPageParam);
+    };
 
     //확인용
     useEffect(() => {

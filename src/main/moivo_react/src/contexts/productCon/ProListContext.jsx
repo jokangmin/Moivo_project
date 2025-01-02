@@ -193,28 +193,34 @@ export const ProListProvider = ({ children }) => {
         }
     }, [sortBy, activeCategory.id, searchTerm, fetchProducts]);
 
+    // URL 변경 감지 및 상태 동기화
     useEffect(() => {
-        // URL에서 쿼기 상태 읽기
-        const searchParams = new URLSearchParams(window.location.search);
+        const searchParams = new URLSearchParams(location.search);
         
-        // URL 파라미터에서 각 값 추출 (없으면 기본값 사용)
+        // URL에서 파라미터 추출
         const pageParam = parseInt(searchParams.get('page')) || 0;
         const sortParam = searchParams.get('sortby') || 'newest';
         const categoryIdParam = parseInt(searchParams.get('categoryid')) || 0;
         const keywordParam = searchParams.get('keyword') || '';
 
-        // 상태 업데이트
-        setCurrentPage(pageParam);
-        setSortBy(sortParam);
-        setSearchTerm(keywordParam);
+        // 현재 상태와 URL 파라미터가 다른 경우에만 상태 업데이트
+        if (currentPage !== pageParam || 
+            sortBy !== sortParam || 
+            activeCategory.id !== categoryIdParam || 
+            searchTerm !== keywordParam) {
+            
+            setCurrentPage(pageParam);
+            setSortBy(sortParam);
+            setSearchTerm(keywordParam);
+            
+            // 카테고리 설정
+            const category = categories.find(cat => cat.id === categoryIdParam) || categories[0];
+            setActiveCategory(category);
 
-        // 카테고리 설정
-        const category = categories.find(cat => cat.id === categoryIdParam) || categories[0];
-        setActiveCategory(category);
-
-        // 초기 데이터 로드
-        fetchProducts(pageParam);
-    }, []);
+            // 데이터 다시 불러오기
+            fetchProducts(pageParam);
+        }
+    }, [location.search, currentPage, sortBy, activeCategory.id, searchTerm, categories, fetchProducts]);
 
     // 페이지 변경 핸들러
     const handlePageChange = useCallback((page) => {

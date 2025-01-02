@@ -12,7 +12,7 @@ const MypageWish = () => {
   } = useMypageWishContext();
   
   return (
-    <div>
+    <div className={styles.wishlistMain}>
       <div className={styles.wishlistPage}>
         <Banner />
         <div className={styles.title}>WISHLIST</div>
