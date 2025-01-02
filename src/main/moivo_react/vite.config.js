@@ -13,7 +13,7 @@ export default defineConfig({
     proxy: {
       // 프론트엔드의 /api 요청을 백엔드 서버로 프록시
       '/api': {
-        target: PATH.SERVER, // Spring Boot 서버 주소(배포할 때 여기만 수정하면 됨)
+        target: PATH.SERVER, // Spring Boot 서버 주소
         changeOrigin: true, // 필요 시 origin을 백엔드 서버로 변경
         secure: false, // HTTPS가 아니면 false로 설정
       },

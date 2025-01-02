@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import axiosInstance from "../../utils/axiosConfig";
 import { PATH } from '../../../scripts/path';
+import { useNavigate } from 'react-router-dom';
 
 const MypageWishContext = createContext();
 
@@ -9,6 +10,7 @@ export const useMypageWishContext = () => useContext(MypageWishContext);
 const MypageWishProvider = ({ children }) => {
     const [wishlistItems, setWishlistItems] = useState([]); // 상태로 찜 목록 관리
     const [userid, setUserid] = useState(null);
+    const navigate = useNavigate();
     console.log(userid);
   
     // 찜 목록 가져오기
@@ -17,6 +19,12 @@ const MypageWishProvider = ({ children }) => {
       const storedUserid = localStorage.getItem("id"); // localStorage에서 가져옴
       console.log(storedUserid);
       setUserid(storedUserid); // 상태로 설정
+
+      if (!token) {
+        alert("로그인이 필요합니다.");
+        navigate("/user");
+        return;
+      }
   
       const fetchWishlist = async () => {
         if (!storedUserid) return;

@@ -1,9 +1,13 @@
+.wishlistMain{
+  height: 100%;
+}
 /* 전체 컨테이너 */
 .wishlistPage {
     width: 100%;
     margin: 0 auto;
     background: #f6f2ee;
     padding: 130px 0;
+    min-height: 645px;
   }
   
   .container {

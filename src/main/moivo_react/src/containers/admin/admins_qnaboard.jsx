@@ -3,10 +3,12 @@ import admin_qnaboard from '../../assets/css/admins_qnaboard.module.css';
 import Admins_side from '../../components/admin_sidebar/admins_side';
 import { PATH } from '../../../scripts/path';
 import axiosInstance from "../../utils/axiosConfig";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 
 const Admins_qnaboard = () => {
-    // 문의리스트 페이지 이동시 필터 기능 추가_ 24.12.18 yjy
+    const { isAuthenticated, isAdmin } = useAuth();
+    const navigate = useNavigate();
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const filterFromUrl = searchParams.get('filter');
@@ -26,9 +28,17 @@ const Admins_qnaboard = () => {
     const [filterType, setFilterType] = useState(filterFromUrl || 'ALL'); // 'ALL', 'ANSWERED', 'WAITING' 상태 추가
 
     useEffect(() => {
+        // 인증 및 관리자 권한 확인
+        if (!isAuthenticated || !isAdmin) {
+            alert('관리자 로그인이 필요합니다.');
+            navigate('/user');
+            return;
+        }
+        
+        // 기존 데이터 fetch 함수들 호출
         fetchQuestions();
         fetchCategories();
-    }, []);
+    }, [isAuthenticated, isAdmin, navigate]);
 
     useEffect(() => {
         // URL 파라미터가 변경될 때마다 필터 업데이트
