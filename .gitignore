@@ -46,3 +46,4 @@ socialLogin.yml
 
 # yml 파일 업로드하지 않기
 external-config.properties
+/src/main/resources/application-mysql.properties

@@ -169,15 +169,17 @@ const MypageOrderDetails = () => {
                 {/* 결제 정보 */}
                 {/* 결제 정보 섹션 */}
                 <section className={styles.paymentSummary}>
-                        <p className={styles.totalPrice1}>
-                            <strong>상품 금액:</strong> <span>KRW {originalTotalPrice.toLocaleString()}</span>
-                        </p>
+                    <p className={styles.totalPrice1}>
+                        <strong>상품 금액:</strong> <span>KRW {originalTotalPrice.toLocaleString()}</span>
+                    </p>
+                    {discountAmount > 0 && ( // 할인 금액이 0보다 클 때만 출력
                         <p className={styles.totalPrice2}>
                             <strong>할인 금액:</strong> <span>- KRW {discountAmount.toLocaleString()}</span>
                         </p>
-                        <p className={styles.totalPrice}>
-                            <strong>총 결제 금액:</strong> <span>KRW {discountedTotalPrice.toLocaleString()}</span>
-                        </p>
+                    )}
+                    <p className={styles.totalPrice}>
+                        <strong>총 결제 금액:</strong> <span>KRW {discountedTotalPrice.toLocaleString()}</span>
+                    </p>
                 </section>
 
 
