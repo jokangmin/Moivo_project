@@ -105,6 +105,8 @@
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 14px;
+    background-color: #ffffff;
+    color: #000000;
 }
 
 .inputGroup textarea{
@@ -113,6 +115,8 @@
     border-radius: 4px;
     font-size: 14px;
     height: 90px;
+    background-color: #ffffff;
+    color: #000000;
 }
 
 .buttonGroup {
@@ -156,4 +160,12 @@
 .activeTab {
     color: #fefaa0;
     font-weight: bold;
+}
+
+.inputGroup input:focus,
+.inputGroup textarea:focus {
+    background-color: #ffffff;
+    color: #000000;
+    outline: none;
+    border-color: #666;
 }

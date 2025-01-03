@@ -35,15 +35,20 @@ export const AdminsBoardProvider = ({ children }) => {
     const [categoryMapping, setCategoryMapping] = useState({});
     const [categoryNames, setCategoryNames] = useState({});
 
+    // 문의 목록 조회
     const fetchQuestions = useCallback(async () => {
         try {
             const response = await axiosInstance.get(`${PATH.SERVER}/api/admin/qna/management/questions`);
-            setQuestions(response.data);
+            const data = response.data;
+            console.log('Fetched questions raw data:', data);
+
+            setQuestions(data);
         } catch (error) {
             console.error('Failed to fetch questions:', error);
         }
     }, []);
 
+    // 카테고리 조회
     const fetchCategories = useCallback(async () => {
         try {
             const response = await axiosInstance.get(`${PATH.SERVER}/api/admin/qna/management/categories`);
@@ -68,6 +73,7 @@ export const AdminsBoardProvider = ({ children }) => {
         }
     }, []);
 
+    // 초기 데이터 조회
     useEffect(() => {
         if (!isAuthenticated || !isAdmin) {
             alert('관리자 로그인이 필요합니다.');
@@ -89,37 +95,43 @@ export const AdminsBoardProvider = ({ children }) => {
         initializeData();
     }, [isAuthenticated, isAdmin, navigate, fetchQuestions, fetchCategories]);
 
+    // 초기 데이터 조회
     useEffect(() => {
         if (filterFromUrl) {
             setFilterType(filterFromUrl);
         }
     }, [filterFromUrl]);
 
-const openResponseModal = useCallback((questionId) => {
-    const question = questions.find((q) => q.id === questionId);
-    setSelectedQuestion(question);
-    setResponseModalOpen(true);
-}, [questions]);
+    // 문의 응답 모달 열기
+    const openResponseModal = useCallback((questionId) => {
+        const question = questions.find((q) => q.id === questionId);
+        setSelectedQuestion(question);
+        setResponseModalOpen(true);
+    }, [questions]);
 
-const closeResponseModal = useCallback(() => {
-    setSelectedQuestion(null);
-    setResponseModalOpen(false);
-    setResponseInput('');
-}, []);
+    // 문의 응답 모달 닫기
+    const closeResponseModal = useCallback(() => {
+        setSelectedQuestion(null);
+        setResponseModalOpen(false);
+        setResponseInput('');
+    }, []);
 
-const openEditResponseModal = useCallback((questionId) => {
-    const question = questions.find((q) => q.id === questionId);
-    setSelectedQuestion(question);
-    setResponseInput(question.response);
-    setEditResponseModalOpen(true);
-}, [questions]);
+    // 문의 응답 수정 모달 열기
+    const openEditResponseModal = useCallback((questionId) => {
+        const question = questions.find((q) => q.id === questionId);
+        setSelectedQuestion(question);
+        setResponseInput(question.response);
+        setEditResponseModalOpen(true);
+    }, [questions]);
 
-const closeEditResponseModal = useCallback(() => {
-    setSelectedQuestion(null);
-    setEditResponseModalOpen(false);
-    setResponseInput('');
-}, []);
+    // 문의 응답 수정 모달 닫기
+    const closeEditResponseModal = useCallback(() => {
+        setSelectedQuestion(null);
+        setEditResponseModalOpen(false);
+        setResponseInput('');
+    }, []);
 
+    // 문의 응답 저장
     const handleRespondToQuestion = useCallback(async (e) => {
         e.preventDefault();
         try {
@@ -140,6 +152,7 @@ const closeEditResponseModal = useCallback(() => {
         }
     }, [selectedQuestion, fetchQuestions, closeResponseModal, responseInput]);
 
+    // 문의 응답 수정
     const handleUpdateResponse = useCallback(async (e) => {
         e.preventDefault();
         try {
@@ -154,6 +167,7 @@ const closeEditResponseModal = useCallback(() => {
         }
     }, [selectedQuestion, responseInput, fetchQuestions, closeEditResponseModal]);
 
+    // 문의 응답 삭제
     const handleDeleteResponse = useCallback(async (questionId) => {
         try {
             await axiosInstance.delete(
@@ -165,63 +179,76 @@ const closeEditResponseModal = useCallback(() => {
         }
     }, [fetchQuestions]);
 
+    // 문의 토글
     const toggleQuestion = useCallback((index) => {
         setActiveIndex(activeIndex === index ? null : index);
     }, [activeIndex]);
 
+    // 검색
     const handleSearch = useCallback((e) => {
         setSearchQuery(e.target.value);
         setCurrentPage(1);
     }, []);
 
+    // 상태 카드 클릭
     const handleStatCardClick = useCallback((type) => {
         setFilterType(type);
         setCurrentPage(1);
     }, []);
 
+    // 문의 목록 필터링
     const filteredQuestions = useMemo(() => {
-        return questions.filter(question => {
+        // fixQuestion이 false인 게시글만 필터링 (일반 QnA)
+        const nonFaqQuestions = questions.filter(question => question.fixQuestion === false);
+        
+        return nonFaqQuestions.filter(question => {
             const matchesCategory = selectedCategory === 'ALL' ? true : 
                 question.categoryId === categoryMapping[selectedCategory];
 
-        const matchesSearch = searchQuery.trim() === '' ? true :
-            question.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            question.content.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesSearch = searchQuery.trim() === '' ? true :
+                question.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                question.content.toLowerCase().includes(searchQuery.toLowerCase());
 
-        let matchesStatus = true;
-        if (filterType !== 'ALL') {
-            if (filterType === 'ANSWERED') {
-                matchesStatus = question.response;
-            } else if (filterType === 'WAITING') {
-                matchesStatus = !question.response;
+            let matchesStatus = true;
+            if (filterType !== 'ALL') {
+                if (filterType === 'ANSWERED') {
+                    matchesStatus = question.response;
+                } else if (filterType === 'WAITING') {
+                    matchesStatus = !question.response;
+                }
             }
-        }
 
-        return matchesCategory && matchesSearch && matchesStatus;
-    });
+            return matchesCategory && matchesSearch && matchesStatus;
+        });
     }, [selectedCategory, categoryMapping, searchQuery, filterType, questions]);
 
+    // 문의 목록 페이지네이션
     const totalItems = useMemo(() => {
         return filteredQuestions.length;
     }, [filteredQuestions]);
 
+    // 문의 목록 페이지네이션
     const totalPages = useMemo(() => {
         return Math.ceil(totalItems / itemsPerPage);
     }, [totalItems, itemsPerPage]);
 
+    // 문의 목록 페이지네이션
     const startIndex = useMemo(() => {
         return (currentPage - 1) * itemsPerPage;
     }, [currentPage, itemsPerPage]);
 
+    // 문의 목록 페이지네이션
     const currentPageQuestions = useMemo(() => {
         return filteredQuestions.slice(startIndex, startIndex + itemsPerPage);
     }, [filteredQuestions, startIndex, itemsPerPage]);
 
+    // 문의 목록 페이지네이션
     const handlePageChange = useCallback((page) => {
         setCurrentPage(page);
         setActiveIndex(null);
     }, []);
 
+    // 카테고리 아이콘 조회
     const getIconForCategory = useCallback((categoryId) => {
         const category = categories.find(c => c.id === categoryId);
         if (category) {
@@ -240,15 +267,18 @@ const closeEditResponseModal = useCallback(() => {
         return <i className="fas fa-question-circle"></i>;
     }, [categories]);
 
+    // 카테고리 드롭다운 토글
     const toggleDropdown = useCallback(() => {
         setIsDropdownVisible(prev => !prev);
     }, []);
 
+    // 카테고리 선택
     const handleCategorySelect = useCallback((category) => {
         setSelectedCategory(category);
         setIsDropdownVisible(false);
     }, []);
 
+    // 문의 작성 시간 계산
     const getTimeElapsed = useCallback((date) => {
         const now = new Date();
         const questionDate = new Date(date);
@@ -282,7 +312,6 @@ const closeEditResponseModal = useCallback(() => {
 
         setActiveIndex,
         setCurrentPage,
-        setSelectedCategory,
         setIsDropdownVisible,
         setQuestions,
         setCategories,

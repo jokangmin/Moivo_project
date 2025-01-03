@@ -119,7 +119,6 @@ const routeConfig = [
   { path: "/oauth2/callback/kakao", element: <KakaoCallback /> },
   { path: "/admins_FAQ", element: <Admins_FAQ /> },
 
-
 ];
 
 const App = () => {
