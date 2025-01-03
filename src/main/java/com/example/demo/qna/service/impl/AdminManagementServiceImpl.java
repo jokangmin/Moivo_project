@@ -1,6 +1,7 @@
 package com.example.demo.qna.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.qna.dto.QuestionCategoryDTO;
@@ -174,6 +175,42 @@ public class AdminManagementServiceImpl implements AdminManagementService {
         status.put("answeredQuestions", answeredQuestions);
 
         return status;
+    }
+
+    // 25.01.03 - 관리자 문의 리스트 - uj
+    @Override
+    public Map<String, Object> getAllQuestion(Map<String, Object> dataMap) {
+        // 1. 정보 세팅
+        Pageable pageable = (Pageable) dataMap.get("pageable"); // 페이지 처리
+        int categoryid = Integer.parseInt(dataMap.get("categoryid").toString()); // 카테고리 정렬 기준
+        String keyword = null; // 검색어
+        if (dataMap.get("keyword") != null)
+            keyword = dataMap.get("keyword").toString().trim();
+
+        /*
+         * 1. 카테고리 정렬
+         * 2. 검색
+         * 3. 카테고리 + 검색어 정렬
+         */
+
+        //  if (categoryid == 0 && keyword == null) {
+        //     // 전체 QnA 중 fixquestion = false
+
+        //     pageProductList = productRepository.findByDeleteFalse(pageable);
+        // } else if (categoryid != 0 && keyword == null) {
+        //     // 특정 카테고리에서 delete = false
+        //     pageProductList = productRepository.findBycategoryParentId(categoryid, pageable);
+        // } else if (categoryid == 0 && keyword != null) {
+        //     // 키워드 검색에서 delete = false
+        //     pageProductList = productRepository.findByNameContainingIgnoreCase(keyword, pageable);
+        // } else if (categoryid != 0 && keyword != null) {
+        //     // 키워드 + 카테고리 검색에서 delete = false
+        //     pageProductList = productRepository.findByNameContainingIgnoreCaseAndCategoryEntity_parentId(keyword,
+        //             categoryid,
+        //             pageable);
+
+        Map<String, Object> result = new HashMap<>();
+        return result;
     }
 
 }
