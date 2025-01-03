@@ -39,7 +39,10 @@ export const AdminsBoardProvider = ({ children }) => {
     const fetchQuestions = useCallback(async () => {
         try {
             const response = await axiosInstance.get(`${PATH.SERVER}/api/admin/qna/management/questions`);
-            setQuestions(response.data);
+            const data = response.data;
+            console.log('Fetched questions raw data:', data);
+
+            setQuestions(data);
         } catch (error) {
             console.error('Failed to fetch questions:', error);
         }
@@ -195,25 +198,28 @@ export const AdminsBoardProvider = ({ children }) => {
 
     // 문의 목록 필터링
     const filteredQuestions = useMemo(() => {
-        return questions.filter(question => {
+        // fixQuestion이 false인 게시글만 필터링 (일반 QnA)
+        const nonFaqQuestions = questions.filter(question => question.fixQuestion === false);
+        
+        return nonFaqQuestions.filter(question => {
             const matchesCategory = selectedCategory === 'ALL' ? true : 
                 question.categoryId === categoryMapping[selectedCategory];
 
-        const matchesSearch = searchQuery.trim() === '' ? true :
-            question.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            question.content.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesSearch = searchQuery.trim() === '' ? true :
+                question.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                question.content.toLowerCase().includes(searchQuery.toLowerCase());
 
-        let matchesStatus = true;
-        if (filterType !== 'ALL') {
-            if (filterType === 'ANSWERED') {
-                matchesStatus = question.response;
-            } else if (filterType === 'WAITING') {
-                matchesStatus = !question.response;
+            let matchesStatus = true;
+            if (filterType !== 'ALL') {
+                if (filterType === 'ANSWERED') {
+                    matchesStatus = question.response;
+                } else if (filterType === 'WAITING') {
+                    matchesStatus = !question.response;
+                }
             }
-        }
 
-        return matchesCategory && matchesSearch && matchesStatus;
-    });
+            return matchesCategory && matchesSearch && matchesStatus;
+        });
     }, [selectedCategory, categoryMapping, searchQuery, filterType, questions]);
 
     // 문의 목록 페이지네이션
