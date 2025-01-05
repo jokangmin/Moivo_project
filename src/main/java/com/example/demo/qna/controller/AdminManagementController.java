@@ -1,6 +1,9 @@
 package com.example.demo.qna.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,6 +13,7 @@ import com.example.demo.qna.dto.QuestionCategoryDTO;
 import com.example.demo.qna.dto.QuestionDTO;
 import com.example.demo.qna.service.AdminManagementService;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,19 +33,43 @@ public class AdminManagementController {
     }
 
     // 모든 문의 조회 (관리자용)
+    // @GetMapping("/questions")
+    // @PreAuthorize("hasRole('ADMIN')")
+    // public ResponseEntity<?> getAllQuestions() {
+    //     try {
+    //         List<QuestionDTO> questions = adminManagementService.getAllQuestions();
+    //         return ResponseEntity.ok().body(questions);
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+    //                 .body("Failed to fetch questions: " + e.getMessage());
+    //     }
+    // }
+
+    // 모든 문의 조회 (관리자용)
+    // 25.01.03 - uj (수정)
     @GetMapping("/questions")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getAllQuestions() {
+    public ResponseEntity<?> getAllQuestion(
+            @PageableDefault(page = 0, size = 16, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam(name = "categoryid", required = false, defaultValue = "0") int categoryid,
+            @RequestParam(name = "keyword", required = false) String keyword) {
+
         try {
-            List<QuestionDTO> questions = adminManagementService.getAllQuestions();
-            return ResponseEntity.ok().body(questions);
+            Map<String, Object> dataMap = new HashMap<>();
+            dataMap.put("pageable", pageable);
+            dataMap.put("categoryid", categoryid);
+            dataMap.put("keyword", keyword);
+
+            Map<String, Object> result = adminManagementService.getAllQuestion(dataMap);
+            return ResponseEntity.ok().body(result);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to fetch questions: " + e.getMessage());
         }
     }
-
+        
     // 문의 답변 등록
     @PostMapping("/questions/{questionId}/response")
     @PreAuthorize("hasRole('ADMIN')")

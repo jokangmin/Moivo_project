@@ -27,4 +27,6 @@ public interface AdminManagementService {
     public List<QuestionDTO> getUnansweredQuestions(); // 미답변 문의 조회
 
     public Map<String, Integer> getQuestionStatus(); // 관리자 대시보드 데이터 가져옴
+
+    public Map<String, Object> getAllQuestion(Map<String, Object> dataMap); // 25.01.03 - 관리자 문의 리스트 - uj
 }
