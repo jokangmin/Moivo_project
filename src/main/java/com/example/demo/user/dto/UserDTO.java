@@ -1,7 +1,6 @@
 package com.example.demo.user.dto;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import com.example.demo.coupon.dto.UserCouponDTO;
 import com.example.demo.user.entity.UserEntity;

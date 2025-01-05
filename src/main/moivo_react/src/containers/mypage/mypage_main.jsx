@@ -35,8 +35,8 @@ const MypageMain = () => {
               {userInfo ? (
                 <>
                   <p>{userInfo.name}님의 멤버십 등급은 <strong>[ {userInfo.grade} ]</strong>입니다.</p>
-                  {userInfo.nextLevelTarget === 0 ? (
-                    <strong><p></p></strong>
+                  {userInfo.grade === "LV5" ? (
+                    <p>축하합니다! 최고 등급입니다. 지금의 등급을 계속 유지하세요 :)</p>
                   ) : (
                     <p>
                       다음 등급까지 남은 구매금액은 

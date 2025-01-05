@@ -4,8 +4,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import styles from "../../assets/css/admin_productList.module.css";
 import Admins_side from "../../components/admin_sidebar/admins_side";
 import { PATH } from '../../../scripts/path';
+import { useAuth } from '../../contexts/AuthContext';
 
 const ProductList = () => {
+  const { isAuthenticated, isAdmin } = useAuth();
   const [sortBy, setSortBy] = useState(1); // 기본 정렬값: 전체
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -26,9 +28,16 @@ const ProductList = () => {
   const statusFilter = queryParams.get("status");
 
   useEffect(() => {
+    // 인증 및 관리자 권한 확인
+    if (!isAuthenticated || !isAdmin) {
+      alert('관리자 로그인이 필요합니다.');
+      navigate('/user');
+      return;
+    }
+    
     console.log("statusFilter:", statusFilter);
     fetchProducts(0); // 페이지 0부터 시작하여 로드
-  }, [sortBy, statusFilter]);
+  }, [sortBy, statusFilter, isAuthenticated, isAdmin, navigate]);
 
   useEffect(() => {
     console.log("Pagination State:", pagination);

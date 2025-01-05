@@ -194,43 +194,28 @@ public class UserController {
         Integer userIdFromRequest = (Integer) requestData.get("userId");
         String passwordFromRequest = (String) requestData.get("pwd");
 
-        System.out.println("userId = " + userIdFromRequest);
-        System.out.println("pwd = " + passwordFromRequest);
-
         try {
             // Authorization 헤더에서 실제 토큰 값 추출
             if (token == null || !token.startsWith("Bearer ")) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
 
-            String actualToken = token.trim().substring(7); // "Bearer " 제거 후 공백 제거
-
-            // 토큰에서 사용자 ID 추출
+            String actualToken = token.trim().substring(7);
             Map<String, Object> userData = jwtUtil.getUserDataFromToken(actualToken);
-            System.out.println("userData = " + userData);
             int userIdFromToken = (Integer) userData.get("id");
-            System.out.println(userIdFromToken);
 
             // 사용자 ID 일치 여부 확인 (보안 검증)
             if (userIdFromToken == userIdFromRequest) {
-                // 비밀번호 검증
+                // 비밀번호 검증 (카카오 로그인 사용자는 자동으로 통과)
                 if (!userService.checkPassword(userIdFromRequest, passwordFromRequest)) {
-                    return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
                 }
-
+                
                 // 회원 탈퇴 처리
                 userService.deleteUser(userIdFromRequest);
                 return ResponseEntity.ok().build();
-            } else {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
-
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

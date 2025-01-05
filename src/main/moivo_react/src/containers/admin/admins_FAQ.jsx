@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import QnA from '../../assets/css/admins_FAQ.module.css';
-import admin_dashboard from '../../assets/css/admins_dashboard.module.css';
 import Admins_side from '../../components/admin_sidebar/admins_side';
 import axiosInstance from '../../utils/axiosConfig';
 import { useAuth } from '../../contexts/AuthContext';
@@ -180,95 +179,71 @@ const admins_FAQ = () => {
     };
 
     return (
-        <div className={admin_dashboard.container}>
-        {/* Sidebar 영역 */}
-        <div className={admin_dashboard.sidebar}>
-            <Admins_side />
-        </div>
+        <div className={QnA.container}>
+            {/* Sidebar 영역 */}
+            <div className={QnA.sidebar}>
+                <Admins_side />
+            </div>
 
-            <div className={QnA.adminMainDiv}>
-                {/* FAQ 목록 (왼쪽) */}
-                <div className={QnA.faqListSection}>
-                    <h2>FAQ 목록</h2>
-                    <div className={QnA.faqList}>
-                        {Array.isArray(faqs) && faqs.map(faq => (
-                            <div 
-                                key={faq.id} 
-                                className={`${QnA.faqListItem} ${selectedFaq?.id === faq.id ? QnA.selected : ''}`}
-                                onClick={() => handleSelectFaq(faq)}
-                            >
-                                <div className={QnA.faqTitle}>{faq.title}</div>
-                                <div className={QnA.faqDate}>
-                                    {new Date(faq.questionDate).toLocaleDateString()}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+            <div className={QnA.mainContent}>
+                <div className={QnA.header}>
+                    <h1>FAQ 관리</h1>
                 </div>
-
-                {/* FAQ 입력/수정 폼 (오른쪽) */}
-                <div className={QnA.faqFormSection}>
-                    <div className={QnA.modeSelector}>
-                        <span 
-                            className={`${QnA.modeTab} ${mode === 'edit' ? QnA.activeTab : ''}`}
-                        >
-                            FAQ 수정
-                        </span>
-                        <span 
-                            className={`${QnA.modeTab} ${mode === 'add' ? QnA.activeTab : ''}`}
-                            onClick={handleAddMode}
-                        >
-                            FAQ 추가
-                        </span>
+                <div className={QnA.contentRow}>
+                    {/* FAQ 목록 (왼쪽) */}
+                    <div className={QnA.faqListSection}>
+                        <div className={QnA.faqListSectionTitle}> 
+                            <span>FAQ 목록</span> 
+                        </div>
+                        <div className={QnA.faqList}>
+                            {Array.isArray(faqs) && faqs.map(faq => (
+                                <div key={faq.id} className={`${QnA.faqListItem} ${selectedFaq?.id === faq.id ? QnA.selected : ''}`} onClick={() => handleSelectFaq(faq)} >
+                                    <div>{faq.title}</div>
+                                    <div>
+                                        {new Date(faq.questionDate).toLocaleDateString()}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                    <form onSubmit={handleSubmit} className={QnA.faqForm}>
-                        <div className={QnA.inputGroup}>
-                            <label>제목</label>
-                            <input
-                                type="text"
-                                name="title"
-                                value={formData.title}
-                                onChange={handleInputChange}
-                                placeholder="FAQ 제목을 입력하세요"
-                            />
+
+                    {/* FAQ 입력/수정 폼 (오른쪽) */}
+                    <div className={QnA.faqFormSection}>
+                        <div className={QnA.faqListSectionTitle}>
+                            <span className={`${QnA.modeTab} ${mode === 'edit' ? QnA.activeTab : ''}`} >
+                                FAQ 수정
+                            </span>
+                            <span className={`${QnA.modeTab} ${mode === 'add' ? QnA.activeTab : ''}`} onClick={handleAddMode} >
+                                FAQ 추가
+                            </span>
                         </div>
-                        <div className={QnA.inputGroup}>
-                            <label>내용</label>
-                            <textarea
-                                name="content"
-                                value={formData.content}
-                                onChange={handleInputChange}
-                                rows="10"
-                                placeholder="FAQ 내용을 입력하세요"
-                            />
-                        </div>
-                        <div className={QnA.buttonGroup}>
-                            {mode === 'edit' ? (
-                                <>
-                                    <button 
-                                        type="submit"
-                                        className={QnA.editButton}
-                                    >
-                                        수정하기
+                        <form onSubmit={handleSubmit} className={QnA.faqForm}>
+                            <div className={QnA.inputGroup}>
+                                <label>제목</label>
+                                <input type="text" name="title" value={formData.title} onChange={handleInputChange} placeholder="FAQ 제목을 입력하세요" />
+                            </div>
+                            <div className={QnA.inputGroup}>
+                                <label>내용</label>
+                                <textarea name="content" value={formData.content} onChange={handleInputChange} rows="10" placeholder="FAQ 내용을 입력하세요" />
+                            </div>
+                            <div className={QnA.buttonGroup}>
+                                {mode === 'edit' ? (
+                                    <>
+                                        <button type="submit" className={QnA.editButton}>
+                                            수정하기
+                                        </button>
+                                        <button type="button" className={QnA.delButton} onClick={faqDelete}>
+                                            삭제하기
+                                        </button>
+                                    </>
+                                ) : (
+                                    <button type="submit" className={QnA.addButton}>
+                                        추가하기
                                     </button>
-                                    <button 
-                                        type="button"
-                                        className={QnA.delButton}
-                                        onClick={faqDelete}
-                                    >
-                                        삭제하기
-                                    </button>
-                                </>
-                            ) : (
-                                <button 
-                                    type="submit"
-                                    className={QnA.addButton}
-                                >
-                                    추가하기
-                                </button>
-                            )}
-                        </div>
-                    </form>
+                                )}
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

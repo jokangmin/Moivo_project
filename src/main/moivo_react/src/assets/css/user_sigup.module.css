@@ -120,6 +120,14 @@
   flex: 1;
 }
 
+/* 12.30_yjy */
+.successMessage {
+  color: blue;
+  font-size: 12px;
+  margin-left: 50px;
+  flex: 1;
+}
+
 .phoneRow {
   display: flex;
   height: 40px;

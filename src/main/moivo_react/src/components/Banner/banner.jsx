@@ -9,8 +9,8 @@ import cartIcon from '../../assets/image/cart.png';
 const Banner = () => {
   const navigate = useNavigate();
   const { isAuthenticated, logout, tokenExpiration, isAdmin } = useContext(AuthContext);
-  //2024-12-11 디버그 확인 장훈s
-  console.log('isAdmin:', isAdmin);
+  //2024-12-11 디버그 확인 장훈
+  console.log('isAdmin:', isAdmin); 
 
   useEffect(() => {
     console.log('현재 인증 상태:', isAuthenticated);
@@ -138,14 +138,14 @@ const Banner = () => {
               </>
             )}
 
-            <div className={styles.loginStatus}>
+            {/* <div className={styles.loginStatus}>
               <span>
                 <span className={`${styles.status} ${isAuthenticated ? styles.on : styles.off}`}></span>
                 {isAuthenticated ? 'ON' : 'OFF'}
               </span>
               {isAuthenticated && ( <span className={styles.expiration}>{formatExpiration(tokenExpiration)}</span> )}
-            </div>
-
+            </div> */}
+            {/* 로그인 상태 표시 주석 처리 */}
         </div>
       </div>
     </header>

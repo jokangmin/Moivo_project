@@ -60,7 +60,7 @@ const admins_side = () => {
               <li>
                 <Link to="/admins_qnaboard">
                   <i className="fa fa-star fa-2x"></i>
-                  <span className={admin_sidebar.navText}>Reviews</span>
+                  <span className={admin_sidebar.navText}>QnA</span>
                 </Link>
               </li>
             </ul>

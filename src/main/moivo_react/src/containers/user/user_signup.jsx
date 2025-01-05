@@ -29,7 +29,9 @@ function UserSignup() {
                     <div className={singup.formRow}>
                         <span>ID</span>
                         <input type="text" name="userId" value={formData.userId} onChange={handleChange} onBlur={IdCheckHandleBlur} />
-                        <div className={singup.exception}>{errors.userId}</div>
+                        <div className={errors.userIdStatus === "success" ? singup.successMessage : singup.exception}>
+                            {errors.userId}
+                        </div>
                     </div>
                     <hr className={singup.signupline} />
 

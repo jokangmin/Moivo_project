@@ -12,7 +12,7 @@ const Admins_dashboard = () => {  // 24.12.13 백, 프론트 연결 - yjy , 12/1
   const QnaCanvasRef = useRef(null);
   const productCanvasRef = useRef(null);
   const salaesCanvasRef = useRef(null);
-  const { isAdmin, getAccessToken, refreshAccessToken } = useAuth();
+  const { isAdmin, isAuthenticated, refreshAccessToken } = useAuth();
   const navigate = useNavigate();
   const [selectedProductStatus, setSelectedProductStatus] = useState(null);
   const [paymentStatus, setPaymentStatus] = useState({});
@@ -33,6 +33,15 @@ const Admins_dashboard = () => {  // 24.12.13 백, 프론트 연결 - yjy , 12/1
   const handleCardClick = (statusType) => {
     setSelectedProductStatus(statusType);
   };
+
+  useEffect(() => {
+    // 인증 및 관리자 권한 확인
+    if (!isAuthenticated || !isAdmin) {
+        alert('관리자 로그인이 필요합니다.');
+        navigate('/user');
+        return;
+    }
+}, [isAuthenticated, isAdmin, navigate]);
   
   useEffect(() => {
     const fetchDashboardData = async () => {

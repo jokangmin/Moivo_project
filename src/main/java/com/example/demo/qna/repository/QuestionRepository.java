@@ -17,7 +17,7 @@ import com.example.demo.qna.entity.QuestionEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-public interface QuestionRepository extends JpaRepository<QuestionEntity, Integer>, QuestionRepositoryCustom {
+public interface QuestionRepository extends JpaRepository<QuestionEntity, Integer> {
 
     // 모든 문의 조회
     @Query("SELECT q FROM QuestionEntity q ORDER BY q.questionDate DESC")
@@ -75,43 +75,38 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Intege
 
     // FAQ 목록 조회 (fixQuestion이 true인 것만 최신순으로) _ 24.12.18 yjy
     @Query("SELECT q FROM QuestionEntity q WHERE q.fixQuestion = true ORDER BY q.questionDate DESC")
-    List<QuestionEntity> findByFixQuestionTrueOrderByQuestionDateDesc();
+    public List<QuestionEntity> findByFixQuestionTrueOrderByQuestionDateDesc();
 
     //문의리스트 전체검색 fixquestion이 false 것만
-//    @Query("SELECT q FROM QuestionEntity q WHERE q.fixQuestion=false ")
     Page<QuestionEntity> findAllByFixQuestionFalse(Pageable pageable);
 
     // 문의리스트 제목만 검색
-//    @Query("SELECT q FROM QuestionEntity q WHERE q.fixQuestion=false  AND LOWER(q.title) LIKE LOWER(CONCAT('%', :title, '%'))")
-//    public Page<QuestionEntity> findByTitleContainingIgnoreCase(String title, Pageable pageable);
     public Page<QuestionEntity> findByFixQuestionFalseAndTitleContainingIgnoreCase(String title, Pageable pageable);
 
 
     // 문의리스트 문의 카테고리만 검색
-//    @Query("SELECT q FROM QuestionEntity q WHERE q.fixQuestion=false AND q.categoryEntity.id=:categoryid")
-//    Page<QuestionEntity> findByCategoryEntityId(int categoryid, Pageable pageable);
-    Page<QuestionEntity> findByFixQuestionFalseAndCategoryEntityId(int categoryid, Pageable pageable);
+    public Page<QuestionEntity> findByFixQuestionFalseAndCategoryEntityId(int categoryid, Pageable pageable);
 
     // 문의리스트 제목, 카테고리 검색
-//    @Query("SELECT q FROM QuestionEntity q WHERE q.fixQuestion = false AND LOWER(q.title) LIKE LOWER(CONCAT('%', :title, '%')) AND q.categoryEntity.id = :categoryid")
-//    Page<QuestionEntity> findByTitleContainingIgnoreCaseAndCategoryEntityId(String title, int categoryid, Pageable pageable);
-    Page<QuestionEntity> findByFixQuestionFalseAndTitleContainingIgnoreCaseAndCategoryEntityId(String title, int categoryid, Pageable pageable);
+    public Page<QuestionEntity> findByFixQuestionFalseAndTitleContainingIgnoreCaseAndCategoryEntityId(String title, int categoryid, Pageable pageable);
 
 
     // 문의리스트 비밀글 조회
     @Query("SELECT q FROM QuestionEntity q WHERE q.id=:id")
-    QuestionEntity findQuestionById(@Param("id") int id);
-//
-//    @Query("SELECT q FROM QuestionEntity q WHERE q.secret IS FALSE")
-//    Page<QuestionEntity> findBySecret(Pageable pageable);
+    public QuestionEntity findQuestionById(@Param("id") int id);
+
     // 마이페이지 나의 문의 리스트 조회 - 강민 12/18 11:06
-    Page<QuestionEntity> findByUserEntity_Id(Integer userId, Pageable pageable);
+    public Page<QuestionEntity> findByUserEntity_Id(Integer userId, Pageable pageable);
 
     // 특정 User의 문의 삭제
-    void deleteByUserEntity_Id(Integer userId);
+    public void deleteByUserEntity_Id(Integer userId);
 
     // 특정 User의 모든 문의 조회
-    List<QuestionEntity> findByUserEntity_Id(Integer userId);
+    public List<QuestionEntity> findByUserEntity_Id(Integer userId);
 
-    void removeUserAssociationFromQuestion(int userId);
+    @Modifying
+    @Transactional
+    @Query("UPDATE QuestionEntity q SET q.userEntity = null WHERE q.userEntity.id = :userId")
+    public void removeUserAssociationFromQuestion(@Param("userId") int userId);
+
 }

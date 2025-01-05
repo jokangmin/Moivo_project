@@ -15,8 +15,6 @@ public interface MypageService {
 
     public UserDTO getUserInfo(int id);
 
-    //public List<CouponDTO> getCouponList(int id);
-
     public List<ProductDTO> getProductList(int userId);
 
     public List<WishDTO> getWishlist(int id);

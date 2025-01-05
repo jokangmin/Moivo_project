@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaHeart, FaShoppingCart, FaMinus, FaPlus, FaTruck, FaExchangeAlt, FaCreditCard } from 'react-icons/fa';
 import styles from '../../assets/css/product_detail.module.css';
@@ -11,7 +11,6 @@ import { useProDetail } from '../../contexts/productCon/ProDetailContext';
 
 const ProductDetail = () => {
   const { productId } = useParams();
-  const navigate = useNavigate();
   const {
     product,
     mainImage,
@@ -35,31 +34,20 @@ const ProductDetail = () => {
     handlePurchase,
     handleAddToWishlist,
     handleAddToCart,
-    fetchReviews,
     isAllSizesSoldOut,
     setError,
-    setLoading
+    setLoading,
+    initializeProduct,
+    loadReviews,
   } = useProDetail();
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    
-    if (!token) {
-      alert("로그인이 필요한 서비스입니다.");
-      navigate("/user");
-      return;
-    }
-  }, [navigate]);
+    initializeProduct(productId);
+  }, [productId, initializeProduct]);
 
   useEffect(() => {
-    fetchProductDetail(productId);
-  }, [productId, fetchProductDetail]);
-
-  useEffect(() => {
-    if (productId && activeTab === 'reviews') {
-      fetchReviews(productId);
-    }
-  }, [productId, activeTab]);
+    loadReviews(productId);
+  }, [productId, loadReviews]);
 
   if (loading) {
     return <LoadingModal isOpen={true} />;

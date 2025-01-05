@@ -13,21 +13,21 @@ const ProductList = () => {
         currentPage,
         pageInfo,
         sortBy,
-        setSortBy,
         categories,
         activeCategory,
-        setActiveCategory,
         cartItem,
         wishItem,
         searchOpen,
         setSearchOpen,
         searchTerm,
-        setSearchTerm,
         isLoading,
-        fetchProducts,
         handleProductClick,
         handleWishClick,
-        handleCartClick
+        handleCartClick,
+        handlePageChange,
+        handleSearchChange,
+        handleCategoryChange,
+        handleSortChange
     } = useContext(ProListContext);
 
     return (
@@ -58,7 +58,7 @@ const ProductList = () => {
                                 animate={{ opacity: searchOpen ? 1 : 0 }}
                                 transition={{ duration: 0.2 }}
                                 value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
+                                onChange={(e) => handleSearchChange(e.target.value)}
                             />
                         </motion.div>
                         {/* 카테고리 */}
@@ -67,9 +67,9 @@ const ProductList = () => {
                                 <motion.button
                                     key={category.id}
                                     className={`${styles.categoryItem} ${
-                                        activeCategory === category ? styles.active : ''
+                                        activeCategory.id === category.id ? styles.active : ''
                                     }`}
-                                    onClick={() => setActiveCategory(category)}
+                                    onClick={() => handleCategoryChange(category)}
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.85 }}
                                 >
@@ -82,7 +82,7 @@ const ProductList = () => {
                     <select
                         className={styles.sortDropdown}
                         value={sortBy}
-                        onChange={(e) => setSortBy(e.target.value)}
+                        onChange={(e) => handleSortChange(e.target.value)}
                     >
                         <option value="newest">최신순</option>
                         <option value="priceHigh">높은 가격순</option>
@@ -137,14 +137,14 @@ const ProductList = () => {
                 <motion.div className={styles.paginationContainer}>
                     <button
                         className={styles.pageButton}
-                        onClick={() => fetchProducts(0)}
+                        onClick={() => handlePageChange(0)}
                         disabled={pageInfo.isFirst}
                     >
                         &laquo;
                     </button>
                     <button
                         className={styles.pageButton}
-                        onClick={() => fetchProducts(currentPage - 1)}
+                        onClick={() => handlePageChange(currentPage - 1)}
                         disabled={!pageInfo.hasPrevious}
                     >
                         &lt;
@@ -156,7 +156,7 @@ const ProductList = () => {
                                 <button
                                     key={pageIndex}
                                     className={`${styles.pageButton} ${currentPage === pageIndex ? styles.active : ""}`}
-                                    onClick={() => fetchProducts(pageIndex)}
+                                    onClick={() => handlePageChange(pageIndex)}
                                 >
                                     {pageIndex + 1}
                                 </button>
@@ -165,14 +165,14 @@ const ProductList = () => {
                     })()}
                     <button
                         className={styles.pageButton}
-                        onClick={() => fetchProducts(currentPage + 1)}
+                        onClick={() => handlePageChange(currentPage + 1)}
                         disabled={!pageInfo.hasNext}
                     >
                         &gt;
                     </button>
                     <button
                         className={styles.pageButton}
-                        onClick={() => fetchProducts(pageInfo.totalPages - 1)}
+                        onClick={() => handlePageChange(pageInfo.totalPages - 1)}
                         disabled={pageInfo.isLast}
                     >
                         &raquo;

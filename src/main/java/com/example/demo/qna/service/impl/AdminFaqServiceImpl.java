@@ -1,10 +1,10 @@
-package com.example.demo.faq.service.impl;
+package com.example.demo.qna.service.impl;
 
-import com.example.demo.faq.service.AdminFaqService;
 import com.example.demo.qna.dto.QuestionDTO;
 import com.example.demo.qna.entity.QuestionCategoryEntity;
 import com.example.demo.qna.entity.QuestionEntity;
 import com.example.demo.qna.repository.QuestionRepository;
+import com.example.demo.qna.service.AdminFaqService;
 import com.example.demo.user.entity.UserEntity;
 import com.example.demo.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -184,6 +184,28 @@ export const ProDetailProvider = ({ children }) => {
     }
   }, [selectedSize, quantity, stockInfo]);
 
+  const checkLoginStatus = useCallback(() => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      alert("로그인이 필요한 서비스입니다.");
+      navigate("/user");
+      return false;
+    }
+    return true;
+  }, [navigate]);
+
+  const initializeProduct = useCallback(async (productId) => {
+    if (!checkLoginStatus()) return;
+    
+    await fetchProductDetail(productId);
+  }, [checkLoginStatus, fetchProductDetail]);
+
+  const loadReviews = useCallback(async (productId) => {
+    if (productId && activeTab === 'reviews') {
+      await fetchReviews(productId);
+    }
+  }, [activeTab, fetchReviews]);
+
   const value = useMemo(() => ({
     product,
     mainImage,
@@ -209,17 +231,22 @@ export const ProDetailProvider = ({ children }) => {
     handlePurchase,
     handleAddToWishlist,
     handleAddToCart,
-    fetchReviews,
     isAllSizesSoldOut,
     setError,
-    setLoading
+    setLoading,
+    initializeProduct,
+    loadReviews,
+    checkLoginStatus,
   }), [
     product, mainImage, thumbnailImages, detailImages, selectedSize, 
     stocks, selectedProduct, reviews, loading, error, quantity, 
     activeTab, currentThumbnailIndex, isAnimating, stockInfo,
     fetchProductDetail, handleThumbnailClick, handleThumbnailSlide,
     handleSizeSelect, handleQuantityChange, handlePurchase,
-    handleAddToWishlist, handleAddToCart, fetchReviews, isAllSizesSoldOut
+    handleAddToWishlist, handleAddToCart, isAllSizesSoldOut,
+    initializeProduct,
+    loadReviews,
+    checkLoginStatus,
   ]);
 
   return (

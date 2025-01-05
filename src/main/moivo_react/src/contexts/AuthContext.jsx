@@ -28,13 +28,8 @@ export const AuthProvider = ({ children }) => {
         return localStorage.getItem('accessToken');
     };
 
-    const getRefreshToken = () => {
-        return localStorage.getItem('refreshToken');
-    };
-
     const removeTokens = () => {
         localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
     };
 
     // 토큰 갱신 함수
@@ -66,7 +61,6 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         try {
             const accessToken = getAccessToken();
-            const refreshToken = getRefreshToken();
             
             // 토큰이 있는 경우에만 로그아웃 요청
             if (accessToken) {
@@ -83,6 +77,9 @@ export const AuthProvider = ({ children }) => {
             setIsAuthenticated(false);
             setIsAdmin(false); // 2024-12-11 로그아웃 시 isAdmin 상태 초기화 장훈
             
+            // 헤더에서 Authorization 키 삭제
+            delete axiosInstance.defaults.headers.common['Authorization'];
+
             // 사용자 정보 제거
             localStorage.removeItem('userId');
             localStorage.removeItem('id');
@@ -119,18 +116,34 @@ export const AuthProvider = ({ children }) => {
             const response = await axiosInstance.get(`/api/user/social/kakao/login?code=${code}`, {
                 withCredentials: true
             });
-            console.log(response.data);
             
-            const success = await handleLoginSuccess(response);
-            if (success) {
+            if (response.data.accessToken) {
+                // 토큰 및 사용자 정보 저장
+                localStorage.setItem('accessToken', response.data.accessToken);
+                localStorage.setItem('userId', response.data.userId);
+                localStorage.setItem('id', response.data.id);
+                localStorage.setItem('isAdmin', response.data.isAdmin);
+
+                // axios 헤더 설정
+                axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`;
+                
+                // 상태 업데이트
                 setIsAuthenticated(true);
+                setIsAdmin(response.data.isAdmin);
+                
+                console.log('[AuthContext] 카카오 로그인 성공');
                 return true;
             }
-
-            return await handleLoginSuccess(response);
+            return false;
         } catch (error) {
-            console.error('카카오 로그인 실패:', error);
-            throw error.response?.data?.error || error.message;
+            console.error('[AuthContext] 카카오 로그인 실패:', error);
+            // 중복 로그인이 아닌 경우에만 토큰 제거
+            if (error.response?.status !== 409) {
+                removeTokens();
+                setIsAuthenticated(false);
+                setIsAdmin(false);
+            }
+            throw error;
         }
     };
 
@@ -188,6 +201,40 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const deleteAccount = async () => {
+        try {
+            const accessToken = getAccessToken();
+            
+            if (accessToken) {
+                // API 호출
+                await axiosInstance.delete(`/api/user/withdrawal`, {
+                    withCredentials: true,
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+            }
+
+            // 로컬 스토리지 초기화
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('id');
+            localStorage.removeItem('isAdmin');
+
+            // 상태 초기화
+            setIsAuthenticated(false);
+            setIsAdmin(false);
+            
+            // axios 헤더 초기화
+            delete axiosInstance.defaults.headers.common['Authorization'];
+            
+            navigate('/');
+        } catch (error) {
+            console.error('회원탈퇴 실패:', error);
+            throw error;
+        }
+    };
+
     const value = {
         isAuthenticated,
         isAdmin, // 2024-12-11 isAdmin 값을 Context에서 제공 장훈
@@ -198,10 +245,10 @@ export const AuthProvider = ({ children }) => {
         kakaoLogin,
         handleLoginSuccess,
         getAccessToken,
-        getRefreshToken,
         refreshAccessToken,
         tokenExpiryTime,
         getTokenExpiryTime,
+        deleteAccount,
     };
 
     return (

@@ -1,4 +1,4 @@
-package com.example.demo.faq.service;
+package com.example.demo.qna.service;
 
 import com.example.demo.qna.dto.QuestionDTO;
 
@@ -17,6 +17,5 @@ public interface AdminFaqService {
 
     // FAQ 삭제 - 24.12.18 yjy
     public boolean deleteFaq(Integer id);
-
     
 }

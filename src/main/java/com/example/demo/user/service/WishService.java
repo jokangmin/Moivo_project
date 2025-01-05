@@ -1,9 +1,6 @@
 package com.example.demo.user.service;
 
-import java.util.List;
 import java.util.Map;
-
-import com.example.demo.user.dto.WishDTO;
 
 public interface WishService {
 

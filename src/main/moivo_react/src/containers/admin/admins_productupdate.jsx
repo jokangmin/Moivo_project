@@ -4,11 +4,13 @@ import Admins_side from '../../components/admin_sidebar/admins_side';
 import { useParams } from 'react-router-dom';
 import axiosInstance from '../../utils/axiosConfig';
 import { useNavigate } from "react-router-dom";
+import { useAuth } from '../../contexts/AuthContext';
 
 const Admins_productupdate = () => {
-  const{ productId } = useParams();// 수정 상품 Id
-
+  const { isAuthenticated, isAdmin } = useAuth();
+  const { productId } = useParams();
   const navigate = useNavigate();
+
   const [product, setProduct] = useState({
     id: 0,
     name: "",
@@ -46,7 +48,12 @@ const Admins_productupdate = () => {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // 카테고리 정보 가져오기
+    if (!isAuthenticated || !isAdmin) {
+      alert('관리자 로그인이 필요합니다.');
+      navigate('/user');
+      return;
+    }
+
     axiosInstance.get(`/api/admin/store/category`).then((res) => {
       if (Array.isArray(res.data.category)) {
         setCategories(res.data.category);
@@ -135,7 +142,7 @@ const Admins_productupdate = () => {
       });
       console.log(stock);
     });
-  }, []);
+  }, [isAuthenticated, isAdmin, navigate, productId]);
 
     // 2024/12/27 메인 카테고리 변경 핸들러 추가 장훈
     const handleMainCategoryChange = (e) => {

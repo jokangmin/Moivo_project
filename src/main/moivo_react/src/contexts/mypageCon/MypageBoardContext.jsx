@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import axiosInstance from "../../utils/axiosConfig";
-import {useNavigate} from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const MypageBoardContext = createContext();
 
@@ -15,14 +15,6 @@ const MypageBoardProvider = ({ children }) => {
     // 현재 로그인한 사용자 ID 상태 추가
     const [currentUserId, setCurrentUserId] = useState(null);
 
-    // 현재 사용자 ID 확인
-    const checkUserId = () => {
-        const storedUserId = localStorage.getItem('id');
-        if (storedUserId) {
-            setCurrentUserId(parseInt(storedUserId));
-        }
-    };
-
     // 새로운 상태 추가: 편집 모달 관련
     const [editModalVisible, setEditModalVisible] = useState(false);
     const [editedPost, setEditedPost] = useState({
@@ -32,12 +24,24 @@ const MypageBoardProvider = ({ children }) => {
         secret: false
     });
 
+    // 12/18 나의 문의 리스트 가져오기 - km
+    // 2024/12/30 쿼리 파람 추가  장훈
+    const [searchParams, setSearchParams] = useSearchParams(); 
+
+    // 현재 사용자 ID 확인
+    const checkUserId = () => {
+        const storedUserId = localStorage.getItem('id');
+        if (storedUserId) {
+            setCurrentUserId(parseInt(storedUserId));
+        }
+    };
+
     useEffect(() => {
         console.log("* MyQnaList DB : " + MyQnaList);
         checkUserId();
-    }, [MyQnaList])
+    }, [MyQnaList]);
 
-    //12/18 나의 문의 리스트 가져오기 - km
+    // 12/18 나의 문의 리스트 가져오기 - km
     const fetchMyQna = async (page = 0, size = 4) => {
         const token = localStorage.getItem("accessToken");
 
@@ -50,14 +54,17 @@ const MypageBoardProvider = ({ children }) => {
         const decodedPayload = JSON.parse(atob(payload));
         const id = decodedPayload.id;
 
-
         try {
             // 문의 가져오기
             const myQuestionResponse = await axiosInstance.get(`/api/user/mypage/question/${id}`, {
-                params: {page, size, sort: 'id,desc'},
+                params: { page, size, sort: 'id,desc' },
             });
 
-            if (myQuestionResponse.data && myQuestionResponse.data.content && Array.isArray(myQuestionResponse.data.content)) {
+            if (
+                myQuestionResponse.data &&
+                myQuestionResponse.data.content &&
+                Array.isArray(myQuestionResponse.data.content)
+            ) {
                 setMyQnaList(myQuestionResponse.data.content);
                 setTotalPages(myQuestionResponse.data.totalPages);
                 setCurrentPage(page);
@@ -69,11 +76,11 @@ const MypageBoardProvider = ({ children }) => {
             console.error("Error data:", error);
             setMyQnaList([]);
         }
-    }
+    };
 
     // 페이지네이션 버튼 클릭 시 fetchOrders 호출
     const handlePageClick = (page) => {
-        fetchMyQna(page);
+        setSearchParams({ page });
     };
 
     // 게시글 수정 핸들러 - 모달 열기
@@ -112,8 +119,8 @@ const MypageBoardProvider = ({ children }) => {
                 userId: currentUserId,
             });
 
-            fetchMyQna(currentPage); // 수정 후 목록 새로고침
-            // setActiveIndex(null);
+            // 수정 후 목록 새로고침
+            fetchMyQna(currentPage);
             setEditModalVisible(false);
 
             alert("수정이 완료되었습니다.");
@@ -122,7 +129,6 @@ const MypageBoardProvider = ({ children }) => {
             alert("수정에 실패했습니다.");
         }
     };
-
 
     // 게시글 삭제 핸들러
     const handleDeletePost = async (item) => {
@@ -135,7 +141,8 @@ const MypageBoardProvider = ({ children }) => {
                     },
                 });
 
-                fetchMyQna(currentPage); // 삭제 후 목록 새로고침
+                // 삭제 후 목록 새로고침
+                fetchMyQna(currentPage);
                 alert("삭제되었습니다.");
             } catch (error) {
                 console.error("삭제 중 오류:", error);
@@ -144,11 +151,11 @@ const MypageBoardProvider = ({ children }) => {
         }
     };
 
-
     useEffect(() => {
-        fetchMyQna();
-    }, [navigate]);
-
+        // URL의 쿼리 파라미터에서 page값 읽기
+        const pageParam = parseInt(searchParams.get("page"), 10) || 0;
+        fetchMyQna(pageParam);
+    }, [searchParams, navigate]);
 
     // 답변 표시 여부 관리 상태
     const [showAnswer, setShowAnswer] = useState(
@@ -176,7 +183,7 @@ const MypageBoardProvider = ({ children }) => {
         toggleAnswer,
         editModalVisible,
         editedPost,
-        setEditedPost, 
+        setEditedPost,
         setEditModalVisible,
     };
 
