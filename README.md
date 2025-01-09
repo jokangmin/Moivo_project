@@ -43,7 +43,7 @@
 
 ## 🗂️ ERD
 
-![ERD](https://prod-files-secure.s3.us-west-2.amazonaws.com/53d2e805-8f74-4469-aded-00c8d6d94ea2/da1dc9df-a281-408b-8b44-62a83ac85d44/image.png)
+![ERD](![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/53d2e805-8f74-4469-aded-00c8d6d94ea2/da1dc9df-a281-408b-8b44-62a83ac85d44/image.png))
 
 ---
 
