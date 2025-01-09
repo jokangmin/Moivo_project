@@ -43,7 +43,7 @@
 
 ## 🗂️ ERD
 
-![ERD](<img width="976" alt="moivo_erd" src="https://github.com/user-attachments/assets/391cd99c-96a1-4274-bc81-bd31798390f5" />)
+<img width="976" alt="moivo_erd" src="https://github.com/user-attachments/assets/4ddf01b7-d393-4bef-aee3-9a57e609153d" />
 
 ---
 
