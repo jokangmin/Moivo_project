@@ -75,7 +75,7 @@ const Admins_qnaboard = () => {
                         onClick={() => handleStatCardClick('ALL')}
                     >
                         <div className={admin_qnaboard.statNumber}>
-                            {questions.length}
+                            {questions.filter(q => q.fixQuestion === false).length}
                         </div>
                         <div className={admin_qnaboard.statLabel}>전체 문의</div>
                     </div>
@@ -84,7 +84,7 @@ const Admins_qnaboard = () => {
                         onClick={() => handleStatCardClick('ANSWERED')}
                     >
                         <div className={admin_qnaboard.statNumber}>
-                            {questions.filter(q => q.response).length}
+                            {questions.filter(q => q.fixQuestion === false && q.response).length}
                         </div>
                         <div className={admin_qnaboard.statLabel}>답변 완료</div>
                     </div>
@@ -93,7 +93,7 @@ const Admins_qnaboard = () => {
                         onClick={() => handleStatCardClick('WAITING')}
                     >
                         <div className={admin_qnaboard.statNumber}>
-                            {questions.filter(q => !q.response).length}
+                            {questions.filter(q => q.fixQuestion === false && !q.response).length}
                         </div>
                         <div className={admin_qnaboard.statLabel}>답변 대기</div>
                     </div>
