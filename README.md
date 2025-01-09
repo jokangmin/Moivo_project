@@ -12,8 +12,14 @@
 ### 🛠️ 개발도구
 - **Notion**, **DBever**, **Figma**, **GitHub**, **STS**, **VScode**, **MySQL Workbench**, **Slack**, **IntelliJ**, **Postman**
 
+### 🗄️ 데이터베이스 기술
+- **MySQL**, **JPA**, **Redis**
+
 ### 📡 서버기술
-- **NCP**, **Jenkins**, **Spring Boot Framework**, **Java**, **JPA**, **MySQL**, **OAuth2**, **SLF4J**, **RESTful API**, **Gradle**, **Hibernate**, **Spring Security**, **JWT**, **Redis**
+- **NCP**, **Spring Boot Framework**, **Java**, **OAuth2**, **SLF4J**, **RESTful API**, **Gradle**, **Hibernate**, **Spring Security**, **JWT**
+
+### 🔄 CI/CD 및 자동화 도구
+- **Jenkins**
 
 ### 🖥️ 화면기술
 - **React**, **HTML**, **CSS**, **JavaScript**, **Node.js**, **Redux**, **React Router**, **Axios**
