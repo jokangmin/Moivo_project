@@ -118,7 +118,7 @@ E-mail :
 
 ```
 김성찬
-E-mail : 
+E-mail : sck2270@naver.com
 ```
 
 ```
