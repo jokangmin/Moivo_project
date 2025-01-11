@@ -133,7 +133,7 @@ E-mail :
 
 ```
 양재영
-E-mail : 
+E-mail : didwodud7@naver.com
 ```
 
 ```
