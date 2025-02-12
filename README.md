@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/55fdb011-995b-4408-a139-906150cd3023)# 📖 프로젝트 소개
+# 📖 프로젝트 소개
 
 ---
 
@@ -48,7 +48,7 @@
 ---
 ## 🏗️ System Architecture
 
-![image](https://github.com/user-attachments/assets/0852bbb9-3600-446c-b3c3-22ed027d0105)
+![MOIVO 아키텍쳐 drawio](https://github.com/user-attachments/assets/88bd9258-d78f-44d9-bf84-64f86870f796)
 
 ---
 
