@@ -115,15 +115,20 @@ public class ProductServiceImpl implements ProductService {
                     pageable);
         }
 
-        // 4. Entity -> DTO 변환
-        List<ProductDTO> dtoList = pageProductList.getContent() // Java8 이상 사용시 Entity -> DTO 변환하는 방법
-                .stream()
-                .map(productEntity -> {
-                    System.out.println("Product ID: " + productEntity.getId());
-                    System.out.println("Original Image: " + productEntity.getImg());
-                    return ProductDTO.toGetProductDTO(productEntity); // DTO로 변환
-                })
-                .collect(Collectors.toList());
+        // 4. Entity -> DTO 변환 (api 속도 개선을 위해 for문 사용)
+        // List<ProductDTO> dtoList = pageProductList.getContent() // Java8 이상 사용시
+        // Entity -> DTO 변환하는 방법
+        // .stream()
+        // .map(productEntity -> {
+        // // System.out.println("Product ID: " + productEntity.getId());
+        // // System.out.println("Original Image: " + productEntity.getImg());
+        // return ProductDTO.toGetProductDTO(productEntity); // DTO로 변환
+        // })
+        // .collect(Collectors.toList());
+        List<ProductDTO> dtoList = new ArrayList<>();
+        for (ProductEntity entity : pageProductList.getContent()) {
+            dtoList.add(ProductDTO.toGetProductDTO(entity));
+        }
 
         // 5. 페이징 숫자 처리
         int currentBlock = pageProductList.getNumber() / block;
